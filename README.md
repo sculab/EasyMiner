@@ -24,10 +24,7 @@ For users who want to use command line version, Please see our [Easy353](https:/
 
 A rough manual of EasyMiner is here: 
 
-[中文](https://github.com/sculab/EasyMiner/blob/master/Manual_CH.pdf)
-
-[English](NULL)
-
+[中文](https://github.com/sculab/EasyMiner/blob/master/manual/ZH_CN/Manual_CH.pdf)
 
 # Citation
 
