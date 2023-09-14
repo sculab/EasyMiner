@@ -6,7 +6,12 @@
     <StartupObject>EasyMiner.Welcome</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
+    <ApplicationIcon>easyminer.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="easyminer.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <Import Include="System.Data" />

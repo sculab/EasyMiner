@@ -925,6 +925,9 @@ Public Class Main_Form
                     refs_count += 1
                     If refs_count = 1 Then
                         safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", currentDirectory + "temp\seed.fasta", True)
+                    Else
+                        MsgBox("You can only choose one reference sequence as a seed file.")
+                        Exit Sub
                     End If
                 End If
             Next

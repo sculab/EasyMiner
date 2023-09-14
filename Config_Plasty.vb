@@ -90,18 +90,30 @@ Public Class Config_Plasty
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim opendialog As New FolderBrowserDialog
+        Dim opendialog As New OpenFileDialog
+        opendialog.Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa"
+        opendialog.FileName = ""
+        opendialog.Multiselect = True
+        opendialog.DefaultExt = ".fas"
+        opendialog.CheckFileExists = True
+        opendialog.CheckPathExists = True
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
-            TextBox3.Text = opendialog.SelectedPath
+            TextBox3.Text = opendialog.FileName
         End If
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim opendialog As New FolderBrowserDialog
+        Dim opendialog As New OpenFileDialog
+        opendialog.Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa"
+        opendialog.FileName = ""
+        opendialog.Multiselect = True
+        opendialog.DefaultExt = ".fas"
+        opendialog.CheckFileExists = True
+        opendialog.CheckPathExists = True
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
-            TextBox2.Text = opendialog.SelectedPath
+            TextBox2.Text = opendialog.FileName
         End If
     End Sub
 End Class

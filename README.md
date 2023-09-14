@@ -29,8 +29,9 @@ A rough manual of EasyMiner is here:
 # Citation
 
 Our paper on EasyMiner is still under preparation. Please refer to our previous published articles for the time being:
-Pulin Xie, Yongling Guo, Wenbin Zhou, et al. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Authorea. April 17, 2023. DOI: 10.22541/au.168172406.69677221/v1
-Zhen Zhang, Pulin Xie, Yongling Guo, Wenbin Zhou, Enyan Liu, Yan Yu. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution. msac261 (2022).DOI: 10.1093/molbev/msac261.
+- Zhen Zhang, Pulin Xie, Yongling Guo, Wenbin Zhou, Enyan Liu, Yan Yu. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution. msac261 (2022).DOI: 10.1093/molbev/msac261.
+- Pulin Xie, Yongling Guo, Wenbin Zhou, et al. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Authorea. April 17, 2023. DOI: 10.22541/au.168172406.69677221/v1
+
 
 
 
