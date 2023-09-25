@@ -1016,9 +1016,9 @@ Public Class Main_Form
             If refs_count >= 1 Then
                 If My.Computer.FileSystem.DirectoryExists(TextBox1.Text + "\results") Then
                     If Directory.GetFileSystemEntries(TextBox1.Text + "\results").Length > 0 Then
-                        Dim result As DialogResult = MessageBox.Show("Should the mined sequences be merged?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        If result = DialogResult.Yes Then
-                            For i As Integer = 1 To refsView.Count
+                        'Dim result As DialogResult = MessageBox.Show("Should the mined sequences be merged?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        'If result = DialogResult.Yes Then
+                        For i As Integer = 1 To refsView.Count
                                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                     If File.Exists(TextBox1.Text + "\iteration\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
                                         MergeFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\iteration\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
@@ -1026,8 +1026,8 @@ Public Class Main_Form
                                         MergeFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                                     End If
                                 End If
-                            Next
-                        End If
+                           Next
+                        'End If
                     End If
                 End If
                 Dim th1 As New Thread(AddressOf do_align)
@@ -1047,11 +1047,11 @@ Public Class Main_Form
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                 Dim SI_muscle5 As New ProcessStartInfo()
-                SI_muscle5.FileName = currentDirectory + "analysis\muscle5.1.win64.exe" ' 替换为实际的命令行程序路径
+                SI_muscle5.FileName = currentDirectory + "analysis\muscle3.8.425_win32.exe" ' 替换为实际的命令行程序路径
                 SI_muscle5.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
                 SI_muscle5.CreateNoWindow = True
-                SI_muscle5.Arguments = "-align " + """" + ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                SI_muscle5.Arguments += " -output " + """" + TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                SI_muscle5.Arguments = "-in " + """" + ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                SI_muscle5.Arguments += " -out " + """" + TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
                 Dim process_build_fq As Process = Process.Start(SI_muscle5)
                 process_build_fq.WaitForExit()
                 process_build_fq.Close()
@@ -1243,11 +1243,11 @@ Public Class Main_Form
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                     If File.Exists(TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
                         Dim SI_muscle5 As New ProcessStartInfo()
-                        SI_muscle5.FileName = currentDirectory + "analysis\muscle5.1.win64.exe" ' 替换为实际的命令行程序路径
+                        SI_muscle5.FileName = currentDirectory + "analysis\muscle3.8.425_win32.exe" ' 替换为实际的命令行程序路径
                         SI_muscle5.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
                         SI_muscle5.CreateNoWindow = True
-                        SI_muscle5.Arguments = "-align " + """" + ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                        SI_muscle5.Arguments += " -output " + """" + TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                        SI_muscle5.Arguments = "-in " + """" + ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                        SI_muscle5.Arguments += " -out " + """" + TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
                         Dim process_muscle5 As Process = Process.Start(SI_muscle5)
                         process_muscle5.WaitForExit()
                         process_muscle5.Close()

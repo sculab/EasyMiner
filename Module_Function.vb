@@ -96,6 +96,7 @@ Module Module_Function
 	Public Sub MergeFiles(ByVal firstFilePath As String, ByVal secondFilePath As String)
 		Try
 			Using firstFileWriter As New StreamWriter(firstFilePath, True) ' "True" appends to the file
+				firstFileWriter.Write(vbCrLf)
 				Using secondFileReader As New StreamReader(secondFilePath)
 					Dim line As String = ""
 					While (InlineAssignHelper(line, secondFileReader.ReadLine())) IsNot Nothing

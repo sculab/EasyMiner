@@ -59,6 +59,7 @@ Partial Class Main_Form
         三方工具ToolStripMenuItem = New ToolStripMenuItem()
         构建质体基因组ToolStripMenuItem = New ToolStripMenuItem()
         多序列比对ToolStripMenuItem = New ToolStripMenuItem()
+        切齐拼接结果ToolStripMenuItem = New ToolStripMenuItem()
         DataGridView1 = New DataGridView()
         DataGridView2 = New DataGridView()
         ContextMenuStrip1 = New ContextMenuStrip(components)
@@ -95,7 +96,6 @@ Partial Class Main_Form
         GroupBox2 = New GroupBox()
         GroupBox3 = New GroupBox()
         GroupBox4 = New GroupBox()
-        切齐拼接结果ToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridView2, ComponentModel.ISupportInitialize).BeginInit()
@@ -335,7 +335,13 @@ Partial Class Main_Form
         ' 
         多序列比对ToolStripMenuItem.Name = "多序列比对ToolStripMenuItem"
         多序列比对ToolStripMenuItem.Size = New Size(180, 22)
-        多序列比对ToolStripMenuItem.Text = "多序列比对"
+        多序列比对ToolStripMenuItem.Text = "与参考序列比对"
+        ' 
+        ' 切齐拼接结果ToolStripMenuItem
+        ' 
+        切齐拼接结果ToolStripMenuItem.Name = "切齐拼接结果ToolStripMenuItem"
+        切齐拼接结果ToolStripMenuItem.Size = New Size(180, 22)
+        切齐拼接结果ToolStripMenuItem.Text = "切齐拼接结果"
         ' 
         ' DataGridView1
         ' 
@@ -701,12 +707,6 @@ Partial Class Main_Form
         GroupBox4.TabIndex = 7
         GroupBox4.TabStop = False
         GroupBox4.Text = "拼接"
-        ' 
-        ' 切齐拼接结果ToolStripMenuItem
-        ' 
-        切齐拼接结果ToolStripMenuItem.Name = "切齐拼接结果ToolStripMenuItem"
-        切齐拼接结果ToolStripMenuItem.Size = New Size(180, 22)
-        切齐拼接结果ToolStripMenuItem.Text = "切齐拼接结果"
         ' 
         ' Main_Form
         ' 
