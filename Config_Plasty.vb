@@ -33,12 +33,13 @@ Public Class Config_Plasty
             MsgBox("Need chloroplast sequence for mito_plant mode!")
             Exit Sub
         End If
+        My.Computer.FileSystem.CreateDirectory(root_path + "results\NOVOPlasty")
         waiting = True
         timer_id = 1
         Dim sr As New StreamReader(currentDirectory + "\analysis\NOVO_config.txt")
         Dim config_text As String = sr.ReadToEnd
         Dim sw As New StreamWriter(currentDirectory + "temp\NOVO_config.txt")
-        config_text = config_text.Replace("$batch_file$", "batch:" + currentDirectory + "temp\batch_file.txt")
+        config_text = config_text.Replace("$batch_file$", "batch:batch_file.txt")
         config_text = config_text.Replace("$type$", ComboBox1.Text)
         config_text = config_text.Replace("$range$", TextBox1.Text)
         config_text = config_text.Replace("$k-mer$", NumericUpDown1.Value.ToString)
@@ -47,7 +48,7 @@ Public Class Config_Plasty
         config_text = config_text.Replace("$insert_size$", NumericUpDown3.Value.ToString)
         config_text = config_text.Replace("$ref$", TextBox2.Text)
         config_text = config_text.Replace("$chlo$", TextBox3.Text)
-        config_text = config_text.Replace("$out$", form_main.TextBox1.Text + "\".Replace("\\", "\"))
+        config_text = config_text.Replace("$out$", "..\results\NOVOPlasty\")
         sw.Write(config_text)
         sw.Close()
         sr.Close()
@@ -81,9 +82,9 @@ Public Class Config_Plasty
 
         Dim SI_build_plasty As New ProcessStartInfo()
         SI_build_plasty.FileName = currentDirectory + "analysis\NOVOPlasty4.3.4.exe" ' 替换为实际的命令行程序路径
-        SI_build_plasty.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+        SI_build_plasty.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
         SI_build_plasty.CreateNoWindow = False
-        SI_build_plasty.Arguments = "-c " + """" + currentDirectory + "temp\NOVO_config.txt" + """"
+        SI_build_plasty.Arguments = "-c NOVO_config.txt"
         Dim process_build_plasty As Process = Process.Start(SI_build_plasty)
         process_build_plasty.WaitForExit()
         process_build_plasty.Close()

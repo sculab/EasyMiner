@@ -534,9 +534,9 @@ if __name__ == '__main__':
                 contigs_all_low = []
                 contigs_best = []
                 # 获取contigs
-                while len(seed_list) > seed_list_len >> 1: # 该子集耗费了大于一半的seed就没必要再做了 
+                while len(seed_list) > seed_list_len * 0.66: # 已经耗费了大于三分之一的seed就没必要再做了 
                     # org_contigs: 0序列 1序列的拼接权重 2切片数 3配对的切片数
-                    org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = 4096, weight = cur_weight)
+                    org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = 2048, weight = cur_weight)
                     seed_list = [item for item in seed_list if (item[0] not in kmer_set) and (Reverse_Int(item[0], current_ka) not in kmer_set)]
                     for contig in org_contigs:
                         if contig[2] * slice_len > len(contig[0]): # 起码要有reads高质量切片能够覆盖contig，否则就是错误的拼接

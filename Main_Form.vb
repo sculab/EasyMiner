@@ -780,7 +780,7 @@ Public Class Main_Form
                 Else
                     DeleteDir(root_path + "temp\org_seq")
                     My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
-                    safe_copy(current_file, root_path + "temp\org_seq\" + System.IO.Path.GetFileNameWithoutExtension(current_file) + ".fasta", True)
+                    safe_copy(current_file, root_path + "temp\org_seq\" + System.IO.Path.GetFileNameWithoutExtension(current_file).Replace(" ", "_").Replace(".", "_") + ".fasta", True)
                     refs_type = "fasta"
                     refresh_file()
                 End If
