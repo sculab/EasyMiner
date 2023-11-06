@@ -44,6 +44,10 @@ Partial Class Config_Plasty
         Label7 = New Label()
         Label8 = New Label()
         NumericUpDown4 = New NumericUpDown()
+        Label9 = New Label()
+        TextBox5 = New TextBox()
+        CheckBox1 = New CheckBox()
+        Button5 = New Button()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).BeginInit()
@@ -53,41 +57,41 @@ Partial Class Config_Plasty
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Location = New Point(12, 15)
+        Label1.Location = New Point(12, 43)
         Label1.Name = "Label1"
-        Label1.Size = New Size(124, 17)
+        Label1.Size = New Size(32, 17)
         Label1.TabIndex = 0
-        Label1.Text = "类型(叶绿体，线粒体)"
+        Label1.Text = "类型"
         ' 
         ' ComboBox1
         ' 
         ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
         ComboBox1.FormattingEnabled = True
         ComboBox1.Items.AddRange(New Object() {"chloro", "mito", "mito_plant"})
-        ComboBox1.Location = New Point(164, 12)
+        ComboBox1.Location = New Point(64, 40)
         ComboBox1.Name = "ComboBox1"
-        ComboBox1.Size = New Size(141, 25)
+        ComboBox1.Size = New Size(93, 25)
         ComboBox1.TabIndex = 1
         ' 
         ' Label2
         ' 
         Label2.AutoSize = True
-        Label2.Location = New Point(12, 46)
+        Label2.Location = New Point(164, 43)
         Label2.Name = "Label2"
-        Label2.Size = New Size(92, 17)
+        Label2.Size = New Size(32, 17)
         Label2.TabIndex = 2
-        Label2.Text = "基因组大小范围"
+        Label2.Text = "长度"
         ' 
         ' TextBox1
         ' 
-        TextBox1.Location = New Point(164, 43)
+        TextBox1.Location = New Point(211, 40)
         TextBox1.Name = "TextBox1"
-        TextBox1.Size = New Size(141, 23)
+        TextBox1.Size = New Size(93, 23)
         TextBox1.TabIndex = 3
         ' 
         ' NumericUpDown1
         ' 
-        NumericUpDown1.Location = New Point(103, 79)
+        NumericUpDown1.Location = New Point(102, 100)
         NumericUpDown1.Maximum = New Decimal(New Integer() {99, 0, 0, 0})
         NumericUpDown1.Minimum = New Decimal(New Integer() {19, 0, 0, 0})
         NumericUpDown1.Name = "NumericUpDown1"
@@ -98,7 +102,7 @@ Partial Class Config_Plasty
         ' Label3
         ' 
         Label3.AutoSize = True
-        Label3.Location = New Point(12, 81)
+        Label3.Location = New Point(11, 102)
         Label3.Name = "Label3"
         Label3.Size = New Size(44, 17)
         Label3.TabIndex = 5
@@ -107,7 +111,7 @@ Partial Class Config_Plasty
         ' Label4
         ' 
         Label4.AutoSize = True
-        Label4.Location = New Point(12, 110)
+        Label4.Location = New Point(11, 131)
         Label4.Name = "Label4"
         Label4.Size = New Size(80, 17)
         Label4.TabIndex = 6
@@ -115,7 +119,7 @@ Partial Class Config_Plasty
         ' 
         ' NumericUpDown2
         ' 
-        NumericUpDown2.Location = New Point(103, 108)
+        NumericUpDown2.Location = New Point(102, 129)
         NumericUpDown2.Maximum = New Decimal(New Integer() {99, 0, 0, 0})
         NumericUpDown2.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         NumericUpDown2.Name = "NumericUpDown2"
@@ -126,7 +130,7 @@ Partial Class Config_Plasty
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Location = New Point(12, 143)
+        Label5.Location = New Point(11, 158)
         Label5.Name = "Label5"
         Label5.Size = New Size(136, 17)
         Label5.TabIndex = 8
@@ -135,7 +139,7 @@ Partial Class Config_Plasty
         ' Label6
         ' 
         Label6.AutoSize = True
-        Label6.Location = New Point(164, 143)
+        Label6.Location = New Point(163, 158)
         Label6.Name = "Label6"
         Label6.Size = New Size(88, 17)
         Label6.TabIndex = 9
@@ -143,7 +147,7 @@ Partial Class Config_Plasty
         ' 
         ' TextBox2
         ' 
-        TextBox2.Location = New Point(164, 163)
+        TextBox2.Location = New Point(163, 178)
         TextBox2.Name = "TextBox2"
         TextBox2.ReadOnly = True
         TextBox2.Size = New Size(141, 23)
@@ -151,16 +155,16 @@ Partial Class Config_Plasty
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(230, 192)
+        Button1.Location = New Point(243, 207)
         Button1.Name = "Button1"
-        Button1.Size = New Size(75, 30)
+        Button1.Size = New Size(60, 30)
         Button1.TabIndex = 11
         Button1.Text = "浏览"
         Button1.UseVisualStyleBackColor = True
         ' 
         ' TextBox3
         ' 
-        TextBox3.Location = New Point(13, 163)
+        TextBox3.Location = New Point(12, 178)
         TextBox3.Name = "TextBox3"
         TextBox3.ReadOnly = True
         TextBox3.Size = New Size(144, 23)
@@ -168,20 +172,20 @@ Partial Class Config_Plasty
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(82, 192)
+        Button2.Location = New Point(96, 207)
         Button2.Name = "Button2"
-        Button2.Size = New Size(75, 30)
+        Button2.Size = New Size(60, 30)
         Button2.TabIndex = 13
         Button2.Text = "浏览"
         Button2.UseVisualStyleBackColor = True
         ' 
         ' TextBox4
         ' 
-        TextBox4.Location = New Point(12, 228)
+        TextBox4.Location = New Point(12, 243)
         TextBox4.Multiline = True
         TextBox4.Name = "TextBox4"
         TextBox4.ReadOnly = True
-        TextBox4.Size = New Size(292, 134)
+        TextBox4.Size = New Size(292, 119)
         TextBox4.TabIndex = 14
         TextBox4.Text = resources.GetString("TextBox4.Text")
         ' 
@@ -205,18 +209,17 @@ Partial Class Config_Plasty
         ' 
         ' NumericUpDown3
         ' 
-        NumericUpDown3.Location = New Point(251, 108)
+        NumericUpDown3.Location = New Point(250, 129)
         NumericUpDown3.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
-        NumericUpDown3.Minimum = New Decimal(New Integer() {10, 0, 0, 0})
         NumericUpDown3.Name = "NumericUpDown3"
         NumericUpDown3.Size = New Size(54, 23)
         NumericUpDown3.TabIndex = 52
-        NumericUpDown3.Value = New Decimal(New Integer() {500, 0, 0, 0})
+        NumericUpDown3.Value = New Decimal(New Integer() {400, 0, 0, 0})
         ' 
         ' Label7
         ' 
         Label7.AutoSize = True
-        Label7.Location = New Point(164, 110)
+        Label7.Location = New Point(163, 131)
         Label7.Name = "Label7"
         Label7.Size = New Size(56, 17)
         Label7.TabIndex = 51
@@ -225,7 +228,7 @@ Partial Class Config_Plasty
         ' Label8
         ' 
         Label8.AutoSize = True
-        Label8.Location = New Point(164, 81)
+        Label8.Location = New Point(163, 102)
         Label8.Name = "Label8"
         Label8.Size = New Size(56, 17)
         Label8.TabIndex = 50
@@ -233,7 +236,7 @@ Partial Class Config_Plasty
         ' 
         ' NumericUpDown4
         ' 
-        NumericUpDown4.Location = New Point(251, 79)
+        NumericUpDown4.Location = New Point(250, 100)
         NumericUpDown4.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
         NumericUpDown4.Minimum = New Decimal(New Integer() {10, 0, 0, 0})
         NumericUpDown4.Name = "NumericUpDown4"
@@ -241,12 +244,54 @@ Partial Class Config_Plasty
         NumericUpDown4.TabIndex = 49
         NumericUpDown4.Value = New Decimal(New Integer() {150, 0, 0, 0})
         ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.Location = New Point(13, 13)
+        Label9.Name = "Label9"
+        Label9.Size = New Size(44, 17)
+        Label9.TabIndex = 53
+        Label9.Text = "项目名"
+        ' 
+        ' TextBox5
+        ' 
+        TextBox5.Location = New Point(63, 10)
+        TextBox5.Name = "TextBox5"
+        TextBox5.Size = New Size(241, 23)
+        TextBox5.TabIndex = 54
+        TextBox5.Text = "Genome"
+        ' 
+        ' CheckBox1
+        ' 
+        CheckBox1.AutoSize = True
+        CheckBox1.Checked = True
+        CheckBox1.CheckState = CheckState.Checked
+        CheckBox1.Location = New Point(13, 72)
+        CheckBox1.Name = "CheckBox1"
+        CheckBox1.Size = New Size(159, 21)
+        CheckBox1.TabIndex = 55
+        CheckBox1.Text = "使用参考序列进行预过滤"
+        CheckBox1.UseVisualStyleBackColor = True
+        ' 
+        ' Button5
+        ' 
+        Button5.Location = New Point(163, 207)
+        Button5.Name = "Button5"
+        Button5.Size = New Size(60, 30)
+        Button5.TabIndex = 56
+        Button5.Text = "清空"
+        Button5.UseVisualStyleBackColor = True
+        ' 
         ' Config_Plasty
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(317, 408)
         ControlBox = False
+        Controls.Add(Button5)
+        Controls.Add(CheckBox1)
+        Controls.Add(TextBox5)
+        Controls.Add(Label9)
         Controls.Add(NumericUpDown3)
         Controls.Add(Label7)
         Controls.Add(Label8)
@@ -272,6 +317,7 @@ Partial Class Config_Plasty
         Name = "Config_Plasty"
         StartPosition = FormStartPosition.CenterScreen
         Text = "细胞器基因组"
+        TopMost = True
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).EndInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).EndInit()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).EndInit()
@@ -301,4 +347,8 @@ Partial Class Config_Plasty
     Friend WithEvents Label7 As Label
     Friend WithEvents Label8 As Label
     Friend WithEvents NumericUpDown4 As NumericUpDown
+    Friend WithEvents Label9 As Label
+    Friend WithEvents TextBox5 As TextBox
+    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents Button5 As Button
 End Class

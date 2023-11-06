@@ -30,6 +30,7 @@ Partial Class Config_Split
         Label3 = New Label()
         NumericUpDown2 = New NumericUpDown()
         Label2 = New Label()
+        CheckBox1 = New CheckBox()
         CType(NumericUpDown4, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).BeginInit()
@@ -37,7 +38,7 @@ Partial Class Config_Split
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(216, 101)
+        Button2.Location = New Point(216, 125)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 44
@@ -46,7 +47,7 @@ Partial Class Config_Split
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(135, 101)
+        Button1.Location = New Point(135, 125)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 43
@@ -109,12 +110,23 @@ Partial Class Config_Split
         Label2.TabIndex = 26
         Label2.Text = "基因最小长度"
         ' 
+        ' CheckBox1
+        ' 
+        CheckBox1.AutoSize = True
+        CheckBox1.Location = New Point(13, 100)
+        CheckBox1.Name = "CheckBox1"
+        CheckBox1.Size = New Size(99, 21)
+        CheckBox1.TabIndex = 45
+        CheckBox1.Text = "去除外显子区"
+        CheckBox1.UseVisualStyleBackColor = True
+        ' 
         ' Config_Split
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(303, 139)
+        ClientSize = New Size(302, 161)
         ControlBox = False
+        Controls.Add(CheckBox1)
         Controls.Add(Button2)
         Controls.Add(Button1)
         Controls.Add(NumericUpDown4)
@@ -141,4 +153,5 @@ Partial Class Config_Split
     Friend WithEvents Label3 As Label
     Friend WithEvents NumericUpDown2 As NumericUpDown
     Friend WithEvents Label2 As Label
+    Friend WithEvents CheckBox1 As CheckBox
 End Class

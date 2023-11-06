@@ -167,6 +167,7 @@ class Extract_reference():
         self.max_primer = configuration_information["max_primer"]
         self.usevar = configuration_information["usevar"]
         self.split_only = configuration_information["split_only"]
+        self.intron_only = configuration_information["intron_only"]
         self.do_alignment = configuration_information["do_alignment"]
 
     def add_soft_boundary(self, start, end, start_all, end_all):
@@ -219,9 +220,6 @@ class Extract_reference():
         return self.remove_terminal_gap(consensus_sequence)
 
     def write_fasta_file(self, record, files_count, current_file, do_aln = True):
-        # 去除全部相同的序列
-        if len(set(str(seq.seq) for seq in record)) == 1 and self.split_only == False:
-            return
         temp_file_count = {}
         for seq in record:
             seq_name_parts = seq.id.lower().split("#")
@@ -230,14 +228,11 @@ class Extract_reference():
                 temp_file_count[seq_name_key] += 1
             else:
                 temp_file_count[seq_name_key] = 1
-        # 如果某物种有某条序列，该物种的所有样本就必须全部有这条序列
-        if self.split_only == False:
-            for key, value in temp_file_count.items():
-                if value < files_count[key]:
-                    return
 
         if len(record) >= 2 or self.split_only:
-            sequence_lengths = [len(seq.seq) for seq in record]
+            sequence_lengths = [len(seq.seq) for seq in record if len(seq.seq) > 0]
+            record = [seq for seq in record if len(seq.seq) > 0]
+            if record == []: return
             absolute_path = os.path.abspath(current_file)
             data_path = os.path.dirname(absolute_path)
             gene_name = os.path.splitext(os.path.basename(absolute_path))[0]
@@ -251,156 +246,11 @@ class Extract_reference():
             SeqIO.write(record, seq_file, "fasta-2line")
             # 保存比对之后的序列
             aln_file = os.path.join(data_path,"alignment",file_name_with_ext)
-            
-            if do_aln:
-                print("Aligning", gene_name, "gene sequences")
-                if not os.path.isdir(os.path.join(data_path,"alignment")):
-                    os.makedirs(os.path.join(data_path,"alignment"))
-                if sys.platform.startswith('win'):
-                    muscle_command = ["muscle5.1.win64.exe", "-align", seq_file, "-output", aln_file]
-                else:
-                    muscle_command = ["./muscle -in '" + seq_file + "' -out '" + aln_file + "'"]
-                try:
-                    # with open(os.devnull, 'w') as devnull:
-                    #     subprocess.run(muscle_command, shell=True, check=True, stdout=devnull, stderr=devnull)
-                    subprocess.run(muscle_command, shell=True, check=True)
-                except subprocess.CalledProcessError as e:
-                    print("Error:", e)
-            if self.split_only: return
-            alignment_records = list(SeqIO.parse(aln_file, 'fasta'))
-            # 生成一致序列
-            consensus_seq = self.generate_consensus(alignment_records, self.usevar)
-            # 创建一致序列的 SeqRecord 对象
-            taxon_count = len(set(temp_file_count.keys())) 
-            gap_count = consensus_seq.count("-")
-            consensus_name = "|".join(set(temp_file_count.keys()))
-            # 将一致序列保存到文件
-            data_path = os.path.dirname(absolute_path)
-            # 写入consensus
-            if not os.path.isdir(os.path.join(data_path,"consensus")):
-                os.makedirs(os.path.join(data_path,"consensus"))
-            con_file = os.path.join(data_path,"consensus",file_name_with_ext)
-            with open(con_file, 'w') as output_handle:
-                output_handle.write(">" + consensus_name + "\n")
-                output_handle.write(consensus_seq + "\n")
-            # 写入input
-            file_name_with_ext = gene_name + '.txt'
-            if not os.path.isdir(os.path.join(data_path,"primer_input")):
-                os.makedirs(os.path.join(data_path,"primer_input"))
-            input_file = os.path.join(data_path,"primer_input",file_name_with_ext)
-            with open(input_file, 'w') as output_handle:
-                output_handle.write("SEQUENCE_ID=" + consensus_name + "\n")
-                output_handle.write("SEQUENCE_TEMPLATE=" + consensus_seq.replace("-","") + "\n")
-                output_handle.write("=")
-            # 写入setting
-            if not os.path.isdir(os.path.join(data_path,"setting")):
-                os.makedirs(os.path.join(data_path,"setting"))
-            setting_file = os.path.join(data_path,"setting",file_name_with_ext)
-            with open("setting.tmp", 'r') as input_handle:
-                file_content = input_handle.read()
-                with open(setting_file, 'w') as output_handle:
-                    if self.marker_min_length > int(min(len(consensus_seq.replace("-","")), self.marker_max_length)):
-                        return
-                    length_str = str(self.marker_min_length) + "-" + str(int(min(len(consensus_seq.replace("-","")), self.marker_max_length)))
-                    output_handle.write(file_content.replace("$length$", length_str).replace("$max_primer$", str(self.max_primer)))
-            # 记录结果
-            with open(os.path.join(data_path,"seq_results.csv"), "a", newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow([gene_name,consensus_seq.replace("-",""),taxon_count,gap_count,consensus_name,])
-            
-            # 运行primer3_core
-            print("Designing primers based on", gene_name)
-            primer_file = os.path.join(data_path,"primer",file_name_with_ext)
-            if not os.path.isdir(os.path.join(data_path,"primer")):
-                os.makedirs(os.path.join(data_path,"primer"))
-            primer_command = ["primer3_core.exe", "--p3_settings_file", setting_file ,"--output", primer_file , input_file]
-            try:
-                subprocess.run(primer_command, shell=True, check=True)
-            except subprocess.CalledProcessError as e:
-                print("Error:", e)
-
-            # primer3写入csv
-            file_name_with_ext = gene_name + '.csv'
-            primer_csv_file = os.path.join(data_path,"primer",file_name_with_ext)
-            with open(primer_file, 'r') as file:
-                primer3_data = file.read()
-            # 将数据按行分割
-            data_lines = primer3_data.strip().split('\n')
-            # 创建一个字典来保存解析后的数据
-            parsed_data = {}
-            current_key = ""
-            for line in data_lines:
-                if '=' in line:
-                    key, value = line.split('=', 1)
-                    parsed_data[key] = value
-                    current_key = key
-                else:
-                    # 处理多行的数据
-                    parsed_data[current_key] += '\n' + line
-            # 创建 CSV 文件并写入数据
-            with open(primer_csv_file, 'w', newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                # 写入 CSV 表头
-                csv_writer.writerow(["ID", "SEQUENCE_ID", "PRIMER_LEFT_SEQUENCE", "PRIMER_RIGHT_SEQUENCE", "PRIMER_LEFT_TM", "PRIMER_RIGHT_TM", "LENGTH_INTERMEDIATE_SEQUENCE", "REV_RIGHT_SEQUENCE"])
-                # 提取每个 PRIMER 的序列和温度，并添加到 CSV 文件中
-                primer_rows = []
-                num_primers = int(parsed_data["PRIMER_LEFT_NUM_RETURNED"])
-                for i in range(num_primers):
-                    left_key = "PRIMER_LEFT_{0}_SEQUENCE".format(i)
-                    right_key = "PRIMER_RIGHT_{0}_SEQUENCE".format(i)
-                    left_tm_key = "PRIMER_LEFT_{0}_TM".format(i)
-                    right_tm_key = "PRIMER_RIGHT_{0}_TM".format(i)
-                    left_sequence = parsed_data[left_key]
-                    right_sequence = parsed_data[right_key]
-                    template_sequence = parsed_data["SEQUENCE_TEMPLATE"]
-                    intermediate_sequence = calculate_intermediate_sequence(template_sequence, left_sequence, right_sequence)
-                    if intermediate_sequence is not None:
-                        row_data = [i + 1, parsed_data["SEQUENCE_ID"], left_sequence, right_sequence, parsed_data[left_tm_key], parsed_data[right_tm_key], len(intermediate_sequence), reverse_complement_all(right_sequence)]
-                        primer_rows.append(row_data)
-                        csv_writer.writerow(row_data)
-            # 对原始的序列进行分析
-            primer_results_file = os.path.join(data_path,"primer_results", file_name_with_ext)
-            if not os.path.isdir(os.path.join(data_path,"primer_results")):
-                os.makedirs(os.path.join(data_path,"primer_results"))
-            seq_names = []
-            for seq in record:
-                seq_names.append(seq.id.lower() + "#seq") 
-                seq_names.append(seq.id.lower() + "#len")
-            with open(primer_results_file, 'w', newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow(["PRIMER_LEFT_SEQUENCE", "PRIMER_RIGHT_SEQUENCE", "PRIMER_LEFT_TM", "PRIMER_RIGHT_TM"] + list(files_count.keys()) + seq_names)
-                for row in primer_rows:
-                    intermediate_row = []
-                    result_dict = dict.fromkeys(files_count.keys())
-                    for _ in result_dict.keys(): result_dict[_] = [0, 1e9]
-                    for seq in record:
-                        intermediate_sequence = calculate_intermediate_sequence(str(seq.seq).replace("-",""), row[2], row[3])
-                        intermediate_row.append(intermediate_sequence)
-                        intermediate_row.append(len(intermediate_sequence))
-                        tmp_name = seq.id.lower().split("#")[0]
-                        result_dict[tmp_name][0] = max(len(intermediate_sequence),result_dict[tmp_name][0])
-                        result_dict[tmp_name][1] = min(len(intermediate_sequence),result_dict[tmp_name][1])
-                    tmp_result = check_good_primer(result_dict, self.gap_length)
-                    csv_writer.writerow(row[2:6] + [result_dict[_] for _ in result_dict.keys()] + intermediate_row + [tmp_result])
-                    if tmp_result:
-                        for _ in result_dict.keys():
-                            result_dict[_] = int(sum(result_dict[_])/2)
-                            if result_dict[_] == int(1e9/2):
-                                result_dict[_] = "null"
-                            if result_dict[_]  == 0:
-                                result_dict[_] = "weak"
-                        with open(os.path.join(data_path,"primer_results.csv"), "a", newline='') as tmp_csv_file:
-                            tmp_csv_writer = csv.writer(tmp_csv_file)
-                            tmp_csv_writer.writerow([gene_name, template_sequence]+ row[2:6] + [result_dict[_] for _ in result_dict.keys()])
     
     def extract_reference_from_gb_parallel(self):
         out_dir = self.out_dir
         ref = self.input
         thread_number = self.thread_number
-        if self.split_only == False:
-            with open(os.path.join(out_dir,"seq_results.csv"), "w", newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow(["SEQUENCE_NAME", "SEQUENCE_TEMPLATE", "TAXON_COUNT", "GAP_COUNT", "TAXON_LIST"])
         file_names =get_file_list(ref, [".gb",".genbank"])
         task_pool = []
         results = []
@@ -452,10 +302,6 @@ class Extract_reference():
                 files_count[file_name] += 1
             else:
                 files_count[file_name] = 1
-        if self.split_only == False:
-            with open(os.path.join(out_dir,"primer_results.csv"), "w", newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow(["SEQUENCE_NAME", "SEQUENCE_TEMPLATE", "PRIMER_LEFT_SEQUENCE", "PRIMER_RIGHT_SEQUENCE", "PRIMER_LEFT_TM", "PRIMER_RIGHT_TM"] + list(files_count.keys()))
         task_pool2 = []
         results2 = []
         executor2 = ProcessPoolExecutor(max_workers=thread_number)
@@ -482,10 +328,6 @@ class Extract_reference():
         thread_number = self.thread_number
         if not os.path.isdir(out_dir):
             os.makedirs(out_dir)
-        if self.split_only == False:
-            with open(os.path.join(out_dir,"seq_results.csv"), "w", newline='') as csv_file: 
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow(["SEQUENCE_NAME", "SEQUENCE_TEMPLATE", "TAXON_COUNT", "GAP_COUNT", "TAXON_LIST"])
         
         name_list = []
         with open(input_file, 'r') as f:
@@ -499,10 +341,6 @@ class Extract_reference():
                 files_count[file_name] += 1
             else:
                 files_count[file_name] = 1
-        if self.split_only == False:
-            with open(os.path.join(out_dir,"primer_results.csv"), "w", newline='') as csv_file:
-                csv_writer = csv.writer(csv_file)
-                csv_writer.writerow(["SEQUENCE_NAME", "SEQUENCE_TEMPLATE", "PRIMER_LEFT_SEQUENCE", "PRIMER_RIGHT_SEQUENCE", "PRIMER_LEFT_TM", "PRIMER_RIGHT_TM"] + list(files_count.keys()))
                 
         my_records_ultimate = defaultdict(list)
 
@@ -546,6 +384,13 @@ class Extract_reference():
                 if feature.type == "gene" and "gene" in feature.qualifiers.keys() and feature.qualifiers["gene"][0] in crossed_origin_gene:
                     gene_information = {}
                     seq = feature.location.extract(sequence)
+
+                    start = feature.location.start
+                    end = feature.location.end
+                    start, end = self.add_soft_boundary(int(start), int(end), start_all, end_all)
+                    if self.intron_only:
+                        seq = sequence[start:int(feature.location.start)] + sequence[int(feature.location.end):end]
+                    
                     gene_name = feature.qualifiers["gene"][0].replace(" ", "_")
                     gene_information["gene_name"] = feature.qualifiers["gene"][0]
                     gene_information["gene_sequence"] = seq
@@ -578,10 +423,16 @@ class Extract_reference():
                     end = feature.location.end
                     start, end = self.add_soft_boundary(int(start), int(end), start_all, end_all)
                     if strand == strand_all:
-                        seq = sequence[start:end]
+                        if self.intron_only:
+                            seq = sequence[start:int(feature.location.start)] + sequence[int(feature.location.end):end]
+                        else:
+                            seq = sequence[start:end]
                         gene_information["gene_sequence"] = seq
                     else:
-                        seq = sequence[start:end].reverse_complement()
+                        if self.intron_only:
+                            seq = (sequence[start:int(feature.location.start)] + sequence[int(feature.location.end):end]).reverse_complement()
+                        else:
+                            seq = sequence[start:end].reverse_complement()
                         gene_information["gene_sequence"] = seq
                     gene_information["gene_name"] = feature.qualifiers["gene"][0]
                     gene_information["identifier"] = identifier
@@ -629,7 +480,7 @@ if __name__ == '__main__':
     pars = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter, description=''' build ref YY ''')
     pars.add_argument('-input', metavar='<str>', type=str,
-                      help='''input folder.''', required=False, default='./build_primer_test/Coptis.gb')
+                      help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp.gb")
     pars.add_argument('-soft_boundary', metavar='<int>', type=int,
                       help='''soft boundary''', required=False, default=200)
     pars.add_argument('-max_marker_length', metavar='<int>', type=int,
@@ -647,6 +498,7 @@ if __name__ == '__main__':
     pars.add_argument('-usevar', type=str2bool, nargs='?', const=True, help='''Designing primers using consensus region only''', default = True)
     pars.add_argument('-split_only', type=str2bool, nargs='?', const=True, help='''是否仅仅分隔序列''', default = False)
     pars.add_argument('-do_aln', type=str2bool, nargs='?', const=True, help='''是否排序''', default = False)
+    pars.add_argument('-intron_only', type=str2bool, nargs='?', const=True, help='''是否只包含intron''', default = False)
     pars.add_argument('-out_dir', metavar='<str>', type=str,
                       help='''output folder.''', required=False, default='./build_primer_test/out_test')
     pars.add_argument('-max_primer', metavar='<int>', type=int,
@@ -667,12 +519,13 @@ if __name__ == '__main__':
     split_only = args.split_only
     usevar = args.usevar
     do_alignment = args.do_aln
+    intron_only = args.intron_only
 
     configuration_information = {"out": out,  "input": input_data, "soft_boundary": soft_boundary,
                                  "max_marker_length": max_marker_length, "min_marker_length": min_marker_length,
                                  "max_seq_length": max_seq_length, "min_seq_length": min_seq_length, "gap_length": gap_length,
                                  "thread_number": thread_number, "max_primer": max_primer, "usevar":usevar,
-                                 "split_only": split_only, "do_alignment": do_alignment}
+                                 "split_only": split_only, "intron_only": intron_only, "do_alignment": do_alignment}
     
     if os.path.isdir(input_data):
         target1 = Extract_reference(configuration_information)

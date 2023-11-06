@@ -8,6 +8,7 @@ import multiprocessing
 import numpy as np
 from Bio import SeqIO
 from win_filter import * 
+import multiprocessing
 
 # pars.add_argument('-ta', metavar='<int>', type=int, help='''thread of assemble''', required=False, default= 1)
 # 简并碱基字典
@@ -24,15 +25,14 @@ def find_max_overlap(long_dnas, short_dnas, min_overlap=20, step=1, max_overlap_
         long_dna_array = np.array([ord(c) for c in long_dna], dtype=np.uint32)
         if max_overlap_limit is None:
             max_overlap_limit = short_dnas_array.shape[1]
-        with ProcessPoolExecutor() as executor:
-            for overlap in executor.map(calculate_overlap_wrapper, [(long_dna_array, short_dnas_array, min_overlap, step, max_overlap_limit)]):
-                temp_max_overlap = max(max_overlap, overlap)
-                if max_overlap < temp_max_overlap:
-                    max_overlap = temp_max_overlap
-                    if max_overlap >= max_overlap_limit:
-                        return max_overlap
-                    elif max_overlap > min_overlap:
-                        min_overlap = max_overlap
+        overlap = calculate_overlap_wrapper((long_dna_array, short_dnas_array, min_overlap, step, max_overlap_limit))
+        temp_max_overlap = max(max_overlap, overlap)
+        if max_overlap < temp_max_overlap:
+            max_overlap = temp_max_overlap
+            if max_overlap >= max_overlap_limit:
+                return max_overlap
+            elif max_overlap > min_overlap:
+                min_overlap = max_overlap
     return max_overlap
 
 def consensus_sequence(multi_alignment):
@@ -56,7 +56,7 @@ def Reverse_Complement_ACGT(seq):
     """ 
     return seq.translate(str.maketrans('ACGT', 'TGCA'))[::-1]
 
-def Make_Assemble_Dict(file_list, kmer_size, _kmer_dict, _ref_dict):
+def Make_Assemble_Dict(file_list, kmer_size, _kmer_dict, _ref_dict, Filted_File_Ext = '.fq'):
     """
     构建拼接用的字典
     :param file_list: 文件列表
@@ -121,7 +121,7 @@ def Get_Middle_Fragment(text, slice_len):
     end = start + slice_len
     return text[start:end]
 
-def Make_Reads_Dict(file_list, _reads_dict, not_Paired = False):
+def Make_Reads_Dict(file_list, _reads_dict, not_Paired = False, Filted_File_Ext = '.fq'):
     """
     截取reads中间的片段，构建高质量的reads字典
     :param file_list: 文件列表
@@ -184,7 +184,6 @@ def Get_Ref_List(file_list):
         infile.close()
     return ref_seqs
 
-
 def Get_Similar_Ref(file_list, kmer_size, _reads_set_combine):
     """
     构建拼接用的字典
@@ -224,7 +223,6 @@ def Get_Similar_Ref(file_list, kmer_size, _reads_set_combine):
         infile.close()
     return Similar_Ref[2], Int_To_Seq(Similar_Ref[0], Similar_Ref[1])
 
-
 def Median(x):
     """
     使用中位数分割列表
@@ -246,7 +244,6 @@ def Quartile(x):
     lHalf, rHalf, q2 = Median(x)
     return Median(lHalf)[2], q2, Median(rHalf)[2], max(x) + 1
 
-
 def Forward_Bin(seq_int, mask):
     """
     正向的迭代器
@@ -262,7 +259,6 @@ def Get_Weight(_pos, new_pos, weight = 4):
     :return: 返回计算后的权重
     """ 
     return int.bit_length((1024 - abs(_pos - new_pos)) >> 2) if (_pos and new_pos) else weight
-
 
 def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024, weight = 4):
     """
@@ -414,187 +410,203 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
     # processed_contigs = [x for x in processed_contigs if x[3] >= max_paired * 0.9 ]
     return processed_contigs, set(kmer_list_1 + kmer_list_2), contig_pos
 
-if __name__ == '__main__':
-    #try:
-        if sys.platform.startswith('win'):
-            multiprocessing.freeze_support()
-        pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=21)
-        pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=63)
-        pars.add_argument('-k_min', metavar='<int>', type=int, help='''max kmer of assemble''',  default=21)
-        pars.add_argument('-limit_count', metavar='<int>', type=int, help='''limit of kmer count''', required=False, default=2)
-        args = pars.parse_args()
-        # 初始化文件夹
-        if not os.path.isdir(os.path.join(args.o, 'results')):
-            os.mkdir(os.path.join(args.o, 'results'))
-        if not os.path.isdir(os.path.join(args.o, 'contigs_all')):
-            os.mkdir(os.path.join(args.o, 'contigs_all'))
-        print("Do not close this window manually, please!")
-
-        # 载入参考序列信息
-        if not Get_Ref_Info(args.r, ref_path_list, ref_path_dict, ref_length_dict):
-            Write_Print(os.path.join(args.o,  "log.txt"), 'Invaild reference!')
-            sys.exit(0)
-        t0 = time.time()
-
-        Write_Print(os.path.join(args.o,  "log.txt"), '======================== Assemble =========================')
-        # 定义默认权重值
-        cur_weight, assemble_count, failed_count  = 4, 0, 0
-        result_dict = {}
-        for key, value in ref_length_dict.items(): 
-            limit = args.limit_count
-            depth = 0
-            assemble_count += 1
-            contig_best_path = os.path.join(args.o, "results", key + ".fasta")
-            contig_all_path = os.path.join(args.o, "contigs_all", key + ".fasta")
-            if os.path.isfile(contig_best_path) == False:
-                with open(contig_best_path, 'w') as out: pass
-                write_contig = False
-                Write_Print(os.path.join(args.o,  "log.txt"), 'Assembling', key, assemble_count,'/',len(ref_length_dict)," " * 32)
-                # 检查是哪种扩展名
-                file_extensions = ['.fasta', '.fq']
-                Filted_File_Ext = '.fq'
-                filtered_file_path = None
-                for ext in file_extensions:
-                    file_path = os.path.join(args.o,'filtered', key + ext)
-                    if os.path.exists(file_path):
-                        filtered_file_path = file_path
-                        Filted_File_Ext = ext
-                        break
-                # 清理文件
-                if os.path.isfile(os.path.join(args.o, 'filtered', key + Filted_File_Ext )) == False:
-                    if os.path.isfile(contig_best_path): os.remove(contig_best_path)
-                    if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-                    continue
-                # 获取种子列表
-                ref_dict, filtered_dict, reads_dict = {}, {}, {}
-                # 获取最大切片长度，建立reads切片字典
-                slice_len = Make_Reads_Dict([filtered_file_path], reads_dict)
-                if not reads_dict:
-                    failed_count += 1
-                    if os.path.isfile(contig_best_path): os.remove(contig_best_path)
-                    if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-                    Write_Print(os.path.join(args.o,  "log.txt"), "No reads were obtained for the", key)
-                    result_dict[key] = ["no reads",0]
-                    continue
-                # 构建当前参考序列列表
-                # 如果不指定ka, 估算最大ka，执行动态高精度拼接
-                current_ka = args.ka
-                if not current_ka:
-                    ref_list = Get_Ref_List([ref_path_dict[key]])
-                    # 获取reads和参考序列的最大重叠长度
-                    keys_with_slice_len = {key for key in reads_dict.keys() if len(key) == slice_len}
-                    current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = 8, max_overlap_limit = min((args.k_max + 2),slice_len-1))
-                    if not current_ka:
-                        failed_count += 1
-                        if os.path.isfile(contig_best_path): os.remove(contig_best_path)
-                        if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-                        Write_Print(os.path.join(args.o,  "log.txt"), "The reference sequence for the ", key, " may be too distantly related or the sequencing depth may be too low.", sep='')
-                        result_dict[key] = ["distant references",0]
-                        continue
-                    # 略微降低一个级别的k提供更好的兼容性
-                    current_ka -= 2
-                    Write_Print(os.path.join(args.o,  "log.txt"), "Use k=", current_ka, " for assembling the ", key ,".", sep='')
-                # 制作参考序列的kmer字典
-                Make_Kmer_Dict_v6(ref_dict, [ref_path_dict[key]], current_ka, True, True)
-                # 制作用于拼接的kmer字典
-                Make_Assemble_Dict([filtered_file_path], current_ka, filtered_dict, ref_dict)
-                # 缩减filtered_dict，保留大于limit和有位置信息的
-                if limit > 0:
-                    filtered_dict = {k: v for k, v in filtered_dict.items() if v[0] > limit or v[1] > 0}
-                # 必须有filtered_dict才能继续
-                if not filtered_dict:
-                    failed_count += 1
-                    if os.path.isfile(contig_best_path): os.remove(contig_best_path)
-                    if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-                    Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough reads from filter. Estimate depth:', depth ,' '*16)
-                    result_dict[key] = ["insufficient reads", 0]
-                    continue
-                # 处理ref_dict，标记不在filtered_dict中的kmer
-                for i in ref_dict:
-                    if i not in filtered_dict:
-                        ref_dict[i] |= 1023  #前10位全部置1，用来代表没有位置信息
-                # 如果用ref_dict做seed_list，主要考虑参考序列的保守区
-                # 用filtered_dict做seed_list，主要考虑测序的高丰度区
-                # 长度位置在10~990之间，与参考序列方向一致v[2] == 0
-                seed_list = [(k, v[0], v[1]) for k, v in filtered_dict.items() if v[1]>10 and v[1]<990 and not v[2]]
-                list.sort(seed_list, key=itemgetter(1), reverse=True)
-                # 必须有seed_list, 否则意味着跟参考序列差别过大
-                if not seed_list:
-                    failed_count += 1
-                    if os.path.isfile(contig_best_path): os.remove(contig_best_path)
-                    if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-                    Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough seeds. Estimate depth:', depth ," "*16)
-                    result_dict[key] = ["no seed", 0]
-                    continue
-                # 获取seed集合，用来加速集合操作
-                seed_list_len = len(seed_list)
-                seed_set = set([i[0] for i in seed_list])
-                # 获取contigs
-                contigs_all = []
-                contigs_all_low = []
-                contigs_best = []
-                # 获取contigs
-                while len(seed_list) > seed_list_len * 0.66: # 已经耗费了大于三分之一的seed就没必要再做了 
-                    # org_contigs: 0序列 1序列的拼接权重 2切片数 3配对的切片数
-                    org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = 2048, weight = cur_weight)
-                    seed_list = [item for item in seed_list if (item[0] not in kmer_set) and (Reverse_Int(item[0], current_ka) not in kmer_set)]
-                    for contig in org_contigs:
-                        if contig[2] * slice_len > len(contig[0]): # 起码要有reads高质量切片能够覆盖contig，否则就是错误的拼接
-                            # contigs_all: 0序列 1使用的种子数量 2序列位置 3序列的拼接权重 4切片数 5配对的切片数
-                            contigs_all.append([contig[0], len(seed_set & kmer_set), contig_pos, contig[1], contig[2], contig[3]])
-                        else:
-                            contigs_all_low.append([contig[0], len(seed_set & kmer_set), contig_pos, contig[1], contig[2], contig[3]])
-                # 设计规则重新排序，此处使用切片数排序
-                contigs_all.sort(key=lambda x: x[4], reverse=True)
-                # 排序第一位作为 best contig
-                if contigs_all:
-                    contigs_best.append(contigs_all[0])
-                if not contigs_best:
-                    if contigs_all_low == []:
-                        failed_count += 1
-                        if os.path.isfile(contig_best_path): os.remove(contig_best_path)
-                        if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-                        Write_Print(os.path.join(args.o,  "log.txt"), "Insufficient reads coverage, unable to obtain valid contig.")
-                        result_dict[key] = ["no contigs",0]
-                        continue
-                    else:
-                        contigs_all_low.sort(key=lambda x: x[4], reverse=True)
-                        contigs_best.append(contigs_all_low[0])
-                        with open(contig_best_path, 'w') as out:
-                            for x in contigs_best:
-                                out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
-                                out.write(x[0] + '\n')
-                        with open(contig_all_path, 'w') as out:
-                            for x in contigs_all_low:
-                                out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
-                                out.write(x[0] + '\n')
-                        ref_dict, filtered_dict = {}, {}
-                        result_dict[key] = ["low quality", contigs_best[0][4]]
-                        gc.collect()
-                        continue
-                # # 获取contigs中seed个数的最大值
-                # max_seed_count = max([i[1] for i in contigs_best])
-                # # 移除小于max_seed_count一半的contig
-                # if len(contigs_best) > 1:
-                #     contigs_best = [i for i in contigs_best if i[1] > max_seed_count >> 1]
-                # if len(contigs_best) > 1:
-                #     Write_Print(os.path.join(args.o,  "log.txt"), key, 'have mutiply contigs', ' '*10)
-                #     result_dict[key] = "mutiply contigs"
-                # 保存contigs，格式为 长度_使用的种子数_粗略的千分比位置_权重_跟参考序列重叠的切片数_paired计数
+def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, iteration, cur_weight, loop_count):
+    limit = args.limit_count
+    depth = 0
+    contig_best_path = os.path.join(args.o, "results", key + ".fasta")
+    contig_all_path = os.path.join(args.o, "contigs_all", key + ".fasta")
+    if os.path.isfile(contig_best_path) == False:
+        with open(contig_best_path, 'w') as out: pass
+        write_contig = False
+        # 检查是哪种扩展名
+        file_extensions = ['.fasta', '.fq']
+        Filted_File_Ext = '.fq'
+        filtered_file_path = None
+        for ext in file_extensions:
+            file_path = os.path.join(args.o,'filtered', key + ext)
+            if os.path.exists(file_path):
+                filtered_file_path = file_path
+                Filted_File_Ext = ext
+                break
+        # 清理文件
+        if os.path.isfile(os.path.join(args.o, 'filtered', key + Filted_File_Ext )) == False:
+            if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+            if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+            return failed_count, key, {"status": "skipped"}
+        # 获取种子列表
+        ref_dict, filtered_dict, reads_dict = {}, {}, {}
+        # 获取最大切片长度，建立reads切片字典
+        slice_len = Make_Reads_Dict([filtered_file_path], reads_dict)
+        if not reads_dict:
+            failed_count += 1
+            if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+            if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+            Write_Print(os.path.join(args.o,  "log.txt"), "No reads were obtained for the", key)
+            result_dict[key] = ["no reads",0]
+            return failed_count, key, {"status": "skipped"}
+        # 构建当前参考序列列表
+        # 如果不指定ka, 估算最大ka，执行动态高精度拼接
+        current_ka = args.ka
+        if not current_ka:
+            ref_list = Get_Ref_List([ref_path_dict[key]])
+            # 获取reads和参考序列的最大重叠长度
+            keys_with_slice_len = {key for key in reads_dict.keys() if len(key) == slice_len}
+            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = 8, max_overlap_limit = min((args.k_max + 2),slice_len-1))
+            if not current_ka:
+                failed_count += 1
+                if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+                if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+                Write_Print(os.path.join(args.o,  "log.txt"), "The reference sequence for the ", key, " may be too distantly related or the sequencing depth may be too low.", sep='')
+                result_dict[key] = {"status":"distant references", "value": 0}
+                return failed_count, key, {"status": "skipped"}
+            # 略微降低一个级别的k提供更好的兼容性
+            current_ka -= 2
+            Write_Print(os.path.join(args.o,  "log.txt"), "Use k=", current_ka, " for assembling the ", key ,".", sep='')
+            
+        Write_Print(os.path.join(args.o,  "log.txt"), 'Assembling', key, loop_count,'/',len(ref_path_dict)," " * 32)
+        
+        # 制作参考序列的kmer字典
+        Make_Kmer_Dict_v6(ref_dict, [ref_path_dict[key]], current_ka, True, True)
+        # 制作用于拼接的kmer字典
+        Make_Assemble_Dict([filtered_file_path], current_ka, filtered_dict, ref_dict)
+        # 缩减filtered_dict，保留大于limit和有位置信息的
+        if limit > 0:
+            filtered_dict = {k: v for k, v in filtered_dict.items() if v[0] > limit or v[1] > 0}
+        # 必须有filtered_dict才能继续
+        if not filtered_dict:
+            failed_count += 1
+            if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+            if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough reads from filter. Estimate depth:', depth ,' '*16)
+            result_dict[key] = {"status":"insufficient reads", "value": 0}
+            return failed_count, key, {"status": "skipped"}
+        # 处理ref_dict，标记不在filtered_dict中的kmer
+        for i in ref_dict:
+            if i not in filtered_dict:
+                ref_dict[i] |= 1023  #前10位全部置1，用来代表没有位置信息
+        # 如果用ref_dict做seed_list，主要考虑参考序列的保守区
+        # 用filtered_dict做seed_list，主要考虑测序的高丰度区
+        # 长度位置在10~990之间，与参考序列方向一致v[2] == 0
+        seed_list = [(k, v[0], v[1]) for k, v in filtered_dict.items() if v[1]>10 and v[1]<990 and not v[2]]
+        list.sort(seed_list, key=itemgetter(1), reverse=True)
+        # 必须有seed_list, 否则意味着跟参考序列差别过大
+        if not seed_list:
+            failed_count += 1
+            if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+            if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough seeds. Estimate depth:', depth ," "*16)
+            result_dict[key] = {"status":"no seed", "value": 0}
+            return failed_count, key, {"status": "skipped"}
+        # 获取seed集合，用来加速集合操作
+        seed_list_len = len(seed_list)
+        seed_set = set([i[0] for i in seed_list])
+        # 获取contigs
+        contigs_all = []
+        contigs_all_low = []
+        contigs_best = []
+        # 获取contigs
+        while len(seed_list) > seed_list_len * 0.66: # 已经耗费了大于三分之一的seed就没必要再做了 
+            # org_contigs: 0序列 1序列的拼接权重 2切片数 3配对的切片数
+            org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = iteration, weight = cur_weight)
+            seed_list = [item for item in seed_list if (item[0] not in kmer_set) and (Reverse_Int(item[0], current_ka) not in kmer_set)]
+            for contig in org_contigs:
+                if contig[2] * slice_len > len(contig[0]): # 起码要有reads高质量切片能够覆盖contig，否则就是错误的拼接
+                    # contigs_all: 0序列 1使用的种子数量 2序列位置 3序列的拼接权重 4切片数 5配对的切片数
+                    contigs_all.append([contig[0], len(seed_set & kmer_set), contig_pos, contig[1], contig[2], contig[3]])
+                else:
+                    contigs_all_low.append([contig[0], len(seed_set & kmer_set), contig_pos, contig[1], contig[2], contig[3]])
+        # 设计规则重新排序，此处使用切片数排序
+        contigs_all.sort(key=lambda x: x[4], reverse=True)
+        # 排序第一位作为 best contig
+        if contigs_all:
+            contigs_best.append(contigs_all[0])
+        if not contigs_best:
+            if contigs_all_low == []:
+                failed_count += 1
+                if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+                if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+                Write_Print(os.path.join(args.o,  "log.txt"), "Insufficient reads coverage, unable to obtain valid contig.")
+                result_dict[key] = {"status":"no contigs", "value":0}
+                return failed_count, key, {"status": "skipped"}
+            else:
+                contigs_all_low.sort(key=lambda x: x[4], reverse=True)
+                contigs_best.append(contigs_all_low[0])
                 with open(contig_best_path, 'w') as out:
                     for x in contigs_best:
                         out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
                         out.write(x[0] + '\n')
                 with open(contig_all_path, 'w') as out:
-                    for x in contigs_all:
+                    for x in contigs_all_low:
                         out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
                         out.write(x[0] + '\n')
                 ref_dict, filtered_dict = {}, {}
-                result_dict[key] = ["success", contigs_best[0][4]]
+                result_dict[key] = {"status":"low quality","value": contigs_best[0][4]}
                 gc.collect()
-        Write_Dict(result_dict, os.path.join(args.o, "result_dict.txt"), False, True)
-        t1 = time.time()
-        Write_Print(os.path.join(args.o,  "log.txt"), '\nTime cost:', t1 - t0, " "*32,'\n') # 拼接所用的时间
+                return failed_count, key, {"status": "skipped"}
+        with open(contig_best_path, 'w') as out:
+            for x in contigs_best:
+                out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
+                out.write(x[0] + '\n')
+        with open(contig_all_path, 'w') as out:
+            for x in contigs_all:
+                out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
+                out.write(x[0] + '\n')
+        ref_dict, filtered_dict = {}, {}
+        result_dict[key] = {"status":"success","value": contigs_best[0][4]}
+        gc.collect()
+    else:
+        return failed_count, key, {"status": "skipped"}
+    return failed_count, key, result_dict[key]
+
+if __name__ == '__main__':
+    if sys.platform.startswith('win'):
+        multiprocessing.freeze_support()
+    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=0)
+    pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=63)
+    pars.add_argument('-k_min', metavar='<int>', type=int, help='''max kmer of assemble''',  default=21)
+    pars.add_argument('-limit_count', metavar='<int>', type=int, help='''limit of kmer count''', required=False, default=2)
+    pars.add_argument('-iteration', metavar='<int>', type=int, help='''iteration''', required=False, default=9192)
+    pars.add_argument('-p', '--processes', metavar='<int>', type=int, help='Number of processes for multiprocessing', default= max(multiprocessing.cpu_count()-1,2))
+    args = pars.parse_args()
+    # try:
+    # 初始化文件夹
+    if not os.path.isdir(os.path.join(args.o, 'results')):
+        os.mkdir(os.path.join(args.o, 'results'))
+    if not os.path.isdir(os.path.join(args.o, 'contigs_all')):
+        os.mkdir(os.path.join(args.o, 'contigs_all'))
+    print("Do not close this window manually, please!")
+
+
+    # 载入参考序列信息
+    if not Get_Ref_Info(args.r, ref_path_list, ref_path_dict, ref_length_dict):
+        Write_Print(os.path.join(args.o,  "log.txt"), 'Invaild reference!')
+        sys.exit(0)
+    t0 = time.time()
+
+    Write_Print(os.path.join(args.o,  "log.txt"), '======================== Assemble =========================')
+    # 定义默认权重值
+    cur_weight, failed_count  = 4, 0
+    result_dict = {}
+
+    pool = multiprocessing.Pool(args.processes)
+    results = []
+
+    for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
+        results.append(pool.apply_async(process_key_value, (args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, cur_weight, loop_count)))
+    pool.close()
+    pool.join()
+
+    # for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
+    #     results.append(process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, cur_weight, loop_count))
+    
+    for result in results:
+        failed_count_update, key_update, result_dict_entry = result if type(result) == tuple else result.get()
+        if result_dict_entry.get("status") != "skipped":
+            failed_count += failed_count_update
+            result_dict[key_update] = [result_dict_entry["status"], result_dict_entry["value"]]
+
+    Write_Dict(result_dict, os.path.join(args.o, "result_dict.txt"), False, True)
+    t1 = time.time()
+    Write_Print(os.path.join(args.o,  "log.txt"), '\nTime cost:', t1 - t0, " "*32,'\n') # 拼接所用的时间
     # except Exception as e:
     #     Write_Print(os.path.join(args.o,  "log.txt"), e)
-  

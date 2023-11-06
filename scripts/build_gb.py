@@ -61,7 +61,7 @@ def split_gb(input_data, out_dir, clean = True):
     for record in records:
         organism = record.annotations.get("organism", "organism").replace(" ", "_").replace(".", "")
         accession = record.annotations.get("accessions", ["accessions"])[0]
-        output_filename = os.path.join(out_dir, str(my_id) + ".gb")
+        output_filename = os.path.join(out_dir, str(my_id) +"#" + organism  +"#" + accession + ".gb")
         with open(output_filename, "w") as output_file:
             SeqIO.write(record, output_file, "genbank")
         my_id += 1

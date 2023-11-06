@@ -1,4 +1,6 @@
-﻿Module Module_Var
+﻿Imports System.Text
+
+Module Module_Var
 #Const TargetOS = "win32"
 #If TargetOS = "linux" Then
     Public TargetOS As String = "linux"
@@ -7,7 +9,7 @@
 #ElseIf TargetOS = "win32" Then
     Public TargetOS As String = "win32"
 #End If
-    Public version As String = "20231005"
+    Public version As String = "20231103"
     Public settings As Dictionary(Of String, String)
     Public currentDirectory As String
     Public refsView As New DataView
@@ -28,6 +30,7 @@
     Public form_config_align As New Config_Align
     Public form_config_plasty As New Config_Plasty
     Public form_config_ags As New Config_AGS
+    Public form_config_cp As New Config_CP
     Public form_config_split As New Config_Split
     'Public form_config_combine As New Config_Combine
     Public form_main As New Main_Form
@@ -42,5 +45,10 @@
     Public data_loaded As Boolean = False
     Public reads_length As Integer = 0
     Public cross_count As Integer = 0
+    Public max_thread As Integer = 8
     Public ref_dir, out_dir, q1, q2, k1, k2 As String
+    Public utf8WithoutBom As New UTF8Encoding(False)
+    Public cpg_down_mode As Integer = 0
+    Public cpg_assemble_mode As Integer = 0
+
 End Module

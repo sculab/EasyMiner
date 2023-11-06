@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="scripts\**" />
+    <EmbeddedResource Remove="scripts\**" />
+    <None Remove="scripts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="easyminer.ico" />
   </ItemGroup>
 

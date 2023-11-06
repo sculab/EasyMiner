@@ -1,11 +1,11 @@
 ﻿Imports System.IO
+Imports System.Net
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Module Module_Function
 	Public Function ReadSettings(filePath As String) As Dictionary(Of String, String)
 		Dim settings As New Dictionary(Of String, String)()
-
 		If File.Exists(filePath) Then
 			Dim lines As String() = File.ReadAllLines(filePath)
-
 			For Each line As String In lines
 				Dim parts As String() = line.Split("="c)
 				If parts.Length = 2 Then
@@ -15,14 +15,12 @@ Module Module_Function
 				End If
 			Next
 		End If
-
 		Return settings
 	End Function
 
 	' 保存设置到文件
 	Public Sub SaveSettings(filePath As String, settings As Dictionary(Of String, String))
 		Dim lines As New List(Of String)()
-
 		For Each kvp As KeyValuePair(Of String, String) In settings
 			Dim line As String = $"{kvp.Key}={kvp.Value}"
 			lines.Add(line)
@@ -54,11 +52,7 @@ Module Module_Function
 			Dim myFileInfo As FileInfo = New FileInfo(target)
 			myFileInfo.IsReadOnly = False
 		End If
-
-
 	End Sub
-
-
 	Public Sub DeleteDir(ByVal aimPath As String)
 		If (aimPath(aimPath.Length - 1) <> Path.DirectorySeparatorChar) Then
 			aimPath += Path.DirectorySeparatorChar
@@ -92,7 +86,6 @@ Module Module_Function
 			MsgBox("Notice: We will use dat (.) as decimal quotation instead of comma (,). We recommand to change your system's number format to English! ")
 		End If
 	End Sub
-
 	Public Sub MergeFiles(ByVal firstFilePath As String, ByVal secondFilePath As String)
 		Try
 			Using firstFileWriter As New StreamWriter(firstFilePath, True) ' "True" appends to the file
@@ -109,14 +102,13 @@ Module Module_Function
 			Console.WriteLine("An error occurred: " & ex.Message)
 		End Try
 	End Sub
-
 	Private Function InlineAssignHelper(Of T)(ByRef target As T, ByVal value As T) As T
 		target = value
 		Return value
 	End Function
-
-
-	Public Sub refresh_file()
+	Public Function refresh_file()
+		Dim length_min As Integer = 1000000000.0
+		Dim length_max As Integer = 0
 		Dim newrow(7) As String
 		Dim seq_count As Integer = 0
 		refsView.AllowNew = True
@@ -147,10 +139,43 @@ Module Module_Function
 				newrow(6) = ""
 				newrow(7) = ""
 				refsView.Item(refsView.Count - 1).Row.ItemArray = newrow
+				If length_min > CInt(ref_length / ref_count) Then
+					length_min = CInt(ref_length / ref_count)
+				End If
+				If length_max < CInt(ref_length / ref_count) Then
+					length_max = CInt(ref_length / ref_count)
+				End If
 			End If
 		Next
 		refsView.AllowNew = False
 		refsView.AllowEdit = True
-		timer_id = 2
+
+		Return {length_min, length_max}
+	End Function
+	Public Function get_genome_data(ByVal Organelle_type As String, ByVal file_type As String, ByVal gb_id As String)
+		Try
+			Dim data_folder As String = currentDirectory + "\Organelle\" + Organelle_type + "_" + file_type + "\" + gb_id.Substring(0, 2) + "\" + gb_id.Substring(0, 5) + "\"
+			If File.Exists(data_folder + gb_id + "." + file_type) = False Then
+				Dim client As New WebClient()
+				Dim source_file As String = "http://sculab.tpddns.cn:3393/YY/Organelle/" + Organelle_type + "_" + file_type + "/" + gb_id.Substring(0, 2) + "/" + gb_id.Substring(0, 5) + "/" + gb_id + "." + file_type
+				My.Computer.FileSystem.CreateDirectory(data_folder)
+				client.DownloadFile(source_file, data_folder + gb_id + "." + file_type)
+			End If
+			Return data_folder + gb_id + "." + file_type
+		Catch ex As Exception
+			Return ""
+		End Try
+	End Function
+	Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)
+		Dim SI_build_ann As New ProcessStartInfo()
+		SI_build_ann.FileName = currentDirectory + "analysis\build_ann.exe" ' 替换为实际的命令行程序路径
+		SI_build_ann.WorkingDirectory = WorkingDirectory ' 替换为实际的运行文件夹路径
+		SI_build_ann.CreateNoWindow = False
+		SI_build_ann.Arguments = "-i1 " + """" + input1 + """" + " -i2 " + """" + input2 + """" + " -gb " + """" + gb_file + """" + " -o " + """" + output_file + """"
+		Dim process_build_ann As Process = New Process()
+		process_build_ann.StartInfo = SI_build_ann
+		process_build_ann.Start()
+		process_build_ann.WaitForExit()
+		process_build_ann.Close()
 	End Sub
 End Module

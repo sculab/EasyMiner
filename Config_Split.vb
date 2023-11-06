@@ -48,12 +48,19 @@ Public Class Config_Split
         SI_build_primer.Arguments += " -soft_boundary " + NumericUpDown4.Value.ToString
         SI_build_primer.Arguments += " -split_only True"
         SI_build_primer.Arguments += " -do_aln False"
+        If CheckBox1.Checked Then
+            SI_build_primer.Arguments += " -intron_only True"
+        Else
+            SI_build_primer.Arguments += " -intron_only False"
+
+        End If
         SI_build_primer.Arguments += " -out_dir " + """" + root_path + "temp" + """"
         Dim process_build_primer As Process = Process.Start(SI_build_primer)
         process_build_primer.WaitForExit()
         process_build_primer.Close()
 
         refresh_file()
+        timer_id = 2
     End Sub
 
     Private Sub Config_Split_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged

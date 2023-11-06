@@ -31,7 +31,7 @@ if __name__ == '__main__':
     for key in ref_length_dict:
         if os.path.isfile(os.path.join(args.o, "filtered",  key + ".fq" )):
             # 需要重过滤的文件放到large_files里面
-            if (ref_reads_count_dict.get(key, 0)/ref_length_dict[key] * reads_length > args.max_depth) and os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= args.max_size:
+            if ((ref_reads_count_dict.get(key, 0)/ref_length_dict[key] * reads_length > args.max_depth * 2) and os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= 1) or os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= args.max_size:
                 Write_Print(os.path.join(args.o,  "log.txt"),key,int(ref_reads_count_dict.get(key, 0)/ref_length_dict[key] * reads_length),os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20)
                 shutil.move(os.path.join(args.o, "filtered",  key + ".fq" ), os.path.join(args.o, 'large_files', key + ".fq" )) 
                 

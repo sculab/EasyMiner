@@ -64,35 +64,6 @@ Public Class Config_AGS
         End If
     End Sub
 
-    'Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-    '    select_class = True
-    '    TextBox1.Text = ListBox1.Text
-    '    select_class = False
-    'End Sub
-
-    'Private Sub TextBox2_TextChanged(sender As Object, e As EventArgs)
-    '    ' 获取用户输入的文本
-    '    Dim userInput As String = TextBox2.Text.ToLower
-    '    If userInput.Length > 1 And select_class = False Then
-    '        ' 清空ComboBox的选项
-    '        ListBox2.Items.Clear()
-
-    '        ' 根据用户输入刷新ComboBox的选项
-    '        For Each item As String In combinedArray
-    '            If item.ToLower().StartsWith(userInput) Then
-    '                ListBox2.Items.Add(item)
-    '            End If
-    '        Next
-
-    '    End If
-    'End Sub
-
-    'Private Sub ListBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox2.SelectedIndexChanged
-    '    select_class = True
-    '    TextBox2.Text = ListBox2.Text
-    '    select_class = False
-    'End Sub
-
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         If ListBox3.Items.Count >= 1 Then
             waiting = True
@@ -111,12 +82,11 @@ Public Class Config_AGS
 
     End Sub
     Public Sub But1()
-        DeleteDir(currentDirectory + "temp\ags_seq\353gene")
+        My.Computer.FileSystem.CreateDirectory(currentDirectory + "temp\ags_seq\353gene")
         Dim include_txt As String = ""
         For Each i As String In ListBox3.Items
             include_txt += " " + i
         Next
-
 
         Dim SI_build_database As New ProcessStartInfo()
         SI_build_database.FileName = currentDirectory + "analysis\build_database.exe" ' 替换为实际的命令行程序路径
@@ -137,6 +107,7 @@ Public Class Config_AGS
                 File.Copy(FileName, root_path + "temp\org_seq\" + System.IO.Path.GetFileNameWithoutExtension(FileName) + ".fasta", True)
             Next
             refresh_file()
+            timer_id = 2
         Else
             MsgBox("Faild to download references!")
         End If

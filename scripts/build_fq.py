@@ -34,7 +34,7 @@ def Reads_Exporter(file_1, file_2, out_path, out_1, out_2,  max_reads = 1e9, ski
     :param file_1: 一端的输入文件
     :param file_2: 另一端的输入文件
     :return: 正常结束返回1
-    """
+    """ 
 
     bytes_type = file_1[-3:].lower() == ".gz" # 判断是否为gz格式
     paired_reads_file = not file_1 == file_2 # 判断是否为单端测序
@@ -117,17 +117,16 @@ def Reads_Exporter(file_1, file_2, out_path, out_1, out_2,  max_reads = 1e9, ski
 
 if __name__ == '__main__':
     pars.add_argument('-i1', metavar='<str>', type=str, help='''input fq/gz -1 files.''', required=False,
-                    default=['D:\working\Develop\EasyMiner Develop\DEMOS\DEMO_03/Cnidium_monnieri.1.fq.gz'], nargs="+")
+                    default=[r'F:\柴胡数据\Bupleurum_boissieuanum_HQ_R1.fq.gz'], nargs="+")
     pars.add_argument('-i2', metavar='<str>', type=str, help='''input fq/gz -2 files.''', required=False,
-                    default=['D:\working\Develop\EasyMiner Develop\DEMOS\DEMO_03/Cnidium_monnieri.2.fq.gz'], nargs="+")
+                    default=[r'F:\柴胡数据\Bupleurum_boissieuanum_HQ_R2.fq.gz'], nargs="+")
     pars.add_argument('-o1', metavar='<str>', type=str, help='''output files.''', required=False,
                     default=['out_1'], nargs="+")
     pars.add_argument('-o2', metavar='<str>', type=str, help='''input fq/gz -2 files.''', required=False,
                     default=['out_2'], nargs="+")
-    pars.add_argument('-m_reads', metavar='<int>', type=int, help='''Maximum number of reads used''', default=2)
+    pars.add_argument('-m_reads', metavar='<int>', type=int, help='''Maximum number of reads used''', default=1E9)
     pars.add_argument('-skip', metavar='<int>', type=int, help='''Skip number of reads used''', default=2)
-    pars.add_argument('-o', metavar='<str>', type=str,
-                    help='''out dir.''', required=False, default="D:/working/Develop/EasyMiner Develop/DEMOS/DEMO_03/results")
+    pars.add_argument('-o', metavar='<str>', type=str, help='''out dir.''', required=False, default=r'E:\\')
     args = pars.parse_args()
     Write_Print(os.path.join(args.o, "log.txt"), "Start outputting reads...")
     if args.i2[0] == "":
