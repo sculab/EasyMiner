@@ -39,25 +39,25 @@ Public Class Config_Split
         process_build_gb.Close()
 
         DeleteDir(root_path + "temp\org_seq")
-        Dim SI_build_primer As New ProcessStartInfo()
-        SI_build_primer.FileName = currentDirectory + "analysis\build_primer.exe" ' 替换为实际的命令行程序路径
-        SI_build_primer.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
-        SI_build_primer.CreateNoWindow = True
-        SI_build_primer.Arguments = "-input out_gb"
-        SI_build_primer.Arguments += " -min_seq_length " + NumericUpDown2.Value.ToString + " -max_seq_length " + NumericUpDown3.Value.ToString
-        SI_build_primer.Arguments += " -soft_boundary " + NumericUpDown4.Value.ToString
-        SI_build_primer.Arguments += " -split_only True"
-        SI_build_primer.Arguments += " -do_aln False"
+        Dim SI_split_genes As New ProcessStartInfo()
+        SI_split_genes.FileName = currentDirectory + "analysis\split_genes.exe" ' 替换为实际的命令行程序路径
+        SI_split_genes.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
+        SI_split_genes.CreateNoWindow = True
+        SI_split_genes.Arguments = "-input out_gb"
+        SI_split_genes.Arguments += " -min_seq_length " + NumericUpDown2.Value.ToString + " -max_seq_length " + NumericUpDown3.Value.ToString
+        SI_split_genes.Arguments += " -soft_boundary " + NumericUpDown4.Value.ToString
+        SI_split_genes.Arguments += " -split_only True"
+        SI_split_genes.Arguments += " -do_aln False"
         If CheckBox1.Checked Then
-            SI_build_primer.Arguments += " -intron_only True"
+            SI_split_genes.Arguments += " -intron_only True"
         Else
-            SI_build_primer.Arguments += " -intron_only False"
+            SI_split_genes.Arguments += " -intron_only False"
 
         End If
-        SI_build_primer.Arguments += " -out_dir " + """" + root_path + "temp" + """"
-        Dim process_build_primer As Process = Process.Start(SI_build_primer)
-        process_build_primer.WaitForExit()
-        process_build_primer.Close()
+        SI_split_genes.Arguments += " -out_dir " + """" + root_path + "temp" + """"
+        Dim process_split_genes As Process = Process.Start(SI_split_genes)
+        process_split_genes.WaitForExit()
+        process_split_genes.Close()
 
         refresh_file()
         timer_id = 2
