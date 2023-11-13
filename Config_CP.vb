@@ -105,12 +105,17 @@ Public Class Config_CP
         DeleteDir(root_path + "temp\org_seq")
         My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
         Dim sw As New StreamWriter(root_path + "temp\temp.gb")
-        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + organelle_type + ".tsv")
+        Dim info_list As String = currentDirectory + "\analysis\info_list_" + organelle_type + ".tsv"
+        Dim total_line As String = GetLineCount(info_list)
+        Dim line_count As Integer = 0
+        Using reader As New StreamReader(info_list)
+
             While Not reader.EndOfStream
                 Dim line_list() As String = reader.ReadLine().Split(vbTab)
+
                 If line_list.Length > 4 Then
                     If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(organelle_type, "gb", line_list(1))
+                        Dim my_gb_file As String = get_genome_data(organelle_type, "gb", line_list(1)).Result
                         If my_gb_file <> "" Then
                             Dim sr As New StreamReader(my_gb_file)
                             sw.Write(sr.ReadToEnd)
@@ -119,11 +124,44 @@ Public Class Config_CP
                     End If
 
                 End If
+                line_count += 1
+                PB_value = line_count / total_line * 100
             End While
         End Using
         sw.Close()
+        PB_value = 0
         current_file = root_path + "temp\temp.gb"
         timer_id = 5
+    End Sub
+    Public Sub get_fasta(ByVal Organelle_type As String)
+        DeleteDir(root_path + "temp\org_seq")
+        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+        DeleteDir(ref_dir)
+        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        out_dir = form_main.TextBox1.Text.Replace("\", "/")
+        Dim info_list As String = currentDirectory + "\analysis\info_list_" + Organelle_type + ".tsv"
+        Dim total_line As String = GetLineCount(info_list)
+        Dim line_count As Integer = 0
+        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + Organelle_type + ".tsv")
+            While Not reader.EndOfStream
+                Dim line_list() As String = reader.ReadLine().Split(vbTab)
+                If line_list.Length > 4 Then
+                    If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
+                        Dim my_gb_file As String = get_genome_data(Organelle_type, "fasta", line_list(1)).Result
+                        If my_gb_file <> "" Then
+                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
+                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
+                        End If
+                    End If
+                End If
+                line_count += 1
+                PB_value = line_count / total_line * 100
+            End While
+        End Using
+        PB_value = 0
+        refresh_file()
+        timer_id = 2
     End Sub
     Public Sub assemble_genome(ByVal organelle_type As String)
         DeleteDir(root_path + "temp\org_seq")
@@ -138,7 +176,7 @@ Public Class Config_CP
                 Dim line_list() As String = reader.ReadLine().Split(vbTab)
                 If line_list.Length > 4 Then
                     If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(organelle_type, "fasta", line_list(1))
+                        Dim my_gb_file As String = get_genome_data(organelle_type, "fasta", line_list(1)).Result
                         If my_gb_file <> "" Then
                             File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
                             safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
@@ -228,7 +266,7 @@ Public Class Config_CP
             End Using
             If best_ref <> "" Then
                 Dim best_gb As String = best_ref.Split("#")(1).Replace(".fasta", "")
-                File.Copy(get_genome_data(organelle_type, "gb", best_gb), currentDirectory + "temp\ref_gb.gb", True)
+                File.Copy(get_genome_data(organelle_type, "gb", best_gb).Result, currentDirectory + "temp\ref_gb.gb", True)
 
                 File.Copy(ref_dir + best_ref + ".fasta", currentDirectory + "temp\" + best_ref + ".fasta", True)
                 File.Move(out_dir + "\filtered\all_1.fq", currentDirectory + "temp\Project1.1.fq", True)
@@ -269,31 +307,7 @@ Public Class Config_CP
         End If
     End Sub
 
-    Public Sub get_fasta(ByVal Organelle_type As String)
 
-        DeleteDir(root_path + "temp\org_seq")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
-        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
-        DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
-        out_dir = form_main.TextBox1.Text.Replace("\", "/")
-        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + Organelle_type + ".tsv")
-            While Not reader.EndOfStream
-                Dim line_list() As String = reader.ReadLine().Split(vbTab)
-                If line_list.Length > 4 Then
-                    If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(Organelle_type, "fasta", line_list(1))
-                        If my_gb_file <> "" Then
-                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
-                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
-                        End If
-                    End If
-                End If
-            End While
-        End Using
-        refresh_file()
-        timer_id = 2
-    End Sub
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         For Each selectedItem As Object In ListBox1.SelectedItems
             If Not ListBox3.Items.Contains(selectedItem) Then

@@ -42,12 +42,11 @@ Partial Class Main_Form
         ToolStripSeparator5 = New ToolStripSeparator()
         全自动ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator4 = New ToolStripSeparator()
+        重构ToolStripMenuItem = New ToolStripMenuItem()
         迭代ToolStripMenuItem = New ToolStripMenuItem()
         迭代ToolStripMenuItem1 = New ToolStripMenuItem()
         重新拼接ToolStripMenuItem = New ToolStripMenuItem()
         多次迭代ToolStripMenuItem = New ToolStripMenuItem()
-        ToolStripSeparator1 = New ToolStripSeparator()
-        序列比对ToolStripMenuItem = New ToolStripMenuItem()
         细胞器ToolStripMenuItem = New ToolStripMenuItem()
         拼接叶绿体基因组ToolStripMenuItem = New ToolStripMenuItem()
         拼接线粒体基因组ToolStripMenuItem = New ToolStripMenuItem()
@@ -58,10 +57,15 @@ Partial Class Main_Form
         过滤拼接ToolStripMenuItem = New ToolStripMenuItem()
         合并结果ToolStripMenuItem = New ToolStripMenuItem()
         合并比对ToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator8 = New ToolStripSeparator()
+        重构序列ToolStripMenuItem = New ToolStripMenuItem()
+        PPDToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator7 = New ToolStripSeparator()
         ToolStripMenuItem2 = New ToolStripMenuItem()
         ToolStripMenuItem3 = New ToolStripMenuItem()
         三方工具ToolStripMenuItem = New ToolStripMenuItem()
+        序列比对ToolStripMenuItem1 = New ToolStripMenuItem()
+        切齐比对ToolStripMenuItem1 = New ToolStripMenuItem()
         DebugToolStripMenuItem = New ToolStripMenuItem()
         DataGridView1 = New DataGridView()
         ContextMenuStrip2 = New ContextMenuStrip(components)
@@ -100,12 +104,15 @@ Partial Class Main_Form
         Label1 = New Label()
         TabControl1 = New TabControl()
         TabPage1 = New TabPage()
+        SplitContainer1 = New SplitContainer()
         ProgressBar1 = New ProgressBar()
         TabPage2 = New TabPage()
         RichTextBox1 = New RichTextBox()
         GroupBox2 = New GroupBox()
-        GroupBox3 = New GroupBox()
         GroupBox4 = New GroupBox()
+        GroupBox3 = New GroupBox()
+        TextBox2 = New TextBox()
+        Label9 = New Label()
         MenuStrip1.SuspendLayout()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         ContextMenuStrip2.SuspendLayout()
@@ -124,10 +131,14 @@ Partial Class Main_Form
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         TabControl1.SuspendLayout()
         TabPage1.SuspendLayout()
+        CType(SplitContainer1, ComponentModel.ISupportInitialize).BeginInit()
+        SplitContainer1.Panel1.SuspendLayout()
+        SplitContainer1.Panel2.SuspendLayout()
+        SplitContainer1.SuspendLayout()
         TabPage2.SuspendLayout()
         GroupBox2.SuspendLayout()
-        GroupBox3.SuspendLayout()
         GroupBox4.SuspendLayout()
+        GroupBox3.SuspendLayout()
         SuspendLayout()
         ' 
         ' MenuStrip1
@@ -201,7 +212,7 @@ Partial Class Main_Form
         ' 
         ' 分析ToolStripMenuItem
         ' 
-        分析ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem, 拼接ToolStripMenuItem, ToolStripSeparator5, 全自动ToolStripMenuItem, ToolStripSeparator4, 迭代ToolStripMenuItem, ToolStripSeparator1, 序列比对ToolStripMenuItem})
+        分析ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem, 拼接ToolStripMenuItem, ToolStripSeparator5, 全自动ToolStripMenuItem, ToolStripSeparator4, 重构ToolStripMenuItem, 迭代ToolStripMenuItem})
         分析ToolStripMenuItem.Name = "分析ToolStripMenuItem"
         分析ToolStripMenuItem.Size = New Size(44, 21)
         分析ToolStripMenuItem.Text = "分析"
@@ -210,7 +221,7 @@ Partial Class Main_Form
         ' 
         过滤ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {从头过滤ToolStripMenuItem, 进一步过滤ToolStripMenuItem})
         过滤ToolStripMenuItem.Name = "过滤ToolStripMenuItem"
-        过滤ToolStripMenuItem.Size = New Size(124, 22)
+        过滤ToolStripMenuItem.Size = New Size(136, 22)
         过滤ToolStripMenuItem.Text = "过滤"
         ' 
         ' 从头过滤ToolStripMenuItem
@@ -228,31 +239,38 @@ Partial Class Main_Form
         ' 拼接ToolStripMenuItem
         ' 
         拼接ToolStripMenuItem.Name = "拼接ToolStripMenuItem"
-        拼接ToolStripMenuItem.Size = New Size(124, 22)
+        拼接ToolStripMenuItem.Size = New Size(136, 22)
         拼接ToolStripMenuItem.Text = "拼接"
         ' 
         ' ToolStripSeparator5
         ' 
         ToolStripSeparator5.Name = "ToolStripSeparator5"
-        ToolStripSeparator5.Size = New Size(121, 6)
+        ToolStripSeparator5.Size = New Size(133, 6)
         ' 
         ' 全自动ToolStripMenuItem
         ' 
         全自动ToolStripMenuItem.Name = "全自动ToolStripMenuItem"
-        全自动ToolStripMenuItem.Size = New Size(124, 22)
+        全自动ToolStripMenuItem.Size = New Size(136, 22)
         全自动ToolStripMenuItem.Text = "自动"
         ' 
         ' ToolStripSeparator4
         ' 
         ToolStripSeparator4.Name = "ToolStripSeparator4"
-        ToolStripSeparator4.Size = New Size(121, 6)
+        ToolStripSeparator4.Size = New Size(133, 6)
+        ' 
+        ' 重构ToolStripMenuItem
+        ' 
+        重构ToolStripMenuItem.Name = "重构ToolStripMenuItem"
+        重构ToolStripMenuItem.Size = New Size(136, 22)
+        重构ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' 迭代ToolStripMenuItem
         ' 
         迭代ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {迭代ToolStripMenuItem1, 重新拼接ToolStripMenuItem, 多次迭代ToolStripMenuItem})
         迭代ToolStripMenuItem.Name = "迭代ToolStripMenuItem"
-        迭代ToolStripMenuItem.Size = New Size(124, 22)
+        迭代ToolStripMenuItem.Size = New Size(136, 22)
         迭代ToolStripMenuItem.Text = "迭代"
+        迭代ToolStripMenuItem.Visible = False
         ' 
         ' 迭代ToolStripMenuItem1
         ' 
@@ -271,17 +289,6 @@ Partial Class Main_Form
         多次迭代ToolStripMenuItem.Name = "多次迭代ToolStripMenuItem"
         多次迭代ToolStripMenuItem.Size = New Size(124, 22)
         多次迭代ToolStripMenuItem.Text = "多次迭代"
-        ' 
-        ' ToolStripSeparator1
-        ' 
-        ToolStripSeparator1.Name = "ToolStripSeparator1"
-        ToolStripSeparator1.Size = New Size(121, 6)
-        ' 
-        ' 序列比对ToolStripMenuItem
-        ' 
-        序列比对ToolStripMenuItem.Name = "序列比对ToolStripMenuItem"
-        序列比对ToolStripMenuItem.Size = New Size(124, 22)
-        序列比对ToolStripMenuItem.Text = "序列比对"
         ' 
         ' 细胞器ToolStripMenuItem
         ' 
@@ -321,7 +328,7 @@ Partial Class Main_Form
         ' 
         ' 批量ToolStripMenuItem1
         ' 
-        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3})
+        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, ToolStripSeparator8, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3})
         批量ToolStripMenuItem1.Name = "批量ToolStripMenuItem1"
         批量ToolStripMenuItem1.Size = New Size(44, 21)
         批量ToolStripMenuItem1.Text = "批量"
@@ -329,60 +336,89 @@ Partial Class Main_Form
         ' 过滤拼接ToolStripMenuItem
         ' 
         过滤拼接ToolStripMenuItem.Name = "过滤拼接ToolStripMenuItem"
-        过滤拼接ToolStripMenuItem.Size = New Size(180, 22)
+        过滤拼接ToolStripMenuItem.Size = New Size(172, 22)
         过滤拼接ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' 合并结果ToolStripMenuItem
         ' 
         合并结果ToolStripMenuItem.Name = "合并结果ToolStripMenuItem"
-        合并结果ToolStripMenuItem.Size = New Size(180, 22)
+        合并结果ToolStripMenuItem.Size = New Size(172, 22)
         合并结果ToolStripMenuItem.Text = "合并结果"
         ' 
         ' 合并比对ToolStripMenuItem
         ' 
         合并比对ToolStripMenuItem.Name = "合并比对ToolStripMenuItem"
-        合并比对ToolStripMenuItem.Size = New Size(180, 22)
+        合并比对ToolStripMenuItem.Size = New Size(172, 22)
         合并比对ToolStripMenuItem.Text = "合并+比对切齐"
+        ' 
+        ' ToolStripSeparator8
+        ' 
+        ToolStripSeparator8.Name = "ToolStripSeparator8"
+        ToolStripSeparator8.Size = New Size(169, 6)
+        ' 
+        ' 重构序列ToolStripMenuItem
+        ' 
+        重构序列ToolStripMenuItem.Name = "重构序列ToolStripMenuItem"
+        重构序列ToolStripMenuItem.Size = New Size(172, 22)
+        重构序列ToolStripMenuItem.Text = "一致性重构"
+        ' 
+        ' PPDToolStripMenuItem
+        ' 
+        PPDToolStripMenuItem.Name = "PPDToolStripMenuItem"
+        PPDToolStripMenuItem.Size = New Size(180, 22)
+        PPDToolStripMenuItem.Text = "旁系同源检测"
         ' 
         ' ToolStripSeparator7
         ' 
         ToolStripSeparator7.Name = "ToolStripSeparator7"
-        ToolStripSeparator7.Size = New Size(177, 6)
+        ToolStripSeparator7.Size = New Size(169, 6)
         ' 
         ' ToolStripMenuItem2
         ' 
         ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        ToolStripMenuItem2.Size = New Size(180, 22)
+        ToolStripMenuItem2.Size = New Size(172, 22)
         ToolStripMenuItem2.Text = "叶绿体基因组"
         ' 
         ' ToolStripMenuItem3
         ' 
         ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        ToolStripMenuItem3.Size = New Size(180, 22)
+        ToolStripMenuItem3.Size = New Size(172, 22)
         ToolStripMenuItem3.Text = "植物线粒体基因组"
         ' 
         ' 三方工具ToolStripMenuItem
         ' 
-        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {DebugToolStripMenuItem})
+        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {序列比对ToolStripMenuItem1, 切齐比对ToolStripMenuItem1, DebugToolStripMenuItem})
         三方工具ToolStripMenuItem.Name = "三方工具ToolStripMenuItem"
-        三方工具ToolStripMenuItem.Size = New Size(59, 21)
-        三方工具ToolStripMenuItem.Text = "Debug"
+        三方工具ToolStripMenuItem.Size = New Size(44, 21)
+        三方工具ToolStripMenuItem.Text = "工具"
+        ' 
+        ' 序列比对ToolStripMenuItem1
+        ' 
+        序列比对ToolStripMenuItem1.Name = "序列比对ToolStripMenuItem1"
+        序列比对ToolStripMenuItem1.Size = New Size(124, 22)
+        序列比对ToolStripMenuItem1.Text = "序列比对"
+        ' 
+        ' 切齐比对ToolStripMenuItem1
+        ' 
+        切齐比对ToolStripMenuItem1.Name = "切齐比对ToolStripMenuItem1"
+        切齐比对ToolStripMenuItem1.Size = New Size(124, 22)
+        切齐比对ToolStripMenuItem1.Text = "切齐比对"
         ' 
         ' DebugToolStripMenuItem
         ' 
         DebugToolStripMenuItem.Name = "DebugToolStripMenuItem"
-        DebugToolStripMenuItem.Size = New Size(180, 22)
+        DebugToolStripMenuItem.Size = New Size(124, 22)
         DebugToolStripMenuItem.Text = "Debug"
         ' 
         ' DataGridView1
         ' 
-        DataGridView1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView1.ContextMenuStrip = ContextMenuStrip2
-        DataGridView1.Location = New Point(3, 3)
+        DataGridView1.Dock = DockStyle.Fill
+        DataGridView1.Location = New Point(0, 0)
         DataGridView1.Name = "DataGridView1"
         DataGridView1.RowTemplate.Height = 25
-        DataGridView1.Size = New Size(603, 280)
+        DataGridView1.Size = New Size(603, 314)
         DataGridView1.TabIndex = 1
         ' 
         ' ContextMenuStrip2
@@ -417,13 +453,13 @@ Partial Class Main_Form
         ' 
         ' DataGridView2
         ' 
-        DataGridView2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         DataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView2.ContextMenuStrip = ContextMenuStrip1
-        DataGridView2.Location = New Point(3, 284)
+        DataGridView2.Dock = DockStyle.Fill
+        DataGridView2.Location = New Point(0, 0)
         DataGridView2.Name = "DataGridView2"
         DataGridView2.RowTemplate.Height = 25
-        DataGridView2.Size = New Size(603, 146)
+        DataGridView2.Size = New Size(603, 118)
         DataGridView2.TabIndex = 2
         ' 
         ' ContextMenuStrip1
@@ -460,7 +496,7 @@ Partial Class Main_Form
         ' Label3
         ' 
         Label3.AutoSize = True
-        Label3.Location = New Point(6, 89)
+        Label3.Location = New Point(8, 89)
         Label3.Name = "Label3"
         Label3.Size = New Size(68, 17)
         Label3.TabIndex = 4
@@ -474,7 +510,7 @@ Partial Class Main_Form
         NumericUpDown10.Name = "NumericUpDown10"
         NumericUpDown10.Size = New Size(54, 23)
         NumericUpDown10.TabIndex = 5
-        NumericUpDown10.Value = New Decimal(New Integer() {2, 0, 0, 0})
+        NumericUpDown10.Value = New Decimal(New Integer() {8, 0, 0, 0})
         ' 
         ' Button2
         ' 
@@ -505,7 +541,7 @@ Partial Class Main_Form
         ' 
         ' NumericUpDown3
         ' 
-        NumericUpDown3.Location = New Point(108, 20)
+        NumericUpDown3.Location = New Point(106, 20)
         NumericUpDown3.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
         NumericUpDown3.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         NumericUpDown3.Name = "NumericUpDown3"
@@ -536,7 +572,7 @@ Partial Class Main_Form
         ' Label8
         ' 
         Label8.AutoSize = True
-        Label8.Location = New Point(6, 53)
+        Label8.Location = New Point(8, 53)
         Label8.Name = "Label8"
         Label8.Size = New Size(92, 17)
         Label8.TabIndex = 19
@@ -565,7 +601,7 @@ Partial Class Main_Form
         ' Label7
         ' 
         Label7.AutoSize = True
-        Label7.Location = New Point(6, 109)
+        Label7.Location = New Point(8, 109)
         Label7.Name = "Label7"
         Label7.Size = New Size(68, 17)
         Label7.TabIndex = 16
@@ -626,7 +662,7 @@ Partial Class Main_Form
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Location = New Point(6, 80)
+        Label5.Location = New Point(8, 80)
         Label5.Name = "Label5"
         Label5.Size = New Size(88, 17)
         Label5.TabIndex = 10
@@ -645,7 +681,7 @@ Partial Class Main_Form
         ' Label4
         ' 
         Label4.AutoSize = True
-        Label4.Location = New Point(6, 24)
+        Label4.Location = New Point(8, 24)
         Label4.Name = "Label4"
         Label4.Size = New Size(68, 17)
         Label4.TabIndex = 8
@@ -653,7 +689,7 @@ Partial Class Main_Form
         ' 
         ' NumericUpDown2
         ' 
-        NumericUpDown2.Location = New Point(108, 78)
+        NumericUpDown2.Location = New Point(106, 78)
         NumericUpDown2.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         NumericUpDown2.Name = "NumericUpDown2"
         NumericUpDown2.Size = New Size(54, 23)
@@ -671,7 +707,7 @@ Partial Class Main_Form
         ' 
         ' NumericUpDown1
         ' 
-        NumericUpDown1.Location = New Point(108, 49)
+        NumericUpDown1.Location = New Point(106, 49)
         NumericUpDown1.Maximum = New Decimal(New Integer() {300, 0, 0, 0})
         NumericUpDown1.Minimum = New Decimal(New Integer() {19, 0, 0, 0})
         NumericUpDown1.Name = "NumericUpDown1"
@@ -696,26 +732,43 @@ Partial Class Main_Form
         TabControl1.Location = New Point(0, 28)
         TabControl1.Name = "TabControl1"
         TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(617, 492)
+        TabControl1.Size = New Size(617, 498)
         TabControl1.TabIndex = 4
         ' 
         ' TabPage1
         ' 
+        TabPage1.Controls.Add(SplitContainer1)
         TabPage1.Controls.Add(ProgressBar1)
-        TabPage1.Controls.Add(DataGridView1)
-        TabPage1.Controls.Add(DataGridView2)
         TabPage1.Location = New Point(4, 26)
         TabPage1.Name = "TabPage1"
         TabPage1.Padding = New Padding(3)
-        TabPage1.Size = New Size(609, 462)
+        TabPage1.Size = New Size(609, 468)
         TabPage1.TabIndex = 0
         TabPage1.Text = "数据"
         TabPage1.UseVisualStyleBackColor = True
         ' 
+        ' SplitContainer1
+        ' 
+        SplitContainer1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        SplitContainer1.Location = New Point(3, 3)
+        SplitContainer1.Name = "SplitContainer1"
+        SplitContainer1.Orientation = Orientation.Horizontal
+        ' 
+        ' SplitContainer1.Panel1
+        ' 
+        SplitContainer1.Panel1.Controls.Add(DataGridView1)
+        ' 
+        ' SplitContainer1.Panel2
+        ' 
+        SplitContainer1.Panel2.Controls.Add(DataGridView2)
+        SplitContainer1.Size = New Size(603, 436)
+        SplitContainer1.SplitterDistance = 314
+        SplitContainer1.TabIndex = 4
+        ' 
         ' ProgressBar1
         ' 
         ProgressBar1.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
-        ProgressBar1.Location = New Point(3, 436)
+        ProgressBar1.Location = New Point(3, 442)
         ProgressBar1.Name = "ProgressBar1"
         ProgressBar1.Size = New Size(603, 23)
         ProgressBar1.TabIndex = 3
@@ -726,7 +779,7 @@ Partial Class Main_Form
         TabPage2.Location = New Point(4, 26)
         TabPage2.Name = "TabPage2"
         TabPage2.Padding = New Padding(3)
-        TabPage2.Size = New Size(609, 462)
+        TabPage2.Size = New Size(609, 468)
         TabPage2.TabIndex = 1
         TabPage2.Text = "日志"
         TabPage2.UseVisualStyleBackColor = True
@@ -737,7 +790,7 @@ Partial Class Main_Form
         RichTextBox1.Location = New Point(3, 3)
         RichTextBox1.Name = "RichTextBox1"
         RichTextBox1.ReadOnly = True
-        RichTextBox1.Size = New Size(603, 456)
+        RichTextBox1.Size = New Size(603, 462)
         RichTextBox1.TabIndex = 0
         RichTextBox1.Text = ""
         ' 
@@ -751,26 +804,12 @@ Partial Class Main_Form
         GroupBox2.Controls.Add(Label2)
         GroupBox2.Controls.Add(CheckBox2)
         GroupBox2.Controls.Add(NumericUpDown2)
-        GroupBox2.Location = New Point(620, 150)
+        GroupBox2.Location = New Point(620, 145)
         GroupBox2.Name = "GroupBox2"
-        GroupBox2.Size = New Size(168, 137)
+        GroupBox2.Size = New Size(168, 130)
         GroupBox2.TabIndex = 5
         GroupBox2.TabStop = False
         GroupBox2.Text = "过滤"
-        ' 
-        ' GroupBox3
-        ' 
-        GroupBox3.Anchor = AnchorStyles.Top Or AnchorStyles.Right
-        GroupBox3.Controls.Add(NumericUpDown9)
-        GroupBox3.Controls.Add(NumericUpDown4)
-        GroupBox3.Controls.Add(Label8)
-        GroupBox3.Controls.Add(Label4)
-        GroupBox3.Location = New Point(620, 293)
-        GroupBox3.Name = "GroupBox3"
-        GroupBox3.Size = New Size(168, 81)
-        GroupBox3.TabIndex = 6
-        GroupBox3.TabStop = False
-        GroupBox3.Text = "进一步过滤"
         ' 
         ' GroupBox4
         ' 
@@ -783,20 +822,52 @@ Partial Class Main_Form
         GroupBox4.Controls.Add(CheckBox1)
         GroupBox4.Controls.Add(NumericUpDown7)
         GroupBox4.Controls.Add(NumericUpDown6)
-        GroupBox4.Location = New Point(620, 380)
+        GroupBox4.Location = New Point(620, 275)
         GroupBox4.Name = "GroupBox4"
-        GroupBox4.Size = New Size(168, 138)
+        GroupBox4.Size = New Size(168, 144)
         GroupBox4.TabIndex = 7
         GroupBox4.TabStop = False
         GroupBox4.Text = "拼接"
+        ' 
+        ' GroupBox3
+        ' 
+        GroupBox3.Controls.Add(TextBox2)
+        GroupBox3.Controls.Add(Label9)
+        GroupBox3.Controls.Add(NumericUpDown4)
+        GroupBox3.Controls.Add(NumericUpDown9)
+        GroupBox3.Controls.Add(Label8)
+        GroupBox3.Controls.Add(Label4)
+        GroupBox3.Location = New Point(620, 413)
+        GroupBox3.Name = "GroupBox3"
+        GroupBox3.Size = New Size(168, 109)
+        GroupBox3.TabIndex = 9
+        GroupBox3.TabStop = False
+        GroupBox3.Text = "其他"
+        ' 
+        ' TextBox2
+        ' 
+        TextBox2.Location = New Point(106, 80)
+        TextBox2.Name = "TextBox2"
+        TextBox2.Size = New Size(54, 23)
+        TextBox2.TabIndex = 22
+        TextBox2.Text = "0.5"
+        ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.Location = New Point(8, 82)
+        Label9.Name = "Label9"
+        Label9.Size = New Size(80, 17)
+        Label9.TabIndex = 21
+        Label9.Text = "一致性阈值："
         ' 
         ' Main_Form
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(794, 522)
-        Controls.Add(GroupBox4)
+        ClientSize = New Size(794, 528)
         Controls.Add(GroupBox3)
+        Controls.Add(GroupBox4)
         Controls.Add(GroupBox2)
         Controls.Add(TabControl1)
         Controls.Add(GroupBox1)
@@ -825,13 +896,17 @@ Partial Class Main_Form
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).EndInit()
         TabControl1.ResumeLayout(False)
         TabPage1.ResumeLayout(False)
+        SplitContainer1.Panel1.ResumeLayout(False)
+        SplitContainer1.Panel2.ResumeLayout(False)
+        CType(SplitContainer1, ComponentModel.ISupportInitialize).EndInit()
+        SplitContainer1.ResumeLayout(False)
         TabPage2.ResumeLayout(False)
         GroupBox2.ResumeLayout(False)
         GroupBox2.PerformLayout()
-        GroupBox3.ResumeLayout(False)
-        GroupBox3.PerformLayout()
         GroupBox4.ResumeLayout(False)
         GroupBox4.PerformLayout()
+        GroupBox3.ResumeLayout(False)
+        GroupBox3.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -879,7 +954,6 @@ Partial Class Main_Form
     Friend WithEvents NumericUpDown3 As NumericUpDown
     Friend WithEvents CheckBox3 As CheckBox
     Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents GroupBox4 As GroupBox
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents 全自动ToolStripMenuItem As ToolStripMenuItem
@@ -925,5 +999,14 @@ Partial Class Main_Form
     Friend WithEvents 反选ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 失败的项ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
-    Friend WithEvents 序列比对ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 序列比对ToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents 切齐比对ToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents SplitContainer1 As SplitContainer
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents 重构ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents Label9 As Label
+    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents 重构序列ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PPDToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -17,7 +17,7 @@ def STR2BOOL(v):  # 在参数中使用逻辑值
     else:
         raise argparse.ArgumentTypeError('Unsupported value encountered.')
 
-pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp_refs")
+pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\org_seq")
 pars.add_argument('-q1', metavar='<str>', type=str, help='''input fq/gz -1 files.''', required=False,
                     default=[r"F:\yxy-Easyminer数据\Ara2m_1.1.fq"], nargs="+")
 pars.add_argument('-q2', metavar='<str>', type=str, help='''input fq/gz -2 files.''', required=False,

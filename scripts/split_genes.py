@@ -137,11 +137,11 @@ def split_sequences(input_file, output_dir, sequence_length = 2000, step= 1800):
     for i in range(num_fragments):
         start = i * step
         end = start + sequence_length
-        output_file = f"{output_dir}/{start+1}-{end}.fasta"
-        gene_names.append(f"{start+1}-{end}")
+        output_file = f"{output_dir}/{start+1}_{end}.fasta"
+        gene_names.append(f"{start+1}_{end}")
         with open(output_file, 'w') as out_f:
             for sequence_name, sequence_content in sequences.items():
-                sequence_name= sequence_name.replace(" ","_").replace(".","_")
+                sequence_name= sequence_name.replace(" ","_").replace(".","_").replace("-","_")
                 fragment = sequence_content[start:end]
                 if fragment:
                     out_f.write(f"{sequence_name}\n{fragment}\n")
@@ -238,7 +238,7 @@ class Extract_reference():
             gene_name = os.path.splitext(os.path.basename(absolute_path))[0]
 
             # 写入原始序列
-            file_name_with_ext = gene_name + '.fasta'
+            file_name_with_ext = gene_name.replace(".","_").replace(" ","_").replace("-","_") + '.fasta'
             seq_file = os.path.join(data_path,"org_seq",file_name_with_ext)
             if not os.path.isdir(os.path.join(data_path,"org_seq")):
                 os.makedirs(os.path.join(data_path,"org_seq"))

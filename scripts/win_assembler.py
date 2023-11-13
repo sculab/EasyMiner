@@ -4,7 +4,6 @@ import gc
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from overlap import calculate_overlap_wrapper
-import multiprocessing
 import numpy as np
 from Bio import SeqIO
 from win_filter import * 
@@ -92,14 +91,16 @@ def Make_Assemble_Dict(file_list, kmer_size, _kmer_dict, _ref_dict, Filted_File_
                         _kmer_dict[kmer][0] += 1
                     else:
                         if kmer in _ref_dict: # kmer的位置
-                            if  _ref_dict[kmer] & 1073741824: # 判断是否为反向互补的序列
-                                temp_pos = 1000 - (_ref_dict[kmer] & 1023)
-                                temp_list = [1, temp_pos, 1] # 标记为反向的的kmer
+                            temp_int = int(_ref_dict[kmer])
+                            temp_depth = (temp_int >> 10) & ((1<<20) -1)
+                            if  temp_int & 1073741824: # 判断是否为反向互补的序列
+                                temp_pos = 1000 - (temp_int & 1023)
+                                temp_list = [1, temp_pos, 1, temp_depth] # 标记为反向的的kmer
                             else: 
-                                temp_pos = _ref_dict[kmer] & 1023
-                                temp_list = [1, temp_pos, 0] 
+                                temp_pos = temp_int & 1023
+                                temp_list = [1, temp_pos, 0, temp_depth] 
                         else:
-                            temp_list = [1, 1023, 1] 
+                            temp_list = [1, 1023, 1, 0] 
                         _kmer_dict[kmer] = temp_list
         infile.close()
     return kmer_count
@@ -275,7 +276,8 @@ def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024, weight = 4):
     _pos, node_distance, best_kmc_sum  = 0, 0, 0
     MASK = (1 << ((kmer_size << 1) - 2)) - 1
     while True and iteration:
-        node = [[i, _dict[i][1], _dict[i][0] << Get_Weight(_pos, _dict[i][1], weight), ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
+        #node = [[i, _dict[i][1], _dict[i][0] << Get_Weight(_pos, _dict[i][1], weight), ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
+        node = [[i, _dict[i][1], _dict[i][0] + _dict[i][2], ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
         node.sort(key = itemgetter(2), reverse=True)
         while node and node[0][0] in temp_list: node.pop(0) 
         if not node: 
@@ -302,7 +304,7 @@ def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024, weight = 4):
         cur_kmc.append(node[0][2])
         cur_seq.append(node[0][0]&3)
         node_distance += 1
-    return contigs, kmer_list, pos_list, best_kmc_sum
+    return contigs, kmer_list, pos_list, int(best_kmc_sum)
 
 def count_duplicates(numbers):
     count_dict = {}
@@ -390,9 +392,9 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
     processed_contigs = []
     if not contigs_1_16: contigs_1_16.append(['',0,0])
     if not contigs_2_16: contigs_2_16.append(['',0,0])
-    # 对最多前4种组合计算paired数量
-    for l in contigs_2_16[:2]:
-        for r in contigs_1_16[:2]:
+    # 对最多前9种组合计算paired数量
+    for l in contigs_2_16[:3]:
+        for r in contigs_1_16[:3]:
             c = Reverse_Complement_ACGT(l[0]) + Int_To_Seq(seed, kmer_size) + r[0]
             c_weight = l[1] + r[1]
             contig_len = len(c)
@@ -406,8 +408,6 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
                         paired_count.append(_reads_dict[slice_str][1])
             # 序列，序列的拼接权重，切片数，配对的切片数
             processed_contigs.append([c, c_weight, r_count, count_duplicates(paired_count)])
-    # max_paired = max(x[3] for x in processed_contigs)
-    # processed_contigs = [x for x in processed_contigs if x[3] >= max_paired * 0.9 ]
     return processed_contigs, set(kmer_list_1 + kmer_list_2), contig_pos
 
 def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, iteration, cur_weight, loop_count):
@@ -469,9 +469,22 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         Make_Kmer_Dict_v6(ref_dict, [ref_path_dict[key]], current_ka, True, True)
         # 制作用于拼接的kmer字典
         Make_Assemble_Dict([filtered_file_path], current_ka, filtered_dict, ref_dict)
-        # 缩减filtered_dict，保留大于limit和有位置信息的
+        # 缩减filtered_dict，保留大于limit和有深度信息的
         if limit > 0:
-            filtered_dict = {k: v for k, v in filtered_dict.items() if v[0] > limit or v[1] > 0}
+            filtered_dict = {k: v for k, v in filtered_dict.items() if v[0] > limit or v[3] > 0}
+        # 纠正深度上限, 获取参考序列的深度修正权重
+        temp_quar = Quartile([v[0] for v in filtered_dict.values()])
+        depth_upper = int((temp_quar[2] - temp_quar[0]) * 1.5 + temp_quar[2])
+        for k, v in list(filtered_dict.items()): 
+            if v[0] > depth_upper:
+                if v[3]:
+                    filtered_dict[k] = [depth_upper] + v[1:3] + [int(len(ref_list)/(abs(v[3] - len(ref_list)) + 1) * depth_upper)]
+                else:
+                    filtered_dict[k] = [depth_upper] + v[1:]
+            else:
+                if v[3]:
+                    filtered_dict[k] = v[:3] + [int(len(ref_list)/(abs(v[3] - len(ref_list)) + 1) * depth_upper)]
+
         # 必须有filtered_dict才能继续
         if not filtered_dict:
             failed_count += 1
@@ -484,11 +497,11 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         for i in ref_dict:
             if i not in filtered_dict:
                 ref_dict[i] |= 1023  #前10位全部置1，用来代表没有位置信息
-        # 如果用ref_dict做seed_list，主要考虑参考序列的保守区
-        # 用filtered_dict做seed_list，主要考虑测序的高丰度区
-        # 长度位置在10~990之间，与参考序列方向一致v[2] == 0
-        seed_list = [(k, v[0], v[1]) for k, v in filtered_dict.items() if v[1]>10 and v[1]<990 and not v[2]]
-        list.sort(seed_list, key=itemgetter(1), reverse=True)
+        
+        # 在每个参考序列中出现且只出现一次的kmer优先作为种子
+        # 长度位置在1~999之间，与参考序列方向一致v[2] == 0
+        seed_list = [(k, v[0], v[1], v[3]) for k, v in filtered_dict.items() if v[1]>1 and v[1]<999 and not v[2]]
+        list.sort(seed_list, key = itemgetter(3), reverse=True)
         # 必须有seed_list, 否则意味着跟参考序列差别过大
         if not seed_list:
             failed_count += 1
@@ -505,7 +518,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         contigs_all_low = []
         contigs_best = []
         # 获取contigs
-        while len(seed_list) > seed_list_len * 0.66: # 已经耗费了大于三分之一的seed就没必要再做了 
+        while len(seed_list) > seed_list_len * 0.5: # 已经耗费了大于一半的seed就没必要再做了 
             # org_contigs: 0序列 1序列的拼接权重 2切片数 3配对的切片数
             org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = iteration, weight = cur_weight)
             seed_list = [item for item in seed_list if (item[0] not in kmer_set) and (Reverse_Int(item[0], current_ka) not in kmer_set)]
@@ -608,5 +621,3 @@ if __name__ == '__main__':
     Write_Dict(result_dict, os.path.join(args.o, "result_dict.txt"), False, True)
     t1 = time.time()
     Write_Print(os.path.join(args.o,  "log.txt"), '\nTime cost:', t1 - t0, " "*32,'\n') # 拼接所用的时间
-    # except Exception as e:
-    #     Write_Print(os.path.join(args.o,  "log.txt"), e)

@@ -10,7 +10,7 @@ def parse_args():
     return parser.parse_args()
 
 def save_fasta(record, output_dir):
-    filename = os.path.join(output_dir, f"{str(record.id).replace('.','_').replace(' ','_').replace('__','_')}.fasta")
+    filename = os.path.join(output_dir, f"{str(record.id).replace('.','_').replace(' ','_').replace('__','_').replace('-', '_')}.fasta")
     record.seq = record.seq.ungap()  # Remove gaps if present
     with open(filename, "w") as output_handle:
         SeqIO.write(record, output_handle, "fasta-2line")
