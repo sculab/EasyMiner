@@ -808,42 +808,6 @@ Public Class Main_Form
         End If
     End Sub
 
-    'Private Sub 过深的ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过深的ToolStripMenuItem.Click
-    '    Dim sel_count As Integer = 0
-    '    Dim max_depth As Integer = InputBox("Max Depth", "", 256)
-    '    For i As Integer = 1 To refsView.Count
-    '        If DataGridView1.Rows(i - 1).Cells(5).FormattedValue <> "" Then
-    '            If CInt(DataGridView1.Rows(i - 1).Cells(5).FormattedValue) > max_depth Then
-    '                DataGridView1.Rows(i - 1).Cells(0).Value = True
-    '                sel_count += 1
-    '            End If
-    '        End If
-    '    Next
-    '    MsgBox(sel_count.ToString + " were selected!")
-    '    DataGridView1.RefreshEdit()
-    'End Sub
-
-
-
-    'Private Sub 过浅的项ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过浅的项ToolStripMenuItem.Click
-    '    Dim sel_count As Integer = 0
-    '    Dim min_depth As Integer = InputBox("Min Depth", "", 64)
-    '    For i As Integer = 1 To refsView.Count
-    '        If DataGridView1.Rows(i - 1).Cells(5).FormattedValue <> "" Then
-    '            If CInt(DataGridView1.Rows(i - 1).Cells(5).FormattedValue) < min_depth Then
-    '                DataGridView1.Rows(i - 1).Cells(0).Value = True
-    '                sel_count += 1
-    '            End If
-    '        Else
-    '            DataGridView1.Rows(i - 1).Cells(0).Value = True
-    '        End If
-    '    Next
-    '    MsgBox(sel_count.ToString + " were selected!")
-    '    DataGridView1.RefreshEdit()
-    'End Sub
-
-
-
 
     Private Sub 迭代ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 迭代ToolStripMenuItem.Click
 
@@ -1230,8 +1194,15 @@ Public Class Main_Form
                     MsgBox("Please do not save to the root directory!")
                 Else
 
-                    Dim reads_skip As String = InputBox("Number of Reads to SKIP (Million)", "SKIP", 0)
-                    Dim reads_keep As String = InputBox("Number of Reads to KEEP (Million)", "KEEP", 0)
+                    Dim my_input As String = InputBox("Number of Reads to SKIP (Million)", "SKIP", 0)
+                    Dim reads_skip, reads_keep As Integer
+                    If Not Integer.TryParse(my_input, reads_skip) Then
+                        Exit Sub
+                    End If
+                    my_input = InputBox("Number of Reads to KEEP (Million)", "KEEP", 10)
+                    If Not Integer.TryParse(my_input, reads_keep) Then
+                        Exit Sub
+                    End If
                     Dim th1 As New Threading.Thread(AddressOf export_seq)
                     th1.Start({reads_skip, reads_keep, opendialog.SelectedPath})
                 End If
@@ -1257,8 +1228,8 @@ Public Class Main_Form
                 SI_build_fq.Arguments += " -o " + """" + para(2) + """"
                 SI_build_fq.Arguments += " -o1 " + DataGridView2.Rows(i - 1).Cells(1).FormattedValue.ToString + "_" + folder_name + ".1"
                 SI_build_fq.Arguments += " -o2 " + DataGridView2.Rows(i - 1).Cells(1).FormattedValue.ToString + "_" + folder_name + ".2"
-                SI_build_fq.Arguments += " -skip " + para(0)
-                SI_build_fq.Arguments += " -m_reads " + para(1)
+                SI_build_fq.Arguments += " -skip " + para(0).ToString
+                SI_build_fq.Arguments += " -m_reads " + para(1).ToString
                 Dim process_build_fq As Process = Process.Start(SI_build_fq)
                 process_build_fq.WaitForExit()
                 process_build_fq.Close()
@@ -1333,19 +1304,6 @@ Public Class Main_Form
         mydata_Dataset.Tables("Data Table").Clear()
         DataGridView2.DataSource = Nothing
     End Sub
-
-    'Private Sub 过短的项ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过短的项ToolStripMenuItem.Click
-    '    Dim sel_count As Integer = 0
-    '    Dim Length_Ratio As Single = InputBox("Ass. length / Ref. length", "", 0.75)
-    '    For i As Integer = 1 To refsView.Count
-    '        If DataGridView1.Rows(i - 1).Cells(7).Value / DataGridView1.Rows(i - 1).Cells(4).Value < Length_Ratio Then
-    '            DataGridView1.Rows(i - 1).Cells(0).Value = True
-    '            sel_count += 1
-    '        End If
-    '    Next
-    '    MsgBox(sel_count.ToString + " were selected!")
-    '    DataGridView1.RefreshEdit()
-    'End Sub
 
     Private Sub 迭代ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 迭代ToolStripMenuItem1.Click
         If TextBox1.Text <> "" Then
@@ -1446,7 +1404,11 @@ Public Class Main_Form
 
     Private Sub 多次迭代ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 多次迭代ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
-            Dim iterations_times As String = InputBox("Please enter the number of iterations:", "Iterations", 1)
+            Dim my_input As String = InputBox("Please enter the number of iterations:", "Iterations", 1)
+            Dim iterations_times As Integer
+            If Not Integer.TryParse(my_input, iterations_times) Then
+                Exit Sub
+            End If
             timer_id = 4
             PB_value = 0
             Dim th1 As New Threading.Thread(AddressOf do_iteration)
@@ -2235,8 +2197,11 @@ Public Class Main_Form
             out_dir = TextBox1.Text
             timer_id = 4
             PB_value = 0
-            Dim con_level As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
-
+            Dim my_input As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
+            Dim con_level As Integer
+            If Not Integer.TryParse(my_input, con_level) Then
+                Exit Sub
+            End If
             Dim th1 As New Thread(AddressOf do_consensus)
             th1.Start(con_level)
         Else
@@ -2303,7 +2268,11 @@ Public Class Main_Form
         DataGridView1.EndEdit()
         timer_id = 4
         PB_value = 0
-        Dim con_level As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
+        Dim my_input As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
+        Dim con_level As Integer
+        If Not Integer.TryParse(my_input, con_level) Then
+            Exit Sub
+        End If
         Dim th1 As New Thread(AddressOf batch_consensus)
         th1.Start(con_level)
     End Sub
@@ -2451,24 +2420,34 @@ Public Class Main_Form
 
     Private Sub PPDToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PPDToolStripMenuItem.Click
         If File.Exists(Path.Combine(TextBox1.Text, "TargetSequences.fasta")) And File.Exists(Path.Combine(TextBox1.Text, "namelist.txt")) Then
+
             If File.Exists(Path.Combine(TextBox1.Text, "outgroup.txt")) Then
-                Dim result As DialogResult = MessageBox.Show("Need to choose a different outgroup? If you want to start the analysis right away, click 'No'!", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                If result = DialogResult.Yes Then
-                    Dim og_id As Integer = InputBox("Input ID of Outgroup", "ID of Outgroup", seqsView.Count)
+                    Dim result As DialogResult = MessageBox.Show("Need to choose a different outgroup? If you want to start the analysis right away, click 'No'!", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    If result = DialogResult.Yes Then
+                    Dim my_input As String = InputBox("Input ID of Outgroup", "ID of Outgroup", seqsView.Count)
+                    Dim og_id As Integer
+                    If Not Integer.TryParse(my_input, og_id) Then
+                        Exit Sub
+                    End If
+
                     Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(3).Value.ToString))
+                        folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                        Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
+                        sw_og.WriteLine(folder_name)
+                        sw_og.Close()
+                    End If
+                Else
+                Dim my_input As String = InputBox("Input ID of Outgroup", "ID of Outgroup", seqsView.Count)
+                Dim og_id As Integer
+                If Not Integer.TryParse(my_input, og_id) Then
+                    Exit Sub
+                End If
+                Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(3).Value.ToString))
                     folder_name = folder_name.Replace("-", "_").Replace(":", "_")
                     Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
                     sw_og.WriteLine(folder_name)
                     sw_og.Close()
                 End If
-            Else
-                Dim og_id As Integer = InputBox("Input ID of Outgroup", "ID of Outgroup", seqsView.Count)
-                Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(3).Value.ToString))
-                folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
-                sw_og.WriteLine(folder_name)
-                sw_og.Close()
-            End If
 
             If My.Computer.FileSystem.DirectoryExists(Path.Combine(TextBox1.Text, "PPD")) Then
                 '    If Directory.GetFileSystemEntries(Path.Combine(TextBox1.Text, "PPD")).Length > 0 Then
@@ -2575,10 +2554,15 @@ Public Class Main_Form
                     MergeFiles(Path.Combine(ref_dir, "barcode.fasta"), Path.Combine(currentDirectory, "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
                 End If
             Next
-            Dim word_size As String = InputBox("Input accuracy level: 1-8", "Input", 4)
-            If Int(word_size) >= 1 And Int(word_size) <= 8 Then
+            Dim my_input As String = InputBox("Input accuracy level: 1-8", "Input", 4)
+            Dim word_size As Integer
+            If Not Integer.TryParse(my_input, word_size) Then
+                MsgBox("Please enter the correct number!")
+                Exit Sub
+            End If
+            If word_size >= 1 And word_size <= 8 Then
                 Dim th1 As New Thread(AddressOf do_split_barcode)
-                th1.Start(Int(word_size))
+                th1.Start(word_size)
             Else
                 MsgBox("Please enter the correct number!")
             End If
