@@ -81,13 +81,13 @@ def parsecigar(cigarstring, seq, pos_ref):
 def main():
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-i", "--input", action="store", dest="filename", default="aln.sam",
+    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"E:\run\results\barcode3.sam",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
-    parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.75",
+    parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75",
                         help="List of consensus thresold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.75")
     parser.add_argument("-n", action="store", dest="n", type=int, default=0,
                         help="Split FASTA output sequences every n nucleotides, default=do not split sequence")
-    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default="./",
+    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"E:\run\results",
                         help="Name of output folder, default=same folder as input")
     parser.add_argument("-p", "--prefix", action="store", dest="prefix", default="",
                         help="Prefix for output file name, default=input filename without .sam extension")
@@ -113,15 +113,14 @@ def main():
 
     # Prefix will be input filename without extension
     if args.prefix == "":
-        prefix = "".join(args.filename.split("/")[-1]).split(".")[0]
+        prefix = "".join(args.filename.replace("\\","/").split("/")[-1]).split(".")[0]
     else:
         prefix = args.prefix
 
     # Create output folder if it doesn't exist
-    outfolder = args.outfolder.rstrip("/")
+    outfolder = args.outfolder
     if not os.path.exists(outfolder):
         os.makedirs(outfolder)
-    outfolder += "/"
 
     min_depth = args.min_depth
 
@@ -210,7 +209,7 @@ def main():
                                 print(refname,pos_ref,nuc,sam_record)
                     else:
                         for nuc in seqout:
-                            if nuc != "-":
+                            if nuc != "-" and nuc != "*":
                                 sequences[refname][pos_ref][nuc] += 1
                             pos_ref += 1
 
@@ -399,7 +398,7 @@ def main():
     for reference in fastas:
         #outnameprefix = reference+"__"+prefix
         outnameprefix = prefix
-        outfile = open(outfolder+outnameprefix+".fasta", "w")
+        outfile = open(os.path.join(outfolder, outnameprefix+".fasta"), "w")
         if nchar == 0:
             outfile.write("\n".join([i[0]+"\n"+i[1]
                           for i in fastas[reference]])+"\n")

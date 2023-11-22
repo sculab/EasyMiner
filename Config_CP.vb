@@ -79,8 +79,7 @@ Public Class Config_CP
                         Dim th1 As New Threading.Thread(AddressOf get_gb)
                         th1.Start("mito_plant")
                     End If
-
-                Case 3 '拼接线粒体
+                Case 3 '拼接植物线粒体
                     refs_type = "fasta"
                     Dim th1 As New Threading.Thread(AddressOf assemble_genome)
                     th1.Start("mito_plant")
@@ -89,10 +88,32 @@ Public Class Config_CP
                     refs_type = "fasta"
                     Dim th1 As New Threading.Thread(AddressOf assemble_genome)
                     th1.Start("cp")
-                Case 5 '批量线粒体
+                Case 5 '批量植物线粒体
                     refs_type = "fasta"
                     Dim th1 As New Threading.Thread(AddressOf assemble_genome)
                     th1.Start("mito_plant")
+                Case 6 'AGS353
+                    refs_type = "fasta"
+                    Dim th1 As New Threading.Thread(AddressOf get_AGS353)
+                    th1.Start("AGS353")
+                Case 7 '获取哺乳线粒体
+                    If CheckBox1.Checked Then
+                        refs_type = "fasta"
+                        Dim th1 As New Threading.Thread(AddressOf get_fasta)
+                        th1.Start("mito")
+                    Else
+                        refs_type = "gb"
+                        Dim th1 As New Threading.Thread(AddressOf get_gb)
+                        th1.Start("mito")
+                    End If
+                Case 8 '拼接哺乳线粒体
+                    refs_type = "fasta"
+                    Dim th1 As New Threading.Thread(AddressOf assemble_genome)
+                    th1.Start("mito")
+                Case 9 '批量哺乳线粒体
+                    refs_type = "fasta"
+                    Dim th1 As New Threading.Thread(AddressOf assemble_genome)
+                    th1.Start("mito")
             End Select
 
             Me.Hide()
@@ -101,11 +122,11 @@ Public Class Config_CP
         End If
 
     End Sub
-    Public Sub get_gb(ByVal organelle_type As String)
+    Public Sub get_gb(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
         My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
         Dim sw As New StreamWriter(root_path + "temp\temp.gb")
-        Dim info_list As String = currentDirectory + "\analysis\info_list_" + organelle_type + ".tsv"
+        Dim info_list As String = currentDirectory + "\analysis\info_list_" + database_type + ".tsv"
         Dim total_line As String = GetLineCount(info_list)
         Dim line_count As Integer = 0
         Using reader As New StreamReader(info_list)
@@ -115,7 +136,7 @@ Public Class Config_CP
 
                 If line_list.Length > 4 Then
                     If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(organelle_type, "gb", line_list(1)).Result
+                        Dim my_gb_file As String = get_genome_data(database_type, "gb", line_list(1)).Result
                         If my_gb_file <> "" Then
                             Dim sr As New StreamReader(my_gb_file)
                             sw.Write(sr.ReadToEnd)
@@ -133,25 +154,25 @@ Public Class Config_CP
         current_file = root_path + "temp\temp.gb"
         timer_id = 5
     End Sub
-    Public Sub get_fasta(ByVal Organelle_type As String)
+    Public Sub get_fasta(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
         My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
         out_dir = form_main.TextBox1.Text.Replace("\", "/")
-        Dim info_list As String = currentDirectory + "\analysis\info_list_" + Organelle_type + ".tsv"
+        Dim info_list As String = currentDirectory + "\analysis\info_list_" + database_type + ".tsv"
         Dim total_line As String = GetLineCount(info_list)
         Dim line_count As Integer = 0
-        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + Organelle_type + ".tsv")
+        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + database_type + ".tsv")
             While Not reader.EndOfStream
                 Dim line_list() As String = reader.ReadLine().Split(vbTab)
                 If line_list.Length > 4 Then
                     If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(Organelle_type, "fasta", line_list(1)).Result
+                        Dim my_gb_file As String = get_genome_data(database_type, "fasta", line_list(1)).Result
                         If my_gb_file <> "" Then
-                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
-                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
+                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + line_list(1) + ".fasta", True)
+                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + line_list(1) + ".fasta", True)
                         End If
                     End If
                 End If
@@ -163,7 +184,54 @@ Public Class Config_CP
         refresh_file()
         timer_id = 2
     End Sub
-    Public Sub assemble_genome(ByVal organelle_type As String)
+    Public Sub get_AGS353(ByVal database_type As String)
+        DeleteDir(root_path + "temp\org_seq")
+        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+        DeleteDir(root_path + "temp\AGS353")
+        My.Computer.FileSystem.CreateDirectory(root_path + "temp\AGS353")
+        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+        DeleteDir(ref_dir)
+        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        out_dir = form_main.TextBox1.Text.Replace("\", "/")
+        Dim info_list As String = currentDirectory + "\analysis\info_list_" + database_type + ".tsv"
+        Dim total_line As String = GetLineCount(info_list)
+        Dim line_count As Integer = 0
+        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + database_type + ".tsv")
+            While Not reader.EndOfStream
+                Dim line_list() As String = reader.ReadLine().Split(vbTab)
+                If line_list.Length >= 4 Then
+                    If ListBox3.Items.Contains(line_list(2)) Then
+                        Dim my_gb_file As String = get_genome_data(database_type, "fasta", line_list(1)).Result
+                        If my_gb_file <> "" Then
+                            File.Copy(my_gb_file, root_path + "temp\AGS353\" + line_list(1) + ".fasta", True)
+
+
+                            'File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
+                            'safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
+                        End If
+                    End If
+                End If
+                line_count += 1
+                PB_value = line_count / total_line * 100
+            End While
+        End Using
+
+        Dim SI_build_database As New ProcessStartInfo()
+        SI_build_database.FileName = currentDirectory + "analysis\build_database.exe" ' 替换为实际的命令行程序路径
+        SI_build_database.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+        SI_build_database.CreateNoWindow = False
+        SI_build_database.Arguments = "-i " + """" + currentDirectory + "temp\AGS353" + """"
+        SI_build_database.Arguments += " -o " + """" + currentDirectory + "temp\org_seq" + """"
+        'SI_build_database.Arguments += " -exclude " + exclude_txt
+        Dim process_build_gb As Process = Process.Start(SI_build_database)
+        process_build_gb.WaitForExit()
+        process_build_gb.Close()
+
+        PB_value = 0
+        refresh_file()
+        timer_id = 2
+    End Sub
+    Public Sub assemble_genome(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
         My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
@@ -171,29 +239,32 @@ Public Class Config_CP
         My.Computer.FileSystem.CreateDirectory(ref_dir)
         out_dir = form_main.TextBox1.Text.Replace("\", "/")
 
-        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + organelle_type + ".tsv")
+        Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + database_type + ".tsv")
             While Not reader.EndOfStream
                 Dim line_list() As String = reader.ReadLine().Split(vbTab)
                 If line_list.Length > 4 Then
                     If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(organelle_type, "fasta", line_list(1)).Result
+                        Dim my_gb_file As String = get_genome_data(database_type, "fasta", line_list(1)).Result
                         If my_gb_file <> "" Then
-                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
-                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "") + "#" + line_list(1) + ".fasta", True)
+                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + line_list(1) + ".fasta", True)
+                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + line_list(1) + ".fasta", True)
                         End If
                     End If
                 End If
             End While
         End Using
         Dim length_range() As Integer = refresh_file()
-        If cpg_down_mode = 4 Or cpg_down_mode = 5 Then
+        If cpg_down_mode = 4 Or cpg_down_mode = 5 Or cpg_down_mode = 9 Then
             cpg_assemble_mode = -1
             form_config_plasty.TextBox1.Text = (CInt(length_range(0) * 0.8 / 1000) * 1000).ToString + "-" + (CInt(length_range(1) * 1.2 / 1000) * 1000).ToString
-            form_config_plasty.TextBox5.Text = "Gennome_" + organelle_type
+            form_config_plasty.TextBox5.Text = "Gennome_" + database_type
             form_config_plasty.ComboBox1.Enabled = False
             form_config_plasty.Button2.Enabled = False
             If cpg_down_mode = 4 Then
                 form_config_plasty.ComboBox1.SelectedIndex = 0
+                form_config_plasty.TextBox3.Text = ""
+            ElseIf cpg_down_mode = 9 Then
+                form_config_plasty.ComboBox1.SelectedIndex = 1
                 form_config_plasty.TextBox3.Text = ""
             Else
                 form_config_plasty.ComboBox1.SelectedIndex = 2
@@ -236,11 +307,11 @@ Public Class Config_CP
         SI_filter.Arguments += " -q1" + q1 + " -q2" + q2
         SI_filter.Arguments += " -o " + """" + out_dir + """"
         SI_filter.Arguments += " -kf 16"
-        SI_filter.Arguments += " -s " + form_main.NumericUpDown2.Value.ToString
-        SI_filter.Arguments += " -gr " + form_main.CheckBox2.Checked.ToString
+        SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
+        SI_filter.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
         SI_filter.Arguments += " -lkd kmer_dict_k16.dict"
-        If form_main.CheckBox3.Checked Then
-            SI_filter.Arguments += " -m_reads " + form_main.NumericUpDown3.Value.ToString
+        If form_config_basic.CheckBox3.Checked Then
+            SI_filter.Arguments += " -m_reads " + form_config_basic.NumericUpDown3.Value.ToString
         Else
             SI_filter.Arguments += " -m_reads 1000000000"
         End If
@@ -266,7 +337,7 @@ Public Class Config_CP
             End Using
             If best_ref <> "" Then
                 Dim best_gb As String = best_ref.Split("#")(1).Replace(".fasta", "")
-                File.Copy(get_genome_data(organelle_type, "gb", best_gb).Result, currentDirectory + "temp\ref_gb.gb", True)
+                File.Copy(get_genome_data(database_type, "gb", best_gb).Result, currentDirectory + "temp\ref_gb.gb", True)
 
                 File.Copy(ref_dir + best_ref + ".fasta", currentDirectory + "temp\" + best_ref + ".fasta", True)
                 File.Move(out_dir + "\filtered\all_1.fq", currentDirectory + "temp\Project1.1.fq", True)
@@ -277,7 +348,7 @@ Public Class Config_CP
                 sw.WriteLine("Project1.1.fq")
                 sw.WriteLine("Project1.2.fq")
                 sw.Close()
-                Select Case organelle_type
+                Select Case database_type
                     Case "mito_plant"
                         form_config_plasty.ComboBox1.SelectedIndex = 2
                         form_config_plasty.ComboBox1.Enabled = False
@@ -294,10 +365,18 @@ Public Class Config_CP
                         form_config_plasty.CheckBox1.Visible = True
                         form_config_plasty.TextBox2.Text = best_ref + ".fasta"
                         cpg_assemble_mode = 0
+                    Case "mito"
+                        form_config_plasty.ComboBox1.SelectedIndex = 1
+                        form_config_plasty.ComboBox1.Enabled = False
+                        form_config_plasty.Button2.Enabled = False
+                        form_config_plasty.TextBox3.Text = ""
+                        form_config_plasty.CheckBox1.Visible = True
+                        form_config_plasty.TextBox2.Text = best_ref + ".fasta"
+                        cpg_assemble_mode = 1
                 End Select
                 form_config_plasty.TextBox1.Text = (CInt(length_range(0) * 0.8 / 1000) * 1000).ToString + "-" + (CInt(length_range(1) * 1.2 / 1000) * 1000).ToString
 
-                form_config_plasty.TextBox5.Text = "Gennome_" + organelle_type
+                form_config_plasty.TextBox5.Text = "Gennome_" + database_type
                 timer_id = 7
             Else
                 MsgBox("Faild to get seed!")
@@ -360,6 +439,28 @@ Public Class Config_CP
                         End If
                     End While
                 End Using
+            Case 6
+                Using reader As New StreamReader(currentDirectory + "\analysis\genus_list_AGS353.txt")
+                    While Not reader.EndOfStream
+                        Dim my_line As String = reader.ReadLine()
+                        If CheckBox2.Checked = False Then
+                            GenusDictionary(my_line.Split(vbTab)(1)) = my_line.Split(vbTab)(0)
+                        Else
+                            GenusDictionary(my_line.Split(vbTab)(0)) = my_line.Split(vbTab)(0)
+                        End If
+                    End While
+                End Using
+            Case 7, 8, 9
+                Using reader As New StreamReader(currentDirectory + "\analysis\genus_list_mito.txt")
+                    While Not reader.EndOfStream
+                        Dim my_line As String = reader.ReadLine()
+                        If CheckBox2.Checked = False Then
+                            GenusDictionary(my_line.Split(vbTab)(1)) = my_line.Split(vbTab)(0)
+                        Else
+                            GenusDictionary(my_line.Split(vbTab)(0)) = my_line.Split(vbTab)(0)
+                        End If
+                    End While
+                End Using
         End Select
         ListBox1.Items.Clear()
         ListBox3.Items.Clear()
@@ -371,5 +472,21 @@ Public Class Config_CP
             make_genus_dict()
 
         End If
+    End Sub
+
+    Private Sub 全选ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 全选ToolStripMenuItem.Click
+        Dim tempItems As New List(Of Object)
+        For Each item In ListBox1.Items
+            tempItems.Add(item)
+        Next
+
+        ' 遍历临时列表，并选中ListBox中的每一项
+        For Each item In tempItems
+            ListBox1.SetSelected(ListBox1.Items.IndexOf(item), True)
+        Next
+    End Sub
+
+    Private Sub 清空ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 清空ToolStripMenuItem.Click
+        ListBox3.Items.Clear()
     End Sub
 End Class

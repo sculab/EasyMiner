@@ -82,8 +82,8 @@ Public Class Config_Plasty
                     SI_build_fq.Arguments += " -o1 " + "Project" + form_main.DataGridView2.Rows(i - 1).Cells(1).FormattedValue.ToString + ".1"
                     SI_build_fq.Arguments += " -o2 " + "Project" + form_main.DataGridView2.Rows(i - 1).Cells(1).FormattedValue.ToString + ".2"
                     SI_build_fq.Arguments += " -skip 0"
-                    If form_main.CheckBox3.Checked Then
-                        SI_build_fq.Arguments += " -m_reads " + form_main.NumericUpDown3.Value.ToString
+                    If form_config_basic.CheckBox3.Checked Then
+                        SI_build_fq.Arguments += " -m_reads " + form_config_basic.NumericUpDown3.Value.ToString
 
                     End If
 
@@ -109,7 +109,7 @@ Public Class Config_Plasty
         If File.Exists(currentDirectory + "temp\NOVOPlasty\Option_1_Project1.fasta") Then
             Dim SI_check_option As New ProcessStartInfo()
             Select Case cpg_assemble_mode
-                Case 0
+                Case 0, 1
                     SI_check_option.FileName = currentDirectory + "analysis\check_option_mafft.exe"
                 Case 2
                     SI_check_option.FileName = currentDirectory + "analysis\check_option_blast.exe"
@@ -130,7 +130,7 @@ Public Class Config_Plasty
         End If
         If File.Exists(assemble_file) Then
             Select Case cpg_assemble_mode
-                Case 0, 2
+                Case 0, 1, 2
                     If File.Exists(currentDirectory + "temp\output_log.txt") Then
                         File.Delete(currentDirectory + "temp\output_log.txt")
                     End If

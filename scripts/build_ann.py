@@ -47,6 +47,12 @@ def update_annotations(mafft_output, ref_gb, output_file):
             feature.location = FeatureLocation(new_start, new_end, strand=feature.strand)
             if 'db_xref' in feature.qualifiers:
                 del feature.qualifiers['db_xref']
+            if 'specimen_voucher' in feature.qualifiers:
+                feature.qualifiers['specimen_voucher'] = ['unknown']
+            if 'country' in feature.qualifiers:
+                del feature.qualifiers['country']
+            if 'collection_date' in feature.qualifiers:
+                del feature.qualifiers['collection_date']
             if 'organism' in feature.qualifiers:
                 feature.qualifiers['organism'] = ['unknown']
             updated_features.append(feature)

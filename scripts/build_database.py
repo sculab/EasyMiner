@@ -120,45 +120,27 @@ def generate_gene_file(_file_path_list_: list, _output_dir_: str, _exclude_speci
     for _file_ in _file_path_list_:
         for record in SeqIO.parse(_file_, "fasta"):
             with open(os.path.join(_output_dir_, record.id + ".fasta"), "a") as _out_file_:
-                # try:
-                    # change the id of sequence
-                    # use _ as the separator to separate the information
-                    species_name = re.findall(".*Species:(.*)Repository.*", record.description)[0].strip().replace(" ",
-                                                                                                                   "_")
-                    record.id = species_name + "_" + record.id
-                    if not _exclude_species_ or species_name not in _exclude_species_:
-                        _out_file_.write(">" + record.id + "\n")
-                        _out_file_.write(str(record.seq) + "\n")
-                # except IndexError:
-                #     print("The record {} is not standard".format(record.description))
-                #     _out_file_.write(">" + record.description + "\n")
-                #     _out_file_.write(str(record.seq) + "\n")
+                species_name = re.findall(".*Species:(.*)Repository.*", record.description)[0].strip().replace(" ", "_")
+                record.id = species_name + "-" + record.id
+                if not _exclude_species_ or species_name not in _exclude_species_:
+                    _out_file_.write(">" + record.id + "\n")
+                    _out_file_.write(str(record.seq) + "\n")
             _out_file_.close()
     return
 
 
 def main():
     pars = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-                                   description='''The script for getting the ref sequences from kew.org''')
-    pars.add_argument('-i', dest="input_dir", type=str, help="The input directory of existed files from kew.org", default = "ags_seq")
+                                   description='''The script for making the AGS353 sequences''')
+    pars.add_argument('-i', dest="input_dir", type=str, help="The input directory of existed files from kew.org", default = r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\AGS353")
     pars.add_argument('-o', dest="output_dir", type=str,
-                      help="The output directory stored the downloaded sequences file", default = "ags_seq")
-    pars.add_argument('-c', dest="classification", type=str, nargs="+",
-                      help='''the classification of species that need to be downloaded''', default = ["Apiaceae"])
-    pars.add_argument("-t", dest="thread", type=int, help="threads for downloading fasta file from Kew", default=4)
-    pars.add_argument("-exclude", dest="exclude", type=str, nargs="+",
-                      help="exclude the species that need to be downloaded")
-    pars.add_argument("-exclude_file", dest="exclude_file", type=str,
-                      help="The file documenting species that need to be excluded")
-    pars.add_argument("-generate", dest="generate", action="store_true",
-                      help="whether to generate the species that need to download")
+                      help="The output directory stored the downloaded sequences file", default = r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\org_seq")
 
     args = pars.parse_args()
     print("Do not close this window manually, please!")
 
     # set input_dir and output_dir
     input_dir, output_dir = args.input_dir, args.output_dir
-    _thread_ = args.thread
     exclude_species = []
     if input_dir is None and output_dir is None:
         print("Input and output directory cannot both be empty!")
@@ -170,46 +152,7 @@ def main():
             input_dir = output_dir
     if input_dir is not None and output_dir is None:
         output_dir = input_dir
-    # need to download files
-    if args.classification is not None:
-        print("INFO: Get information that needs to be downloaded")
-        down_spec_info = generate_download_info(detect_classification(args.classification))
-        existed_files = [os.path.basename(i) for i in generate_fasta_path(input_dir)]
-        down_spec_info = [i for i in down_spec_info if i not in existed_files]
-        # write the downloaded species information to a file
-        if args.generate and down_spec_info:
-            print("INFO: Save the downloaded information into a csv file")
-            with open(os.path.join(output_dir, "download.csv"), "a") as _out_file_:
-                _writer_ = csv.DictWriter(_out_file_, down_spec_info[0].keys())
-                _writer_.writeheader()
-                for element in down_spec_info:
-                    _writer_.writerow(element)
-        print("INFO: Downloading data")
-        # download files
-        with ThreadPoolExecutor(max_workers=_thread_) as executor:
-            tasks = []
-            for _spec_info_ in down_spec_info:
-                tasks.append(executor.submit(download_fasta_file, _spec_info_, output_dir))
-            count = 0
-            for future in as_completed(tasks):
-                count += 1
-                if future.result() is not None:
-                    print(future.result())
-                if count % 10 == 0:
-                    print("INFO: {} / {} has been downloaded".format(count, len(down_spec_info)))
-                if count == len(down_spec_info):
-                    print("INFO: All species have been downloaded")
-    if args.exclude is not None:
-        exclude_species.extend(args.exclude)
-    if args.exclude_file is not None:
-        if not os.path.isfile(args.exclude_file):
-            print("The exclude file does not exist!")
-        else:
-            with open(args.exclude_file, "r") as _file_:
-                _exclude_ = _file_.readlines()
-                _exclude_ = [x.strip() for x in _exclude_ if x.strip()]
-                exclude_species.extend(_exclude_)
-    exclude_species = [species.capitalize().replace(" ", "_") for species in exclude_species]
+
 
     print("INFO: Generating species data into reference files")
     # Merge the files under input_dir with the files in output_dir
@@ -217,7 +160,7 @@ def main():
     output_file_list = generate_fasta_path(output_dir)
     file_path_list = list((set(input_file_list).union(set(output_file_list))))
     generate_gene_file(_file_path_list_=file_path_list,
-                       _output_dir_=os.path.join(output_dir, "353gene"), _exclude_species_=exclude_species)
+                       _output_dir_=os.path.join(output_dir), _exclude_species_=exclude_species)
 
 
 if __name__ == '__main__':

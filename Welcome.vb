@@ -9,11 +9,10 @@ Public Class Welcome
     Private Sub Welcome_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         System.Threading.Thread.CurrentThread.CurrentCulture = ci
         Timer1.Enabled = True
-        form_main.Text = form_main.Text + " ver. " + version
-        form_main.Show()
         format_path()
-        Dim th1 As New Thread(AddressOf load_main)
-        th1.Start()
+        load_main()
+        'form_main.Text = form_main.Text + " ver. " + version
+        form_main.Show()
     End Sub
     Public Sub load_main()
         Try
@@ -28,8 +27,41 @@ Public Class Welcome
 
         current_file = total_file
 
-        Dim filePath As String = root_path + "main\" + "setting.ini"
+        My.Computer.FileSystem.CreateDirectory(root_path + "results")
+        My.Computer.FileSystem.CreateDirectory(root_path + "temp")
+        current_file = total_file
+
+        Dim filePath As String = root_path + "analysis\" + "setting.ini"
         settings = ReadSettings(filePath)
+
+        ' 读取 language 和 mode 设置
+        language = settings.GetValueOrDefault("language", "EN")
+        exe_mode = settings.GetValueOrDefault("mode", "basic")
+
+        If language = "CH" Then
+            to_ch()
+        Else
+            to_en()
+        End If
+
+        If exe_mode = "basic" Then
+            form_main.长读条码ToolStripMenuItem.Visible = False
+            form_main.DebugToolStripMenuItem.Visible = False
+            DeleteDir(Path.Combine(root_path, "temp"))
+
+        End If
+        If exe_mode = "advanced" Then
+            form_main.长读条码ToolStripMenuItem.Visible = True
+            form_main.DebugToolStripMenuItem.Visible = True
+            DeleteDir(Path.Combine(root_path, "temp"))
+
+        End If
+        If exe_mode = "HIV" Then
+            form_main.长读条码ToolStripMenuItem.Visible = True
+            form_main.DebugToolStripMenuItem.Visible = False
+            DeleteDir(Path.Combine(root_path, "temp"))
+
+        End If
 
     End Sub
     Private Sub Welcome_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing

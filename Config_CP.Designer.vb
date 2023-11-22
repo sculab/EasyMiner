@@ -22,21 +22,28 @@ Partial Class Config_CP
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        components = New ComponentModel.Container()
         Button5 = New Button()
         ListBox3 = New ListBox()
+        ContextMenuStrip1 = New ContextMenuStrip(components)
+        清空ToolStripMenuItem = New ToolStripMenuItem()
         Button3 = New Button()
         Label1 = New Label()
         ListBox1 = New ListBox()
+        ContextMenuStrip2 = New ContextMenuStrip(components)
+        全选ToolStripMenuItem = New ToolStripMenuItem()
         TextBox1 = New TextBox()
         Button2 = New Button()
         Button1 = New Button()
         CheckBox1 = New CheckBox()
         CheckBox2 = New CheckBox()
+        ContextMenuStrip1.SuspendLayout()
+        ContextMenuStrip2.SuspendLayout()
         SuspendLayout()
         ' 
         ' Button5
         ' 
-        Button5.Location = New Point(161, 62)
+        Button5.Location = New Point(208, 62)
         Button5.Name = "Button5"
         Button5.Size = New Size(41, 23)
         Button5.TabIndex = 66
@@ -45,16 +52,30 @@ Partial Class Config_CP
         ' 
         ' ListBox3
         ' 
+        ListBox3.ContextMenuStrip = ContextMenuStrip1
         ListBox3.FormattingEnabled = True
         ListBox3.ItemHeight = 17
-        ListBox3.Location = New Point(208, 33)
+        ListBox3.Location = New Point(255, 33)
         ListBox3.Name = "ListBox3"
-        ListBox3.Size = New Size(156, 140)
+        ListBox3.SelectionMode = SelectionMode.MultiExtended
+        ListBox3.Size = New Size(197, 174)
         ListBox3.TabIndex = 65
+        ' 
+        ' ContextMenuStrip1
+        ' 
+        ContextMenuStrip1.Items.AddRange(New ToolStripItem() {清空ToolStripMenuItem})
+        ContextMenuStrip1.Name = "ContextMenuStrip1"
+        ContextMenuStrip1.Size = New Size(181, 48)
+        ' 
+        ' 清空ToolStripMenuItem
+        ' 
+        清空ToolStripMenuItem.Name = "清空ToolStripMenuItem"
+        清空ToolStripMenuItem.Size = New Size(180, 22)
+        清空ToolStripMenuItem.Text = "清空"
         ' 
         ' Button3
         ' 
-        Button3.Location = New Point(161, 33)
+        Button3.Location = New Point(208, 33)
         Button3.Name = "Button3"
         Button3.Size = New Size(41, 23)
         Button3.TabIndex = 64
@@ -72,13 +93,26 @@ Partial Class Config_CP
         ' 
         ' ListBox1
         ' 
+        ListBox1.ContextMenuStrip = ContextMenuStrip2
         ListBox1.FormattingEnabled = True
         ListBox1.ItemHeight = 17
         ListBox1.Location = New Point(5, 33)
         ListBox1.Name = "ListBox1"
         ListBox1.SelectionMode = SelectionMode.MultiExtended
-        ListBox1.Size = New Size(150, 140)
+        ListBox1.Size = New Size(197, 174)
         ListBox1.TabIndex = 62
+        ' 
+        ' ContextMenuStrip2
+        ' 
+        ContextMenuStrip2.Items.AddRange(New ToolStripItem() {全选ToolStripMenuItem})
+        ContextMenuStrip2.Name = "ContextMenuStrip2"
+        ContextMenuStrip2.Size = New Size(101, 26)
+        ' 
+        ' 全选ToolStripMenuItem
+        ' 
+        全选ToolStripMenuItem.Name = "全选ToolStripMenuItem"
+        全选ToolStripMenuItem.Size = New Size(100, 22)
+        全选ToolStripMenuItem.Text = "全选"
         ' 
         ' TextBox1
         ' 
@@ -89,7 +123,7 @@ Partial Class Config_CP
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(289, 179)
+        Button2.Location = New Point(377, 216)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 60
@@ -98,7 +132,7 @@ Partial Class Config_CP
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(208, 179)
+        Button1.Location = New Point(296, 216)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 59
@@ -108,7 +142,7 @@ Partial Class Config_CP
         ' CheckBox1
         ' 
         CheckBox1.AutoSize = True
-        CheckBox1.Location = New Point(5, 185)
+        CheckBox1.Location = New Point(5, 222)
         CheckBox1.Name = "CheckBox1"
         CheckBox1.Size = New Size(123, 21)
         CheckBox1.TabIndex = 67
@@ -120,18 +154,18 @@ Partial Class Config_CP
         CheckBox2.AutoSize = True
         CheckBox2.Checked = True
         CheckBox2.CheckState = CheckState.Checked
-        CheckBox2.Location = New Point(208, 6)
+        CheckBox2.Location = New Point(255, 4)
         CheckBox2.Name = "CheckBox2"
         CheckBox2.Size = New Size(111, 21)
         CheckBox2.TabIndex = 68
-        CheckBox2.Text = "只在属名中搜索"
+        CheckBox2.Text = "不在属以上搜索"
         CheckBox2.UseVisualStyleBackColor = True
         ' 
         ' Config_CP
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(369, 215)
+        ClientSize = New Size(459, 252)
         ControlBox = False
         Controls.Add(CheckBox2)
         Controls.Add(CheckBox1)
@@ -146,8 +180,10 @@ Partial Class Config_CP
         FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_CP"
         StartPosition = FormStartPosition.CenterScreen
-        Text = "下载细胞器基因组"
+        Text = "下载数据"
         TopMost = True
+        ContextMenuStrip1.ResumeLayout(False)
+        ContextMenuStrip2.ResumeLayout(False)
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -162,4 +198,8 @@ Partial Class Config_CP
     Friend WithEvents Button1 As Button
     Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents CheckBox2 As CheckBox
+    Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
+    Friend WithEvents 清空ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ContextMenuStrip2 As ContextMenuStrip
+    Friend WithEvents 全选ToolStripMenuItem As ToolStripMenuItem
 End Class

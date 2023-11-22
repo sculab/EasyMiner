@@ -9,7 +9,7 @@ Module Module_Var
 #ElseIf TargetOS = "win32" Then
     Public TargetOS As String = "win32"
 #End If
-    Public version As String = "20231113"
+    Public version As String = "20231122"
     Public settings As Dictionary(Of String, String)
     Public currentDirectory As String
     Public refsView As New DataView
@@ -26,8 +26,8 @@ Module Module_Var
     'Public form_config_stand As New Config_Stand
     'Public form_config_clean As New Config_Clean
     'Public form_config_mix As New Config_Mix
-    'Public form_config_data As New Config_Data
-    Public form_config_align As New Config_Align
+    Public form_config_basic As New Config_Basic
+    Public form_config_barcode As New Config_barcode
     Public form_config_plasty As New Config_Plasty
     Public form_config_ags As New Config_AGS
     Public form_config_cp As New Config_CP

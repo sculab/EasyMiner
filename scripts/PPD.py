@@ -65,13 +65,14 @@ def sort_to_genes(seq_directory, output_directory, sp_namelist, seq_type = "supe
         for file in sp_namelist:
             # Write_Print("../temp/PPD.log",file)
             for file2 in os.listdir(seq_directory):
+                name, extension = os.path.splitext(file2.replace(".degenerated.fasta",".fasta"))
                 # Write_Print("../temp/PPD.log",file2)
-                if file in file2:
+                if file == name:
                     input_name = seq_directory + str(file2)
                     Write_Print("../temp/PPD.log","species " + file +" is ready")
 
                     for test1 in SeqIO.parse(input_name, 'fasta'):
-                        Write_Print("../temp/PPD.log",test1)
+                        # Write_Print("../temp/PPD.log",test1)
                         sequence_name = test1.description.split(" ")[1].split("-")[0]
                         file_name = "Gene" + test1.description.split(" ")[1].split("-")[1].split(":")[0]
 
@@ -114,6 +115,7 @@ def rm_Hs_sequence(seq_directory, namelist_path, Hsite_value =0.05):
     # ### loop all fasta files
     sum = ""
     for file in os.listdir(seq_directory):
+        Write_Print("../temp/PPD.log","Removing Hs in sequence:",file)
          ### This is for mac user.
         if file != ".DS_Store":
             # Write_Print("../temp/PPD.log",file)
@@ -126,7 +128,7 @@ def rm_Hs_sequence(seq_directory, namelist_path, Hsite_value =0.05):
             for sequence in SeqIO.parse(subset, 'fasta'):
 
                 if sequence.id in namelist_path:
-                    # Write_Print("../temp/PPD.log",sequence)
+                    
 
                     sequence_total_len = len(sequence)
                     # Write_Print("../temp/PPD.log",sequence_total_len)
@@ -205,9 +207,9 @@ def add_ref_to_each_gene(seq_directory, reference_name):
             sequence_name = test1.description.split("-")[0]
             file_name = "Gene" + test1.description.split("-")[-1]
 
-            test1.id = sequence_name
-            test1.name = sequence_name
-            test1.description = sequence_name
+            test1.id = sequence_name + "_ppdref"
+            test1.name = sequence_name + "_ppdref"
+            test1.description = sequence_name + "_ppdref"
 
             out_file = genes_result_s3 + file_name + ".fasta"
 
@@ -225,7 +227,8 @@ def add_ref_to_each_gene(seq_directory, reference_name):
 
 
 def run_mafft(cmd):
-    os.system(cmd)
+    Write_Print("../temp/PPD.log",cmd)
+    os.system(cmd + " 2>nul")
 
 def mafft_alignment(seq_directory, threads=1):
     ### input files are from s3
@@ -241,12 +244,11 @@ def mafft_alignment(seq_directory, threads=1):
         # Collect all commands to be executed
         commands = []
         for file in os.listdir(genes_result_s3):
-            fname = os.path.join(genes_result_s3, file)
-            output_name = os.path.join(genes_result_s4, file)
+            fname = os.path.join(genes_result_s3, file).replace("\\","/").replace("//","/")
+            output_name = os.path.join(genes_result_s4, file).replace("\\","/").replace("//","/")
             if file != ".DS_Store":
-                cmd = r".\mafft-win\mafft.bat --adjustdirection --auto --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
-                #cmd = r".\mafft-win\mafft.bat --adjustdirection --maxiterate 1000 --globalpair --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
-                Write_Print("../temp/PPD.log",cmd)
+                cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --auto --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
+                #cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --maxiterate 1000 --globalpair --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"
                 commands.append(cmd)
 
         # Use multiprocessing to execute the commands in parallel
@@ -282,19 +284,12 @@ def rm_reference_from_align(seq_directory, reference_name):
                     for test1 in SeqIO.parse(fasta_name1, 'fasta'):
                         if gene_name == test1.name:
                             Write_Print("../temp/PPD.log",test1)
+                            test1.seq = Seq(str(test1.seq).upper().replace('N', '-'))  # 替换 n 为 -
                             output_file = genes_result_s5 + file1
                             f1 = open(output_file, 'a')
                             SeqIO.write(test1, f1, "fasta")
                             f1.close()
         ### replace all n to -, otherwise trimal can not run successfully.
-
-        if platform == "darwin":
-            cmd_replace_N = "FILES=" + genes_result_s5 + " && for f in $FILES*; do sed -i '' -e 's/n/-/g' $f; done"
-            os.system(cmd_replace_N)
-
-        else:
-            cmd_replace_N = "FILES=" + genes_result_s5 + " && for f in $FILES*; do sed -i -e 's/n/-/g' $f; done"
-            os.system(cmd_replace_N)
     except:
         Write_Print("../temp/PPD.log","s4 is not finshed yet. Please check the previous step.")
 
@@ -320,7 +315,7 @@ def trimal_align_2(seq_directory, gap_fraction = 0.51):
             fname = '"' + fname.replace('/','\\') + '"'
             output_name = '"' + output_name.replace('/','\\') + '"'
             if file != genes_result_s5 + ".DS_Store":
-                cmd = "trimal.exe -in " + fname + " -out " + output_name + " -gt " + str(gap_fraction)
+                cmd = r"..\analysis\trimal.exe -in " + fname + " -out " + output_name + " -gt " + str(gap_fraction)
                 Write_Print("../temp/PPD.log",cmd)
                 os.system(cmd)
 
@@ -387,12 +382,12 @@ def rm_wrong_polymorphism_sites(seq_directory, outgroup_path, window_size = 20, 
         if file != ".DS_Store":
             output_directory_file = output_directory + file
             fasta_name = genes_result_s6 + file
-            fasta_name = '"' + fasta_name.replace('/','\\') + '"'
-            output_directory_file = '"' + output_directory_file.replace('/','\\') + '"' 
             sequences = glob(fasta_name)
+            fasta_name = '"' + fasta_name.replace('//','/').replace('/','\\') + '"'
+            output_directory_file = '"' + output_directory_file.replace('//','/').replace('/','\\') + '"' 
             ### read each alignment sequences
             for sequence in sequences:
-                Write_Print("../temp/PPD.log","sequence: " +sequence)
+                # Write_Print("../temp/PPD.log","sequence: " +sequence)
 
                 alignment = AlignIO.read(sequence, 'fasta')
                 # Write_Print("../temp/PPD.log",alignment)
@@ -409,7 +404,7 @@ def rm_wrong_polymorphism_sites(seq_directory, outgroup_path, window_size = 20, 
                         align.extend([temp_seq])
 
 
-                Write_Print("../temp/PPD.log",align)
+                # Write_Print("../temp/PPD.log",align)
                 # Write_Print("../temp/PPD.log",align.get_alignment_length())
 
 
@@ -521,7 +516,7 @@ def rm_wrong_polymorphism_sites(seq_directory, outgroup_path, window_size = 20, 
 
                     ### if there are more than 4 polymorphic sites in 20 base pairs, select those sites positions.
                     if len(column_position) > float(Max_p_sites):
-                        Write_Print("../temp/PPD.log",column_position)
+                        # Write_Print("../temp/PPD.log",column_position)
                         total_wrong_poly_sites = total_wrong_poly_sites + column_position
 
                 #Write_Print("../temp/PPD.log",total_wrong_poly_sites)
@@ -549,7 +544,7 @@ def rm_wrong_polymorphism_sites(seq_directory, outgroup_path, window_size = 20, 
 
                     cmd_selected_col = str(unique_wrong_sites).replace(" ", "").replace("[", "{ ").replace("]", " }")
 
-                    cmd = "trimal.exe -in " + fasta_name + " -out " + output_directory_file + " -selectcols " + cmd_selected_col
+                    cmd = r"..\analysis\trimal.exe -in " + fasta_name + " -out " + output_directory_file + " -selectcols " + cmd_selected_col
 
                     Write_Print("../temp/PPD.log",cmd)
                     os.system(cmd)
@@ -719,12 +714,12 @@ def replace_outgroup_with_gap(seq_directory, outgroup_path, window_size = 20, Ma
                             else:
                                 new_seq = new_seq + str(record.seq[i])
 
-                        temp_seq2 = SeqRecord(Seq(str(new_seq)), id=str(record.id))
+                        temp_seq2 = SeqRecord(Seq(str(new_seq)), id=str(record.id), description=str(record.id))
                         align_2.extend([temp_seq2])
                         #align_2.extend(str(record.id), str(new_seq))
 
                     else:
-                        temp_seq3 = SeqRecord(Seq(str(record.seq)), id=str(record.id))
+                        temp_seq3 = SeqRecord(Seq(str(record.seq)), id=str(record.id), description=str(record.id))
                         align_2.extend([temp_seq3])
                         #align_2.extend(str(record.id), str(record.seq))
 
@@ -1026,7 +1021,7 @@ def main():
         if os.path.isdir(output_directory_s8) == False:
             
             paralog_test(seq_result_path, Hs_threshold = args.Hs_max_value, nh = args.Hs_site_number)
-            Write_Print("../temp/PPD.log","s8 finished and ready for s9")
+            Write_Print("../temp/PPD.log","All steps finished and good luck!")
 
 
     else:

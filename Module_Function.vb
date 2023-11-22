@@ -47,6 +47,42 @@ Module Module_Function
         Next
         Return True
     End Function
+    Public Sub clean_fasta_file(ByVal inputFilePath As String, ByVal outputFilePath As String)
+        Try
+            Using inputFile As New StreamReader(inputFilePath)
+                Using outputFile As New StreamWriter(outputFilePath)
+                    Dim line As String
+                    While (Not inputFile.EndOfStream)
+                        line = inputFile.ReadLine()
+                        If line.StartsWith(">") Then
+                            ' 替换非文件夹名称中允许的字符为下划线
+                            line = ReplaceInvalidCharacters(line.Substring(1))
+                            ' 写入到输出文件
+                            outputFile.WriteLine(">" & line)
+                        Else
+                            ' 直接写入到输出文件
+                            outputFile.WriteLine(line)
+                        End If
+                    End While
+                End Using
+            End Using
+            Console.WriteLine("文件处理完成。")
+        Catch ex As Exception
+            Console.WriteLine("发生错误：" & ex.Message)
+        End Try
+    End Sub
+
+    Private Function ReplaceInvalidCharacters(ByVal inputString As String) As String
+        ' 定义不允许在文件夹名称中出现的字符
+        Dim invalidChars As String = Path.GetInvalidFileNameChars()
+
+        ' 遍历输入字符串，替换非法字符为下划线
+        For Each invalidChar As Char In invalidChars
+            inputString = inputString.Replace(invalidChar, "_")
+        Next
+
+        Return inputString
+    End Function
     Public Sub safe_copy(ByVal source As String, ByVal target As String, Optional ByVal overwrite As Boolean = True)
         If File.Exists(source) Then
             File.Copy(source, target, overwrite)
@@ -90,13 +126,13 @@ Module Module_Function
     Public Sub MergeFiles(ByVal firstFilePath As String, ByVal secondFilePath As String)
         Try
             Using firstFileWriter As New StreamWriter(firstFilePath, True) ' "True" appends to the file
-                firstFileWriter.Write(vbCrLf)
                 Using secondFileReader As New StreamReader(secondFilePath)
                     Dim line As String = ""
                     While (InlineAssignHelper(line, secondFileReader.ReadLine())) IsNot Nothing
                         firstFileWriter.WriteLine(line)
                     End While
                 End Using
+                'firstFileWriter.Write(vbCrLf)
             End Using
             Console.WriteLine("Files merged successfully.")
         Catch ex As Exception
@@ -169,12 +205,12 @@ Module Module_Function
         End Try
     End Function
 
-    'Public Function get_genome_data(ByVal Organelle_type As String, ByVal file_type As String, ByVal gb_id As String)
+    'Public Function get_genome_data(ByVal database_type As String, ByVal file_type As String, ByVal gb_id As String)
     '	Try
-    '		Dim data_folder As String = currentDirectory + "Organelle\" + Organelle_type + "_" + file_type + "\" + gb_id.Substring(0, 2) + "\" + gb_id.Substring(0, 5) + "\"
+    '		Dim data_folder As String = currentDirectory + "Organelle\" + database_type + "_" + file_type + "\" + gb_id.Substring(0, 2) + "\" + gb_id.Substring(0, 5) + "\"
     '		If File.Exists(data_folder + gb_id + "." + file_type) = False Then
     '			Dim client As New WebClient()
-    '			Dim source_file As String = "http://sculab.tpddns.cn:3393/YY/Organelle/" + Organelle_type + "_" + file_type + "/" + gb_id.Substring(0, 2) + "/" + gb_id.Substring(0, 5) + "/" + gb_id + "." + file_type
+    '			Dim source_file As String = "http://sculab.tpddns.cn:3393/YY/Organelle/" + database_type + "_" + file_type + "/" + gb_id.Substring(0, 2) + "/" + gb_id.Substring(0, 5) + "/" + gb_id + "." + file_type
     '			My.Computer.FileSystem.CreateDirectory(data_folder)
     '			client.DownloadFile(source_file, data_folder + gb_id + "." + file_type)
     '		End If
@@ -183,16 +219,34 @@ Module Module_Function
     '		Return ""
     '	End Try
     'End Function
-    ' Assuming HttpClient is defined at the class level and initialized elsewhere
+    'Assuming HttpClient is defined at the class level and initialized elsewhere
     Private ReadOnly client As HttpClient = New HttpClient()
+    Private Async Function GetResponseTime(url As String) As Task(Of Long)
+        Dim httpClient As New HttpClient()
+        Dim stopwatch As New Stopwatch()
 
-    Public Async Function get_genome_data(ByVal Organelle_type As String, ByVal file_type As String, ByVal gb_id As String) As Task(Of String)
         Try
-            Dim data_folder As String = currentDirectory & "Organelle\" & Organelle_type & "_" & file_type & "\" & gb_id.Substring(0, 2) & "\" & gb_id.Substring(0, 5) & "\"
+            stopwatch.Start()
+            Dim response As HttpResponseMessage = Await httpClient.GetAsync(url)
+            ' 不需要做任何事情，只是获取响应时间
+        Catch ex As HttpRequestException
+            ' 处理异常
+            MessageBox.Show($"无法获取 {url} 的响应时间：{ex.Message}")
+        Finally
+            stopwatch.Stop()
+        End Try
+
+        Return stopwatch.ElapsedMilliseconds
+    End Function
+    Public Async Function get_genome_data(ByVal database_type As String, ByVal file_type As String, ByVal gb_id As String) As Task(Of String)
+        Try
+            Dim data_folder As String = currentDirectory & "database\" & database_type & "_" & file_type & "\" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "\" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "\"
             Dim file_path As String = data_folder & gb_id & "." & file_type
+            Dim url1 As String = "http://life-bioinfo.tpddns.cn:8445/database/"
+            Dim url2 As String = "http://2475r7245y.zicp.vip:3393/YY/database/"
 
             If Not File.Exists(file_path) Then
-                Dim source_file As String = "http://sculab.tpddns.cn:3393/YY/Organelle/" & Organelle_type & "_" & file_type & "/" & gb_id.Substring(0, 2) & "/" & gb_id.Substring(0, 5) & "/" & gb_id & "." & file_type
+                Dim source_file As String = url1 & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
                 My.Computer.FileSystem.CreateDirectory(data_folder)
 
                 Dim response = Await client.GetAsync(source_file)
@@ -201,7 +255,6 @@ Module Module_Function
                 Dim content = Await response.Content.ReadAsByteArrayAsync()
                 File.WriteAllBytes(file_path, content)
             End If
-
             Return file_path
         Catch ex As Exception
             Return ""
