@@ -372,76 +372,76 @@ Partial Class Main_Form
         ' 过滤拼接ToolStripMenuItem
         ' 
         过滤拼接ToolStripMenuItem.Name = "过滤拼接ToolStripMenuItem"
-        过滤拼接ToolStripMenuItem.Size = New Size(180, 22)
+        过滤拼接ToolStripMenuItem.Size = New Size(172, 22)
         过滤拼接ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' 合并结果ToolStripMenuItem
         ' 
         合并结果ToolStripMenuItem.Name = "合并结果ToolStripMenuItem"
-        合并结果ToolStripMenuItem.Size = New Size(180, 22)
+        合并结果ToolStripMenuItem.Size = New Size(172, 22)
         合并结果ToolStripMenuItem.Text = "合并结果"
         ' 
         ' 合并比对ToolStripMenuItem
         ' 
         合并比对ToolStripMenuItem.Name = "合并比对ToolStripMenuItem"
-        合并比对ToolStripMenuItem.Size = New Size(180, 22)
+        合并比对ToolStripMenuItem.Size = New Size(172, 22)
         合并比对ToolStripMenuItem.Text = "合并+切齐"
         ' 
         ' ToolStripSeparator8
         ' 
         ToolStripSeparator8.Name = "ToolStripSeparator8"
-        ToolStripSeparator8.Size = New Size(177, 6)
+        ToolStripSeparator8.Size = New Size(169, 6)
         ' 
         ' 重构序列ToolStripMenuItem
         ' 
         重构序列ToolStripMenuItem.Name = "重构序列ToolStripMenuItem"
-        重构序列ToolStripMenuItem.Size = New Size(180, 22)
+        重构序列ToolStripMenuItem.Size = New Size(172, 22)
         重构序列ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' 旁系同源检测ToolStripMenuItem
         ' 
         旁系同源检测ToolStripMenuItem.Name = "旁系同源检测ToolStripMenuItem"
-        旁系同源检测ToolStripMenuItem.Size = New Size(180, 22)
+        旁系同源检测ToolStripMenuItem.Size = New Size(172, 22)
         旁系同源检测ToolStripMenuItem.Text = "旁系同源检测"
         ' 
         ' PPDToolStripMenuItem
         ' 
         PPDToolStripMenuItem.Name = "PPDToolStripMenuItem"
-        PPDToolStripMenuItem.Size = New Size(180, 22)
+        PPDToolStripMenuItem.Size = New Size(172, 22)
         PPDToolStripMenuItem.Text = "PPD (仅用于353)"
         ' 
         ' ToolStripSeparator7
         ' 
         ToolStripSeparator7.Name = "ToolStripSeparator7"
-        ToolStripSeparator7.Size = New Size(177, 6)
+        ToolStripSeparator7.Size = New Size(169, 6)
         ' 
         ' ToolStripMenuItem2
         ' 
         ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        ToolStripMenuItem2.Size = New Size(180, 22)
+        ToolStripMenuItem2.Size = New Size(172, 22)
         ToolStripMenuItem2.Text = "植物叶绿体基因组"
         ' 
         ' ToolStripMenuItem3
         ' 
         ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        ToolStripMenuItem3.Size = New Size(180, 22)
+        ToolStripMenuItem3.Size = New Size(172, 22)
         ToolStripMenuItem3.Text = "植物线粒体基因组"
         ' 
         ' 哺乳动物线粒体基因组ToolStripMenuItem2
         ' 
         哺乳动物线粒体基因组ToolStripMenuItem2.Name = "哺乳动物线粒体基因组ToolStripMenuItem2"
-        哺乳动物线粒体基因组ToolStripMenuItem2.Size = New Size(180, 22)
+        哺乳动物线粒体基因组ToolStripMenuItem2.Size = New Size(172, 22)
         哺乳动物线粒体基因组ToolStripMenuItem2.Text = "动物线粒体基因组"
         ' 
         ' ToolStripSeparator10
         ' 
         ToolStripSeparator10.Name = "ToolStripSeparator10"
-        ToolStripSeparator10.Size = New Size(177, 6)
+        ToolStripSeparator10.Size = New Size(169, 6)
         ' 
         ' 统计结果ToolStripMenuItem
         ' 
         统计结果ToolStripMenuItem.Name = "统计结果ToolStripMenuItem"
-        统计结果ToolStripMenuItem.Size = New Size(180, 22)
+        统计结果ToolStripMenuItem.Size = New Size(172, 22)
         统计结果ToolStripMenuItem.Text = "统计汇总结果"
         ' 
         ' 三方工具ToolStripMenuItem
@@ -454,19 +454,19 @@ Partial Class Main_Form
         ' 序列比对ToolStripMenuItem1
         ' 
         序列比对ToolStripMenuItem1.Name = "序列比对ToolStripMenuItem1"
-        序列比对ToolStripMenuItem1.Size = New Size(180, 22)
+        序列比对ToolStripMenuItem1.Size = New Size(124, 22)
         序列比对ToolStripMenuItem1.Text = "序列比对"
         ' 
         ' 切齐比对ToolStripMenuItem1
         ' 
         切齐比对ToolStripMenuItem1.Name = "切齐比对ToolStripMenuItem1"
-        切齐比对ToolStripMenuItem1.Size = New Size(180, 22)
+        切齐比对ToolStripMenuItem1.Size = New Size(124, 22)
         切齐比对ToolStripMenuItem1.Text = "切齐比对"
         ' 
         ' DebugToolStripMenuItem
         ' 
         DebugToolStripMenuItem.Name = "DebugToolStripMenuItem"
-        DebugToolStripMenuItem.Size = New Size(180, 22)
+        DebugToolStripMenuItem.Size = New Size(124, 22)
         DebugToolStripMenuItem.Text = "Debug"
         ' 
         ' EnglishToolStripMenuItem
@@ -662,14 +662,13 @@ Partial Class Main_Form
         ' 
         RichTextBox1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Right
         RichTextBox1.BorderStyle = BorderStyle.FixedSingle
-        RichTextBox1.Font = New Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        RichTextBox1.Font = New Font("Arial", 9.0F, FontStyle.Regular, GraphicsUnit.Point)
         RichTextBox1.Location = New Point(620, 155)
         RichTextBox1.Name = "RichTextBox1"
         RichTextBox1.ReadOnly = True
         RichTextBox1.Size = New Size(168, 349)
         RichTextBox1.TabIndex = 0
         RichTextBox1.Text = "双击此处查看最近的日志"
-        RichTextBox1.WordWrap = False
         ' 
         ' Main_Form
         ' 

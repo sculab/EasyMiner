@@ -253,13 +253,7 @@ Public Class Main_Form
                                 DataGridView1.Rows(i - 1).Cells(7).Value = sr.ReadLine().Length
                                 sr.Close()
                                 DataGridView1.Rows(i - 1).Cells(8).Value = (CInt(result_dict(DataGridView1.Rows(i - 1).Cells(2).Value.ToString).Split(","c)(1)) * reads_length / CInt(DataGridView1.Rows(i - 1).Cells(7).Value)).ToString("F0")
-                                'If DataGridView1.Rows(i - 1).Cells(7).Value / DataGridView1.Rows(i - 1).Cells(4).Value > 0.75 And DataGridView1.Rows(i - 1).Cells(7).Value / DataGridView1.Rows(i - 1).Cells(4).Value < 1.5 Then
-                                '    DataGridView1.Rows(i - 1).Cells(8).Value = "passed"
-                                'ElseIf DataGridView1.Rows(i - 1).Cells(7).Value / DataGridView1.Rows(i - 1).Cells(4).Value < 0.75 Then
-                                '    DataGridView1.Rows(i - 1).Cells(8).Value = "short"
-                                'Else
-                                '    DataGridView1.Rows(i - 1).Cells(8).Value = "long"
-                                'End If
+
                             Catch ex As Exception
                                 MsgBox(ex.ToString)
                                 File.Delete(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
@@ -289,6 +283,10 @@ Public Class Main_Form
     Private Sub SubCancel()
     End Sub
     Private Sub Main_Form_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        e.Cancel = True
+        settings("language") = language
+        settings("database_url") = database_url
+        SaveSettings(root_path + "analysis\" + "setting.ini", settings)
         End
     End Sub
 
@@ -2422,8 +2420,8 @@ Public Class Main_Form
         If File.Exists(Path.Combine(TextBox1.Text, "TargetSequences.fasta")) And File.Exists(Path.Combine(TextBox1.Text, "namelist.txt")) Then
 
             If File.Exists(Path.Combine(TextBox1.Text, "outgroup.txt")) Then
-                    Dim result As DialogResult = MessageBox.Show("Need to choose a different outgroup? If you want to start the analysis right away, click 'No'!", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                    If result = DialogResult.Yes Then
+                Dim result As DialogResult = MessageBox.Show("Need to choose a different outgroup? If you want to start the analysis right away, click 'No'!", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                If result = DialogResult.Yes Then
                     Dim my_input As String = InputBox("Input ID of Outgroup", "ID of Outgroup", seqsView.Count)
                     Dim og_id As Integer
                     If Not Integer.TryParse(my_input, og_id) Then
@@ -2431,23 +2429,23 @@ Public Class Main_Form
                     End If
 
                     Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(3).Value.ToString))
-                        folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                        Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
-                        sw_og.WriteLine(folder_name)
-                        sw_og.Close()
-                    End If
-                Else
+                    folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                    Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
+                    sw_og.WriteLine(folder_name)
+                    sw_og.Close()
+                End If
+            Else
                 Dim my_input As String = InputBox("Input ID of Outgroup", "ID of Outgroup", seqsView.Count)
                 Dim og_id As Integer
                 If Not Integer.TryParse(my_input, og_id) Then
                     Exit Sub
                 End If
                 Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(og_id - 1).Cells(3).Value.ToString))
-                    folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                    Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
-                    sw_og.WriteLine(folder_name)
-                    sw_og.Close()
-                End If
+                folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                Dim sw_og As New StreamWriter(Path.Combine(TextBox1.Text, "outgroup.txt"), False, utf8WithoutBom)
+                sw_og.WriteLine(folder_name)
+                sw_og.Close()
+            End If
 
             If My.Computer.FileSystem.DirectoryExists(Path.Combine(TextBox1.Text, "PPD")) Then
                 '    If Directory.GetFileSystemEntries(Path.Combine(TextBox1.Text, "PPD")).Length > 0 Then

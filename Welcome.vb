@@ -11,32 +11,17 @@ Public Class Welcome
         Timer1.Enabled = True
         format_path()
         load_main()
-        'form_main.Text = form_main.Text + " ver. " + version
         form_main.Show()
     End Sub
     Public Sub load_main()
-        Try
-            My.Computer.FileSystem.CreateDirectory(root_path + "results")
-            If File.Exists(root_path + "temp") Then
-                Directory.Delete(root_path + "temp", True)
-            End If
-            My.Computer.FileSystem.CreateDirectory(root_path + "temp")
-        Catch ex As Exception
-
-        End Try
-
-        current_file = total_file
-
         My.Computer.FileSystem.CreateDirectory(root_path + "results")
         My.Computer.FileSystem.CreateDirectory(root_path + "temp")
-        current_file = total_file
 
-        Dim filePath As String = root_path + "analysis\" + "setting.ini"
-        settings = ReadSettings(filePath)
+        settings = ReadSettings(root_path + "analysis\" + "setting.ini")
 
         ' 读取 language 和 mode 设置
         language = settings.GetValueOrDefault("language", "EN")
-        exe_mode = settings.GetValueOrDefault("mode", "basic")
+        database_url = settings.GetValueOrDefault("database_url", "http://2475r7245y.zicp.vip:3393/YY/database/")
 
         If language = "CH" Then
             to_ch()
@@ -44,24 +29,24 @@ Public Class Welcome
             to_en()
         End If
 
-        If exe_mode = "basic" Then
-            form_main.长读条码ToolStripMenuItem.Visible = False
-            form_main.DebugToolStripMenuItem.Visible = False
-            DeleteDir(Path.Combine(root_path, "temp"))
-
-        End If
-        If exe_mode = "advanced" Then
-            form_main.长读条码ToolStripMenuItem.Visible = True
-            form_main.DebugToolStripMenuItem.Visible = True
-            DeleteDir(Path.Combine(root_path, "temp"))
-
-        End If
-        If exe_mode = "HIV" Then
-            form_main.长读条码ToolStripMenuItem.Visible = True
-            form_main.DebugToolStripMenuItem.Visible = False
-            DeleteDir(Path.Combine(root_path, "temp"))
-
-        End If
+        Select Case exe_mode.ToLower
+            Case "basic"
+                form_main.长读条码ToolStripMenuItem.Visible = False
+                form_main.三方工具ToolStripMenuItem.Visible = False
+                DeleteTemp(Path.Combine(root_path, "temp"))
+            Case "advanced", "debug"
+                form_main.长读条码ToolStripMenuItem.Visible = True
+                form_main.三方工具ToolStripMenuItem.Visible = True
+            Case "hiv"
+                form_main.长读条码ToolStripMenuItem.Visible = True
+                form_main.三方工具ToolStripMenuItem.Visible = False
+                DeleteTemp(Path.Combine(root_path, "temp"))
+            Case Else
+                form_main.长读条码ToolStripMenuItem.Visible = False
+                form_main.三方工具ToolStripMenuItem.Visible = False
+                DeleteTemp(Path.Combine(root_path, "temp"))
+        End Select
+        current_file = total_file
 
     End Sub
     Private Sub Welcome_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing

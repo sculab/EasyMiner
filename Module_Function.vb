@@ -205,21 +205,6 @@ Module Module_Function
         End Try
     End Function
 
-    'Public Function get_genome_data(ByVal database_type As String, ByVal file_type As String, ByVal gb_id As String)
-    '	Try
-    '		Dim data_folder As String = currentDirectory + "Organelle\" + database_type + "_" + file_type + "\" + gb_id.Substring(0, 2) + "\" + gb_id.Substring(0, 5) + "\"
-    '		If File.Exists(data_folder + gb_id + "." + file_type) = False Then
-    '			Dim client As New WebClient()
-    '			Dim source_file As String = "http://sculab.tpddns.cn:3393/YY/Organelle/" + database_type + "_" + file_type + "/" + gb_id.Substring(0, 2) + "/" + gb_id.Substring(0, 5) + "/" + gb_id + "." + file_type
-    '			My.Computer.FileSystem.CreateDirectory(data_folder)
-    '			client.DownloadFile(source_file, data_folder + gb_id + "." + file_type)
-    '		End If
-    '		Return data_folder + gb_id + "." + file_type
-    '	Catch ex As Exception
-    '		Return ""
-    '	End Try
-    'End Function
-    'Assuming HttpClient is defined at the class level and initialized elsewhere
     Private ReadOnly client As HttpClient = New HttpClient()
     Private Async Function GetResponseTime(url As String) As Task(Of Long)
         Dim httpClient As New HttpClient()
@@ -242,11 +227,9 @@ Module Module_Function
         Try
             Dim data_folder As String = currentDirectory & "database\" & database_type & "_" & file_type & "\" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "\" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "\"
             Dim file_path As String = data_folder & gb_id & "." & file_type
-            Dim url1 As String = "http://life-bioinfo.tpddns.cn:8445/database/"
-            Dim url2 As String = "http://2475r7245y.zicp.vip:3393/YY/database/"
 
             If Not File.Exists(file_path) Then
-                Dim source_file As String = url1 & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
+                Dim source_file As String = database_url & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
                 My.Computer.FileSystem.CreateDirectory(data_folder)
 
                 Dim response = Await client.GetAsync(source_file)
