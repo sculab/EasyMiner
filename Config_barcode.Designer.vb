@@ -208,7 +208,7 @@ Partial Class Config_barcode
         FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_barcode"
         StartPosition = FormStartPosition.CenterScreen
-        Text = "获取条码序列"
+        Text = "分析条码"
         TopMost = True
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).EndInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).EndInit()

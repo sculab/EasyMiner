@@ -186,7 +186,6 @@ Public Class Main_Form
         SI_assembler.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
         If form_config_basic.CheckBox1.Checked Then
             SI_assembler.Arguments += " -ka 0"
-
         Else
             SI_assembler.Arguments += " -ka " + k2
         End If
@@ -736,7 +735,10 @@ Public Class Main_Form
     Private Sub 拼接ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 拼接ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
             MenuClicked = "assemble"
-
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
             form_config_basic.GroupBox2.Enabled = False
             form_config_basic.GroupBox3.Enabled = False
             form_config_basic.GroupBox4.Enabled = True
@@ -748,7 +750,6 @@ Public Class Main_Form
 
     End Sub
     Private Sub menu_assemble()
-        DataGridView1.EndEdit()
         Dim refs_count As Integer = 0
         Dim seqs_count As Integer = 0
         Dim has_assemble As Boolean = False
@@ -909,11 +910,15 @@ Public Class Main_Form
     End Sub
     Private Sub 从头过滤ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 从头过滤ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
             MenuClicked = "filter"
             form_config_basic.GroupBox2.Enabled = True
             form_config_basic.GroupBox3.Enabled = False
             form_config_basic.GroupBox4.Enabled = False
-
+            form_config_basic.NumericUpDown1.Value = 21
             form_config_basic.Show()
 
         Else
@@ -922,7 +927,6 @@ Public Class Main_Form
 
     End Sub
     Private Sub menu_filter()
-        DataGridView1.EndEdit()
         If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 Then
             Dim result As DialogResult = MessageBox.Show("Clear the output directory? If you are optimizing for previous results, please select 'NO'!", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If result = DialogResult.Yes Then
@@ -1100,9 +1104,14 @@ Public Class Main_Form
 
     Private Sub 全自动ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 全自动ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
             form_config_basic.GroupBox2.Enabled = True
             form_config_basic.GroupBox3.Enabled = True
             form_config_basic.GroupBox4.Enabled = True
+            form_config_basic.NumericUpDown1.Value = 21
             MenuClicked = "auto_assemble"
             form_config_basic.Show()
 
@@ -1112,7 +1121,6 @@ Public Class Main_Form
 
     End Sub
     Private Sub menu_auto_assemble()
-        DataGridView1.EndEdit()
         If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 Then
             Dim result As DialogResult = MessageBox.Show("Clear the output directory?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If result = DialogResult.Yes Then
@@ -1306,52 +1314,63 @@ Public Class Main_Form
     Private Sub 迭代ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 迭代ToolStripMenuItem1.Click
         If TextBox1.Text <> "" Then
             DataGridView1.EndEdit()
-            Dim refs_count As Integer = 0
-            Dim seqs_count As Integer = 0
-            reads_length = 0
-            ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
-            out_dir = (TextBox1.Text + "/iteration").Replace("\", "/")
-            DeleteDir(out_dir)
-            My.Computer.FileSystem.CreateDirectory(out_dir)
-            q1 = ""
-            q2 = ""
-            k1 = form_config_basic.NumericUpDown1.Value.ToString
-            k2 = form_config_basic.NumericUpDown5.Value.ToString
-            DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
+            form_config_basic.GroupBox2.Enabled = True
+            form_config_basic.GroupBox3.Enabled = True
+            form_config_basic.GroupBox4.Enabled = True
+            MenuClicked = "iteration"
+            form_config_basic.Show()
 
-            For i As Integer = 1 To refsView.Count
-                If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    If File.Exists(TextBox1.Text + "\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                        refs_count += 1
-                        safe_copy(TextBox1.Text + "\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
-                    End If
-                End If
-            Next
 
-            For i As Integer = 1 To seqsView.Count
-                If DataGridView2.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    seqs_count += 1
-                    q1 += " " + """" + DataGridView2.Rows(i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
-                    If DataGridView2.Rows(i - 1).Cells(3).FormattedValue.ToString = "" Then
-                        q2 += " " + """" + DataGridView2.Rows(i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
-                    Else
-                        q2 += " " + """" + DataGridView2.Rows(i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
-                    End If
-                End If
-            Next
-            If seqs_count >= 1 And refs_count >= 1 Then
-                Dim th1 As New Thread(AddressOf do_filer_assemble)
-                th1.Start()
-            Else
-                MsgBox("Please select at least one reference and one sequencing data!")
-            End If
         Else
             MsgBox("Please select an output folder!")
         End If
     End Sub
+    Private Sub menu_iteration()
+        Dim refs_count As Integer = 0
+        Dim seqs_count As Integer = 0
+        reads_length = 0
+        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+        out_dir = (TextBox1.Text + "/iteration").Replace("\", "/")
+        DeleteDir(out_dir)
+        My.Computer.FileSystem.CreateDirectory(out_dir)
+        q1 = ""
+        q2 = ""
+        k1 = form_config_basic.NumericUpDown1.Value.ToString
+        k2 = form_config_basic.NumericUpDown5.Value.ToString
+        DeleteDir(ref_dir)
+        My.Computer.FileSystem.CreateDirectory(ref_dir)
 
-    Private Sub 重新拼接ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 重新拼接ToolStripMenuItem.Click
+        For i As Integer = 1 To refsView.Count
+            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                If File.Exists(TextBox1.Text + "\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
+                    refs_count += 1
+                    safe_copy(TextBox1.Text + "\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
+                End If
+            End If
+        Next
+
+        For i As Integer = 1 To seqsView.Count
+            If DataGridView2.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                seqs_count += 1
+                q1 += " " + """" + DataGridView2.Rows(i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
+                If DataGridView2.Rows(i - 1).Cells(3).FormattedValue.ToString = "" Then
+                    q2 += " " + """" + DataGridView2.Rows(i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
+                Else
+                    q2 += " " + """" + DataGridView2.Rows(i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
+                End If
+            End If
+        Next
+        If seqs_count >= 1 And refs_count >= 1 Then
+            Dim th1 As New Thread(AddressOf do_filer_assemble)
+            th1.Start()
+        Else
+            MsgBox("Please select at least one reference and one sequencing data!")
+        End If
+    End Sub
+    Private Sub 重新拼接ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         If TextBox1.Text <> "" Then
             DataGridView1.EndEdit()
             Dim refs_count As Integer = 0
@@ -1400,7 +1419,7 @@ Public Class Main_Form
 
 
 
-    Private Sub 多次迭代ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 多次迭代ToolStripMenuItem.Click
+    Private Sub 多次迭代ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         If TextBox1.Text <> "" Then
             Dim my_input As String = InputBox("Please enter the number of iterations:", "Iterations", 1)
             Dim iterations_times As Integer
@@ -1620,10 +1639,15 @@ Public Class Main_Form
             End If
         End If
         If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
             MenuClicked = "batch_auto_assemble"
             form_config_basic.GroupBox2.Enabled = True
             form_config_basic.GroupBox3.Enabled = True
             form_config_basic.GroupBox4.Enabled = True
+            form_config_basic.NumericUpDown1.Value = 21
             form_config_basic.Show()
 
         Else
@@ -1631,7 +1655,6 @@ Public Class Main_Form
         End If
     End Sub
     Private Sub menu_batch_auto_assemble()
-        DataGridView1.EndEdit()
         Dim refs_count As Integer = 0
         reads_length = 0
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
@@ -2027,6 +2050,10 @@ Public Class Main_Form
             MsgBox("To assemble the plant mitochondrial genome, it is necessary to already possess the chloroplast genome first.")
             Exit Sub
         End If
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         cpg_down_mode = 5
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2040,6 +2067,10 @@ Public Class Main_Form
                 Exit Sub
             End If
         End If
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         cpg_down_mode = 4
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2192,12 +2223,16 @@ Public Class Main_Form
 
     Private Sub 重构ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 重构ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
             out_dir = TextBox1.Text
             timer_id = 4
             PB_value = 0
             Dim my_input As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
-            Dim con_level As Integer
-            If Not Integer.TryParse(my_input, con_level) Then
+            Dim con_level As Single
+            If Not Single.TryParse(my_input, con_level) Then
                 Exit Sub
             End If
             Dim th1 As New Thread(AddressOf do_consensus)
@@ -2206,7 +2241,7 @@ Public Class Main_Form
             MsgBox("Please select an output folder!")
         End If
     End Sub
-    Public Sub do_consensus(ByVal con_level As String)
+    Public Sub do_consensus(ByVal con_level As Single)
         If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
             Dim consensus_dir As String = Path.Combine(out_dir, "consensus")
             My.Computer.FileSystem.CreateDirectory(consensus_dir)
@@ -2243,7 +2278,7 @@ Public Class Main_Form
                                                                                  SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
                                                                                  SI_consensus.WorkingDirectory = out_path
                                                                                  SI_consensus.CreateNoWindow = True
-                                                                                 SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level + " -o " + """" + out_path + """"
+                                                                                 SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """"
                                                                                  Dim process_consensus As Process = Process.Start(SI_consensus)
                                                                                  process_consensus.WaitForExit()
                                                                                  process_consensus.Close()
@@ -2264,18 +2299,21 @@ Public Class Main_Form
 
     Private Sub 重构序列ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 重构序列ToolStripMenuItem.Click
         DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         timer_id = 4
         PB_value = 0
         Dim my_input As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
-        Dim con_level As Integer
-        If Not Integer.TryParse(my_input, con_level) Then
+        Dim con_level As Single
+        If Not Single.TryParse(my_input, con_level) Then
             Exit Sub
         End If
         Dim th1 As New Thread(AddressOf batch_consensus)
         th1.Start(con_level)
     End Sub
 
-    Public Sub batch_consensus(ByVal con_level As String)
+    Public Sub batch_consensus(ByVal con_level As Single)
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -2315,7 +2353,7 @@ Public Class Main_Form
                                                                                      SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
                                                                                      SI_consensus.WorkingDirectory = out_path
                                                                                      SI_consensus.CreateNoWindow = True
-                                                                                     SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level + " -o " + """" + out_path + """"
+                                                                                     SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """"
                                                                                      Dim process_consensus As Process = Process.Start(SI_consensus)
                                                                                      process_consensus.WaitForExit()
                                                                                      process_consensus.Close()
@@ -2509,6 +2547,10 @@ Public Class Main_Form
             MsgBox("Please select at least one sequencing data!")
             Exit Sub
         End If
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         cpg_down_mode = 1
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2520,6 +2562,10 @@ Public Class Main_Form
             MsgBox("Please select at least one sequencing data!")
             Exit Sub
         End If
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         Dim result As DialogResult = MessageBox.Show("To assemble the plant mitochondrial genome, it is necessary to already possess the chloroplast genome of the plant. Click 'Yes' to choose the chloroplast genome.", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
         ' 根据用户的选择执行相应的操作
         If result = DialogResult.Yes Then
@@ -2675,6 +2721,10 @@ Public Class Main_Form
             MsgBox("Please select at least one sequencing data!")
             Exit Sub
         End If
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         cpg_down_mode = 8
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2688,6 +2738,10 @@ Public Class Main_Form
                 Exit Sub
             End If
         End If
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
         cpg_down_mode = 9
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2725,11 +2779,19 @@ Public Class Main_Form
                 menu_batch_auto_assemble()
             Case "auto_assemble"
                 menu_auto_assemble()
+            Case "iteration"
+                menu_iteration()
+            Case "null"
+            Case Else
         End Select
     End Sub
 
     Private Sub 多拷贝检测ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 多拷贝检测ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
             out_dir = TextBox1.Text
             timer_id = 4
             PB_value = 0
@@ -2872,5 +2934,54 @@ Public Class Main_Form
         process_build_summary.WaitForExit()
         process_build_summary.Close()
         MsgBox("Please check the 'summary.csv' in the output folder.")
+    End Sub
+
+    Private Sub 用迭代覆盖ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 用迭代覆盖ToolStripMenuItem.Click
+        If TextBox1.Text <> "" Then
+            If refsView.Count > 0 Then
+                DataGridView1.EndEdit()
+                DataGridView2.EndEdit()
+                DataGridView1.Refresh()
+                DataGridView2.Refresh()
+                Dim th1 As New Thread(AddressOf cover_with_iteration)
+                th1.Start()
+            End If
+        Else
+            MsgBox("Please select an output folder!")
+        End If
+
+    End Sub
+    Private Sub cover_with_iteration()
+        For i As Integer = 1 To refsView.Count
+            PB_value = i / refsView.Count * 100
+            Dim gene_name As String = DataGridView1.Rows(i - 1).Cells(2).Value.ToString
+            If File.Exists(TextBox1.Text + "\iteration\contigs_all\" + gene_name + ".fasta") Then
+                safe_copy(TextBox1.Text + "\iteration\contigs_all\" + gene_name + ".fasta", TextBox1.Text + "\contigs_all\" + gene_name + ".fasta", True)
+            End If
+            If File.Exists(TextBox1.Text + "\iteration\results\" + gene_name + ".fasta") Then
+                safe_copy(TextBox1.Text + "\iteration\results\" + gene_name + ".fasta", TextBox1.Text + "\results\" + gene_name + ".fasta", True)
+            End If
+            If File.Exists(TextBox1.Text + "\iteration\filtered\" + gene_name + ".fq") Then
+                safe_copy(TextBox1.Text + "\iteration\filtered\" + gene_name + ".fq", TextBox1.Text + "\filtered\" + gene_name + ".fq", True)
+            End If
+            If File.Exists(TextBox1.Text + "\iteration\large_files\" + gene_name + ".fq") Then
+                safe_copy(TextBox1.Text + "\iteration\large_files\" + gene_name + ".fq", TextBox1.Text + "\large_files\" + gene_name + ".fq", True)
+            End If
+        Next
+        DeleteDir(TextBox1.Text + "\iteration")
+        PB_value = 0
+    End Sub
+
+    Private Sub 过滤参数设定ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过滤参数设定ToolStripMenuItem.Click
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
+        MenuClicked = "null"
+        form_config_basic.GroupBox2.Enabled = True
+        form_config_basic.GroupBox3.Enabled = False
+        form_config_basic.GroupBox4.Enabled = False
+        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.Show()
     End Sub
 End Class

@@ -7,7 +7,6 @@ def parse_args():
     parser.add_argument("-i", "--input", required=False, default='sequence_mito.gb', help="Input GenBank or fasta file.")
     parser.add_argument("-o", "--output_dir", required=False, default= './test', help="Output directory.")
     parser.add_argument("-f", "--format", required=False, default='genbank', choices=['genbank', 'fasta'], help="Input file format: 'genbank' or 'fasta'.")
-
     return parser.parse_args()
 
 def save_fasta(record, output_dir):

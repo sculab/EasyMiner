@@ -36,7 +36,7 @@ Public Class Config_barcode
         SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
         SI_build_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
         SI_build_barcode.CreateNoWindow = False
-        SI_build_barcode.Arguments = "-i " + """" + Path.Combine(form_main.TextBox1.Text, "clean_data") + """" + " -r " + """" + ".\temp_refs\barcode_refs.fasta" + """" + " -o " + """" + form_main.TextBox1.Text + """" + " -p " + max_thread.ToString + " -l " + NumericUpDown1.Value.ToString
+        SI_build_barcode.Arguments = "-i " + """" + Path.Combine(form_main.TextBox1.Text, "clean_data") + """" + " -r " + """" + ".\temp_refs\barcode_refs.fasta" + """" + " -o " + """" + form_main.TextBox1.Text + """" + " -p " + max_thread.ToString + " -m 0 -l " + NumericUpDown1.Value.ToString
         Dim process_build_barcode As Process = Process.Start(SI_build_barcode)
         process_build_barcode.WaitForExit()
         process_build_barcode.Close()

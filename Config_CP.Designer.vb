@@ -65,12 +65,12 @@ Partial Class Config_CP
         ' 
         ContextMenuStrip1.Items.AddRange(New ToolStripItem() {清空ToolStripMenuItem})
         ContextMenuStrip1.Name = "ContextMenuStrip1"
-        ContextMenuStrip1.Size = New Size(181, 48)
+        ContextMenuStrip1.Size = New Size(101, 26)
         ' 
         ' 清空ToolStripMenuItem
         ' 
         清空ToolStripMenuItem.Name = "清空ToolStripMenuItem"
-        清空ToolStripMenuItem.Size = New Size(180, 22)
+        清空ToolStripMenuItem.Size = New Size(100, 22)
         清空ToolStripMenuItem.Text = "清空"
         ' 
         ' Button3
@@ -163,9 +163,9 @@ Partial Class Config_CP
         ' 
         ' Config_CP
         ' 
-        AutoScaleDimensions = New SizeF(7F, 17F)
+        AutoScaleDimensions = New SizeF(7.0F, 17.0F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(459, 252)
+        ClientSize = New Size(459, 255)
         ControlBox = False
         Controls.Add(CheckBox2)
         Controls.Add(CheckBox1)

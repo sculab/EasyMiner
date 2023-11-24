@@ -113,7 +113,7 @@ Partial Class Config_Basic
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(54, 23)
         NumericUpDown1.TabIndex = 3
-        NumericUpDown1.Value = New Decimal(New Integer() {31, 0, 0, 0})
+        NumericUpDown1.Value = New Decimal(New Integer() {21, 0, 0, 0})
         ' 
         ' Label2
         ' 

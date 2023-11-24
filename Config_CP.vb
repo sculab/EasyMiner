@@ -288,6 +288,7 @@ Public Class Config_CP
                 End If
             End If
         Next
+        k1 = form_config_basic.NumericUpDown1.Value.ToString
         If File.Exists(out_dir + "\ref_reads_count_dict.txt") Then
             File.Delete(out_dir + "\ref_reads_count_dict.txt")
         End If
@@ -306,7 +307,7 @@ Public Class Config_CP
         SI_filter.Arguments = "-r " + """" + ref_dir + """"
         SI_filter.Arguments += " -q1" + q1 + " -q2" + q2
         SI_filter.Arguments += " -o " + """" + out_dir + """"
-        SI_filter.Arguments += " -kf 16"
+        SI_filter.Arguments += " -kf " + k1
         SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
         SI_filter.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
         SI_filter.Arguments += " -lkd kmer_dict_k16.dict"

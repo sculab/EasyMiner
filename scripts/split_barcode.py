@@ -27,11 +27,11 @@ def split_file(query_file, subject_file, word_size, seq_file_name, out_folder):
     output_db = seq_file_name 
     output_file = seq_file_name + '.tsv'
     makeblastdb_cmd = [r"..\analysis\makeblastdb.exe", "-in", subject_file if subject_file[0] == '"' else '"' + subject_file + '"', "-dbtype", "nucl", "-out", output_db]
-    print(" ".join(makeblastdb_cmd))
+    # print(" ".join(makeblastdb_cmd))
     print('Analysing' ,seq_file_name)
     subprocess.run(makeblastdb_cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     blastn_cmd = [r"..\analysis\blastn.exe", "-query", query_file if query_file[0] == '"' else '"' + query_file + '"', "-db", output_db, "-out", output_file, "-outfmt", "6", "-num_alignments", "1", "-max_hsps", "1", "-evalue", "10", "-word_size", str(word_size), "-num_threads", "8"]
-    print(" ".join(blastn_cmd))
+    # print(" ".join(blastn_cmd))
     subprocess.run(" ".join(blastn_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     barcode_dict = {}

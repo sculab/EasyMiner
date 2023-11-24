@@ -19,9 +19,9 @@ def STR2BOOL(v):  # 在参数中使用逻辑值
 
 pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\org_seq")
 pars.add_argument('-q1', metavar='<str>', type=str, help='''input fq/gz -1 files.''', required=False,
-                    default=[r"F:\yxy-Easyminer数据\Ara2m_1.1.fq"], nargs="+")
+                    default=[r"E:\测试数据\Arabidopsis_HQ_R1.fq.gz"], nargs="+")
 pars.add_argument('-q2', metavar='<str>', type=str, help='''input fq/gz -2 files.''', required=False,
-                    default=[r"F:\yxy-Easyminer数据\Ara2m_1.2.fq"], nargs="+")
+                    default=[r"E:\测试数据\Arabidopsis_HQ_R1.fq.gz"], nargs="+")
 pars.add_argument('-kf', metavar='<int>', type=int,
                     help='''kmer of filter''', default=31)
 pars.add_argument('-s', metavar='<int>', type=int, help='''length of the sliding window on the reads''', default=4)

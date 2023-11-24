@@ -164,7 +164,6 @@ class Extract_reference():
         self.marker_min_length = configuration_information["min_marker_length"]
         self.gap_length = configuration_information["gap_length"]
         self.thread_number = configuration_information["thread_number"]
-        self.max_primer = configuration_information["max_primer"]
         self.usevar = configuration_information["usevar"]
         self.split_only = configuration_information["split_only"]
         self.intron_only = configuration_information["intron_only"]
@@ -501,8 +500,6 @@ if __name__ == '__main__':
     pars.add_argument('-intron_only', type=str2bool, nargs='?', const=True, help='''是否只包含intron''', default = False)
     pars.add_argument('-out_dir', metavar='<str>', type=str,
                       help='''output folder.''', required=False, default='./build_primer_test/out_test')
-    pars.add_argument('-max_primer', metavar='<int>', type=int,
-                      help='''max number of primer''', required=False, default=64)
 
     args = pars.parse_args()
     print("Do not close this window manually, please!")
@@ -514,7 +511,6 @@ if __name__ == '__main__':
     max_marker_length = args.max_marker_length
     min_marker_length = args.min_marker_length
     gap_length = args.gap_length
-    max_primer = args.max_primer
     thread_number = args.t
     split_only = args.split_only
     usevar = args.usevar
@@ -524,7 +520,7 @@ if __name__ == '__main__':
     configuration_information = {"out": out,  "input": input_data, "soft_boundary": soft_boundary,
                                  "max_marker_length": max_marker_length, "min_marker_length": min_marker_length,
                                  "max_seq_length": max_seq_length, "min_seq_length": min_seq_length, "gap_length": gap_length,
-                                 "thread_number": thread_number, "max_primer": max_primer, "usevar":usevar,
+                                 "thread_number": thread_number, "usevar":usevar,
                                  "split_only": split_only, "intron_only": intron_only, "do_alignment": do_alignment}
     
     if os.path.isdir(input_data):

@@ -462,7 +462,9 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
             # 略微降低一个级别的k提供更好的兼容性
             current_ka -= 2
             Write_Print(os.path.join(args.o,  "log.txt"), "Use k=", current_ka, " for assembling the ", key ,".", sep='')
-            
+        else:
+            ref_list = Get_Ref_List([ref_path_dict[key]])
+            keys_with_slice_len = {key for key in reads_dict.keys() if len(key) == slice_len}
         Write_Print(os.path.join(args.o,  "log.txt"), 'Assembling', key, loop_count,'/',len(ref_path_dict)," " * 32)
         
         # 制作参考序列的kmer字典
@@ -574,7 +576,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
 if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
-    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=0)
+    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=31)
     pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=63)
     pars.add_argument('-k_min', metavar='<int>', type=int, help='''max kmer of assemble''',  default=21)
     pars.add_argument('-limit_count', metavar='<int>', type=int, help='''limit of kmer count''', required=False, default=2)

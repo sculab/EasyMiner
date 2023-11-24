@@ -94,22 +94,22 @@ def map_file(query_file, subject_file, word_size, folder_name, out_folder, con_t
     Write_Print(os.path.join(out_folder, "log.txt"), 'The best reference of', folder_name, "is", closest_ref.split("|")[1])
     check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, level , keep_best)
 
-def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, level, mmap = "map-pb", keep_best = True):
+def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, level, keep_best = True, mmap = "map-pb"):
     print("Mapping to reference ...")
     minimap2_cmd = [r"..\analysis\minimap2.exe", "-ax", mmap, '"' + os.path.join(out_folder, folder_name + "_ref.fasta") + '"', query_file if query_file[0] == '"' else '"' + query_file + '"', "-o", '"' + os.path.join(out_folder, folder_name + ".sam") + '"']
-    print(" ".join(minimap2_cmd))
+    # print(" ".join(minimap2_cmd))
     subprocess.run(" ".join(minimap2_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", "0.75","-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp']
-    print(" ".join(build_consensus_cmd))
+    # print(" ".join(build_consensus_cmd))
     subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     minimap2_cmd = [r"..\analysis\minimap2.exe", "-ax", mmap, '"' + os.path.join(out_folder, folder_name + "_tmp.fasta") + '"', query_file if query_file[0] == '"' else '"' + query_file + '"', "-o", '"' + os.path.join(out_folder, folder_name + ".sam") + '"']
-    print(" ".join(minimap2_cmd))
+    # print(" ".join(minimap2_cmd))
     subprocess.run(" ".join(minimap2_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", con_thr,"-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp']
-    print(" ".join(build_consensus_cmd))
+    build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", con_thr,"-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp', "-s 1"]
+    # print(" ".join(build_consensus_cmd))
     subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     print("Making alignment ...")
@@ -173,14 +173,14 @@ def process_query_file(input_file, subject_file, word_size, out_folder, con_thr,
 
 def main():
     parser = argparse.ArgumentParser(description="构建合并后的序列")
-    parser.add_argument("-i", "--input", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\filtered\5721.fq", help="选项文件夹的路径")
-    parser.add_argument("-r", "--ref", required=False, default=r"E:\HLA\HLA-ref.fasta", help="参考序列的路径")
-    parser.add_argument("-o", "--output", required=False, default=r'D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\paralogs', help="结果文件夹的路径")
+    parser.add_argument("-i", "--input", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\clean_data", help="选项文件夹的路径")
+    parser.add_argument("-r", "--ref", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp_refs\barcode_refs.fasta", help="参考序列的路径")
+    parser.add_argument("-o", "--output", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results", help="结果文件夹的路径")
     parser.add_argument('-w', "--word_size", required=False, default = "7", help='''word size''')
     parser.add_argument("-c", "--con_thr", required=False, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75", help="List of consensus thresold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.25")
     parser.add_argument("-l", "--level", required=False, type=int, default=4, help='level of mix 1~4')
     parser.add_argument('-p', "--processes", required=False, type=int, default=16, help='Number of processes')
-    parser.add_argument('-m', "--mode", required=False, type=int, default=1, help='0: build barcode 1: build option only')
+    parser.add_argument('-m', "--mode", required=False, type=int, default=0, help='0: build barcode 1: build option only')
     args = parser.parse_args()
     subject_file = args.ref 
     con_thr = args.con_thr
@@ -190,7 +190,7 @@ def main():
     out_folder = args.output
 
     if mode == 1:
-        check_muti_copy(args.input, word_size, os.path.basename(os.path.splitext(args.input)[0]), out_folder, con_thr, level, "sr", False)
+        check_muti_copy(args.input, word_size, os.path.basename(os.path.splitext(args.input)[0]), out_folder, con_thr, level, False, "sr")
         return 1
     processed_sequences = []
     with open(subject_file, "r") as fasta_file:

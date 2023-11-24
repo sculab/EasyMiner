@@ -37,6 +37,7 @@ Public Class Welcome
             Case "advanced", "debug"
                 form_main.长读条码ToolStripMenuItem.Visible = True
                 form_main.三方工具ToolStripMenuItem.Visible = True
+                form_main.迭代ToolStripMenuItem.Visible = True
             Case "hiv"
                 form_main.长读条码ToolStripMenuItem.Visible = True
                 form_main.三方工具ToolStripMenuItem.Visible = False
