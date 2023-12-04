@@ -77,6 +77,7 @@ Click **[Analyse>Filter&Splice]** to run the programme with default parameters a
 Click on the **"Open"** button to view the results file. The assembled files are saved in the **results** directory in fasta format.
 
 See the Gitee homepage for more examples.
+Whole page of manual click [here](D:\app\Gitee_easyminer\EasyMiner\manual\ZH_CN\readmeall.pdf)
 
 # Questions
 **1.** **What is the meaning of filter depth in the result list?**
