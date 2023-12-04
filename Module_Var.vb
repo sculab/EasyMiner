@@ -9,7 +9,7 @@ Module Module_Var
 #ElseIf TargetOS = "win64" Then
     Public TargetOS As String = "win64"
 #End If
-    Public version As String = "1.0 build 20231124"
+    Public version As String = "1.0 build 20231130"
     Public exe_mode As String = "debug"
     Public database_url As String
     Public settings As Dictionary(Of String, String)

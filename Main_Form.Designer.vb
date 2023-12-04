@@ -105,7 +105,6 @@ Partial Class Main_Form
         SplitContainer1 = New SplitContainer()
         ProgressBar1 = New ProgressBar()
         RichTextBox1 = New RichTextBox()
-        过滤参数设定ToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         ContextMenuStrip2.SuspendLayout()
@@ -233,7 +232,7 @@ Partial Class Main_Form
         ' 
         过滤ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {从头过滤ToolStripMenuItem, 进一步过滤ToolStripMenuItem})
         过滤ToolStripMenuItem.Name = "过滤ToolStripMenuItem"
-        过滤ToolStripMenuItem.Size = New Size(172, 22)
+        过滤ToolStripMenuItem.Size = New Size(180, 22)
         过滤ToolStripMenuItem.Text = "过滤"
         ' 
         ' 从头过滤ToolStripMenuItem
@@ -251,25 +250,25 @@ Partial Class Main_Form
         ' 拼接ToolStripMenuItem
         ' 
         拼接ToolStripMenuItem.Name = "拼接ToolStripMenuItem"
-        拼接ToolStripMenuItem.Size = New Size(172, 22)
+        拼接ToolStripMenuItem.Size = New Size(180, 22)
         拼接ToolStripMenuItem.Text = "拼接"
         ' 
         ' 全自动ToolStripMenuItem
         ' 
         全自动ToolStripMenuItem.Name = "全自动ToolStripMenuItem"
-        全自动ToolStripMenuItem.Size = New Size(172, 22)
+        全自动ToolStripMenuItem.Size = New Size(180, 22)
         全自动ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' ToolStripSeparator4
         ' 
         ToolStripSeparator4.Name = "ToolStripSeparator4"
-        ToolStripSeparator4.Size = New Size(169, 6)
+        ToolStripSeparator4.Size = New Size(177, 6)
         ' 
         ' 迭代ToolStripMenuItem
         ' 
         迭代ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {迭代ToolStripMenuItem1, 用迭代覆盖ToolStripMenuItem})
         迭代ToolStripMenuItem.Name = "迭代ToolStripMenuItem"
-        迭代ToolStripMenuItem.Size = New Size(172, 22)
+        迭代ToolStripMenuItem.Size = New Size(180, 22)
         迭代ToolStripMenuItem.Text = "迭代"
         迭代ToolStripMenuItem.Visible = False
         ' 
@@ -288,36 +287,36 @@ Partial Class Main_Form
         ' 重构ToolStripMenuItem
         ' 
         重构ToolStripMenuItem.Name = "重构ToolStripMenuItem"
-        重构ToolStripMenuItem.Size = New Size(172, 22)
+        重构ToolStripMenuItem.Size = New Size(180, 22)
         重构ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' 多拷贝检测ToolStripMenuItem
         ' 
         多拷贝检测ToolStripMenuItem.Name = "多拷贝检测ToolStripMenuItem"
-        多拷贝检测ToolStripMenuItem.Size = New Size(172, 22)
+        多拷贝检测ToolStripMenuItem.Size = New Size(180, 22)
         多拷贝检测ToolStripMenuItem.Text = "旁系同源检测"
         ' 
         ' ToolStripSeparator9
         ' 
         ToolStripSeparator9.Name = "ToolStripSeparator9"
-        ToolStripSeparator9.Size = New Size(169, 6)
+        ToolStripSeparator9.Size = New Size(177, 6)
         ' 
         ' 植物叶绿体基因组ToolStripMenuItem
         ' 
         植物叶绿体基因组ToolStripMenuItem.Name = "植物叶绿体基因组ToolStripMenuItem"
-        植物叶绿体基因组ToolStripMenuItem.Size = New Size(172, 22)
+        植物叶绿体基因组ToolStripMenuItem.Size = New Size(180, 22)
         植物叶绿体基因组ToolStripMenuItem.Text = "植物叶绿体基因组"
         ' 
         ' 植物线粒体基因组ToolStripMenuItem
         ' 
         植物线粒体基因组ToolStripMenuItem.Name = "植物线粒体基因组ToolStripMenuItem"
-        植物线粒体基因组ToolStripMenuItem.Size = New Size(172, 22)
+        植物线粒体基因组ToolStripMenuItem.Size = New Size(180, 22)
         植物线粒体基因组ToolStripMenuItem.Text = "植物线粒体基因组"
         ' 
         ' 哺乳动物线粒体基因组ToolStripMenuItem1
         ' 
         哺乳动物线粒体基因组ToolStripMenuItem1.Name = "哺乳动物线粒体基因组ToolStripMenuItem1"
-        哺乳动物线粒体基因组ToolStripMenuItem1.Size = New Size(172, 22)
+        哺乳动物线粒体基因组ToolStripMenuItem1.Size = New Size(180, 22)
         哺乳动物线粒体基因组ToolStripMenuItem1.Text = "动物线粒体基因组"
         ' 
         ' 长读条码ToolStripMenuItem
@@ -358,7 +357,7 @@ Partial Class Main_Form
         ' 
         ' 批量ToolStripMenuItem1
         ' 
-        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, ToolStripSeparator8, 重构序列ToolStripMenuItem, 旁系同源检测ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, 过滤参数设定ToolStripMenuItem, ToolStripSeparator10, 统计结果ToolStripMenuItem})
+        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, ToolStripSeparator8, 重构序列ToolStripMenuItem, 旁系同源检测ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
         批量ToolStripMenuItem1.Name = "批量ToolStripMenuItem1"
         批量ToolStripMenuItem1.Size = New Size(44, 21)
         批量ToolStripMenuItem1.Text = "批量"
@@ -656,7 +655,7 @@ Partial Class Main_Form
         ' 
         RichTextBox1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Right
         RichTextBox1.BorderStyle = BorderStyle.FixedSingle
-        RichTextBox1.Font = New Font("Arial", 9.0F, FontStyle.Regular, GraphicsUnit.Point)
+        RichTextBox1.Font = New Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point)
         RichTextBox1.Location = New Point(620, 155)
         RichTextBox1.Name = "RichTextBox1"
         RichTextBox1.ReadOnly = True
@@ -664,15 +663,9 @@ Partial Class Main_Form
         RichTextBox1.TabIndex = 0
         RichTextBox1.Text = "双击此处查看最近的日志"
         ' 
-        ' 过滤参数设定ToolStripMenuItem
-        ' 
-        过滤参数设定ToolStripMenuItem.Name = "过滤参数设定ToolStripMenuItem"
-        过滤参数设定ToolStripMenuItem.Size = New Size(180, 22)
-        过滤参数设定ToolStripMenuItem.Text = "预处理参数设定"
-        ' 
         ' Main_Form
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 17.0F)
+        AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(794, 509)
         Controls.Add(ProgressBar1)
@@ -792,5 +785,4 @@ Partial Class Main_Form
     Friend WithEvents 反选ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
     Friend WithEvents 用迭代覆盖ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents 过滤参数设定ToolStripMenuItem As ToolStripMenuItem
 End Class

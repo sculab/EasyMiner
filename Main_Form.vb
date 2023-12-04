@@ -5,6 +5,8 @@ Imports System.Threading.Tasks
 Imports System.Text
 Imports System.Globalization
 Imports System.Reflection.Emit
+Imports System.Text.RegularExpressions
+
 
 Public Class Main_Form
 
@@ -629,6 +631,16 @@ Public Class Main_Form
         opendialog.CheckPathExists = True
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
+            For Each file_name As String In opendialog.FileNames
+                Dim RegCHZN As New Regex("[\u4e00-\u9fa5]")
+                Dim m As Match = RegCHZN.Match(System.IO.Path.GetFileNameWithoutExtension(file_name))
+                If m.Success Then
+                    MsgBox("测序文件的文件名中不得含有中文（亚洲语言字符）！" + Chr(13) + "Sequencing file names must not include Asian language characters.")
+                    Exit Sub
+                End If
+            Next
+
+
             If opendialog.FileName.ToLower.EndsWith(".gz") Or opendialog.FileName.ToLower.EndsWith(".fq") Or opendialog.FileName.ToLower.EndsWith(".fastq") Then
                 data_type = ".fq"
             Else
@@ -713,6 +725,12 @@ Public Class Main_Form
         Dim opendialog As New FolderBrowserDialog
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
+            Dim RegCHZN As New Regex("[\u4e00-\u9fa5]")
+            Dim m As Match = RegCHZN.Match(opendialog.SelectedPath)
+            If m.Success Then
+                MsgBox("结果所在路径不得含有中文（亚洲语言字符）！" + Chr(13) + "The path for the results should not include Asian language characters.")
+                Exit Sub
+            End If
             If opendialog.SelectedPath.EndsWith(":\") Then
                 MsgBox("Please do not save to the root directory!")
             Else
@@ -720,9 +738,7 @@ Public Class Main_Form
                     Dim result As DialogResult = MessageBox.Show("The folder is not empty, its contents may be deleted. Are you sure to use this folder?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     ' 根据用户的选择执行相应的操作
                     If result = DialogResult.Yes Then
-
                         TextBox1.Text = opendialog.SelectedPath
-
                     End If
                 Else
                     TextBox1.Text = opendialog.SelectedPath
@@ -918,7 +934,7 @@ Public Class Main_Form
             form_config_basic.GroupBox2.Enabled = True
             form_config_basic.GroupBox3.Enabled = False
             form_config_basic.GroupBox4.Enabled = False
-            form_config_basic.NumericUpDown1.Value = 21
+            form_config_basic.NumericUpDown1.Value = 31
             form_config_basic.Show()
 
         Else
@@ -1111,7 +1127,7 @@ Public Class Main_Form
             form_config_basic.GroupBox2.Enabled = True
             form_config_basic.GroupBox3.Enabled = True
             form_config_basic.GroupBox4.Enabled = True
-            form_config_basic.NumericUpDown1.Value = 21
+            form_config_basic.NumericUpDown1.Value = 31
             MenuClicked = "auto_assemble"
             form_config_basic.Show()
 
@@ -1647,7 +1663,7 @@ Public Class Main_Form
             form_config_basic.GroupBox2.Enabled = True
             form_config_basic.GroupBox3.Enabled = True
             form_config_basic.GroupBox4.Enabled = True
-            form_config_basic.NumericUpDown1.Value = 21
+            form_config_basic.NumericUpDown1.Value = 31
             form_config_basic.Show()
 
         Else
@@ -1682,9 +1698,18 @@ Public Class Main_Form
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+
                 Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                Dim pre_out As String = out_dir
                 out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
                 My.Computer.FileSystem.CreateDirectory(out_dir)
+
+                If File.Exists(pre_out + "\kmer_dict_k" + k1.ToString + ".dict") Then
+                    If batch_i < seqsView.Count Then
+                        File.Move(pre_out + "\kmer_dict_k" + k1.ToString + ".dict", out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
+                    End If
+                End If
+
 
                 q1 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
                 q2 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
@@ -1693,9 +1718,7 @@ Public Class Main_Form
                     'If Directory.Exists(out_dir + "\filtered") Then
                     '    Directory.Delete(out_dir + "\filtered", True)
                     'End If
-                    If File.Exists(out_dir + "\kmer_dict_k" + k1.ToString + ".dict") Then
-                        File.Delete(out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
-                    End If
+
                     If Directory.Exists(out_dir + "\large_files") Then
                         Directory.Delete(out_dir + "\large_files", True)
                     End If
@@ -2054,6 +2077,15 @@ Public Class Main_Form
         DataGridView2.EndEdit()
         DataGridView1.Refresh()
         DataGridView2.Refresh()
+        MenuClicked = "batch_plant_mito"
+        form_config_basic.GroupBox2.Enabled = True
+        form_config_basic.GroupBox3.Enabled = False
+        form_config_basic.GroupBox4.Enabled = False
+        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.Show()
+
+    End Sub
+    Private Sub menu_batch_plant_mito()
         cpg_down_mode = 5
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2071,6 +2103,14 @@ Public Class Main_Form
         DataGridView2.EndEdit()
         DataGridView1.Refresh()
         DataGridView2.Refresh()
+        MenuClicked = "batch_plant_cp"
+        form_config_basic.GroupBox2.Enabled = True
+        form_config_basic.GroupBox3.Enabled = False
+        form_config_basic.GroupBox4.Enabled = False
+        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.Show()
+    End Sub
+    Private Sub menu_batch_plant_cp()
         cpg_down_mode = 4
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2551,6 +2591,14 @@ Public Class Main_Form
         DataGridView2.EndEdit()
         DataGridView1.Refresh()
         DataGridView2.Refresh()
+        MenuClicked = "plant_cp"
+        form_config_basic.GroupBox2.Enabled = True
+        form_config_basic.GroupBox3.Enabled = False
+        form_config_basic.GroupBox4.Enabled = False
+        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.Show()
+    End Sub
+    Private Sub menu_plant_cp()
         cpg_down_mode = 1
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
@@ -2562,10 +2610,6 @@ Public Class Main_Form
             MsgBox("Please select at least one sequencing data!")
             Exit Sub
         End If
-        DataGridView1.EndEdit()
-        DataGridView2.EndEdit()
-        DataGridView1.Refresh()
-        DataGridView2.Refresh()
         Dim result As DialogResult = MessageBox.Show("To assemble the plant mitochondrial genome, it is necessary to already possess the chloroplast genome of the plant. Click 'Yes' to choose the chloroplast genome.", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
         ' 根据用户的选择执行相应的操作
         If result = DialogResult.Yes Then
@@ -2578,14 +2622,25 @@ Public Class Main_Form
             Dim resultdialog As DialogResult = opendialog.ShowDialog()
             If resultdialog = DialogResult.OK Then
                 File.Copy(opendialog.FileName, currentDirectory + "temp\cpg.fasta", True)
-                cpg_down_mode = 3
-                out_dir = TextBox1.Text.Replace("\", "/")
-                form_config_cp.CheckBox1.Visible = False
-                form_config_cp.Show()
+                DataGridView1.EndEdit()
+                DataGridView2.EndEdit()
+                DataGridView1.Refresh()
+                DataGridView2.Refresh()
+                MenuClicked = "plant_mito"
+                form_config_basic.GroupBox2.Enabled = True
+                form_config_basic.GroupBox3.Enabled = False
+                form_config_basic.GroupBox4.Enabled = False
+                form_config_basic.NumericUpDown1.Value = 16
+                form_config_basic.Show()
             End If
         End If
     End Sub
-
+    Private Sub menu_plant_mito()
+        cpg_down_mode = 3
+        out_dir = TextBox1.Text.Replace("\", "/")
+        form_config_cp.CheckBox1.Visible = False
+        form_config_cp.Show()
+    End Sub
     Private Sub 分离序列ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 分离序列ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
             Dim refs_count As Integer = 0
@@ -2679,10 +2734,14 @@ Public Class Main_Form
                     MergeFiles(Path.Combine(ref_dir, "barcode_refs.fasta"), Path.Combine(currentDirectory, "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
                 End If
             Next
-            Dim level As String = InputBox("Input variability value: 1-4. Increasing the variability value results in a greater variation in the alternative sequences.", "Input", 2)
-            If Int(level) >= 1 And Int(level) <= 4 Then
+            Dim level As Integer
+            Dim my_input As String = InputBox("Input variability value: 1-4. Increasing the variability value results in a greater variation in the alternative sequences.", "Input", 4)
+            If Not Integer.TryParse(my_input, level) Then
+                Exit Sub
+            End If
+            If level >= 1 And level <= 4 Then
                 Dim th1 As New Thread(AddressOf do_build_barcode)
-                th1.Start(Int(level))
+                th1.Start(level)
             Else
                 MsgBox("Please enter the correct number!")
             End If
@@ -2725,12 +2784,19 @@ Public Class Main_Form
         DataGridView2.EndEdit()
         DataGridView1.Refresh()
         DataGridView2.Refresh()
+        MenuClicked = "animal_mito"
+        form_config_basic.GroupBox2.Enabled = True
+        form_config_basic.GroupBox3.Enabled = False
+        form_config_basic.GroupBox4.Enabled = False
+        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.Show()
+    End Sub
+    Private Sub menu_animal_mito()
         cpg_down_mode = 8
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
         form_config_cp.Show()
     End Sub
-
     Private Sub 哺乳动物线粒体基因组ToolStripMenuItem2_Click(sender As Object, e As EventArgs) Handles 哺乳动物线粒体基因组ToolStripMenuItem2.Click
         If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 And DebugToolStripMenuItem.Checked = False Then
             Dim result As DialogResult = MessageBox.Show("The result folder is not empty. Are you sure to proceed?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -2742,12 +2808,22 @@ Public Class Main_Form
         DataGridView2.EndEdit()
         DataGridView1.Refresh()
         DataGridView2.Refresh()
+        MenuClicked = "batch_animal_mito"
+        form_config_basic.GroupBox2.Enabled = True
+        form_config_basic.GroupBox3.Enabled = False
+        form_config_basic.GroupBox4.Enabled = False
+        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.Show()
+
+
+    End Sub
+
+    Private Sub menu_batch_animal_mito()
         cpg_down_mode = 9
         out_dir = TextBox1.Text.Replace("\", "/")
         form_config_cp.CheckBox1.Visible = False
         form_config_cp.Show()
     End Sub
-
     Private Sub EnglishToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnglishToolStripMenuItem.Click
         If language = "EN" Then
             to_ch()
@@ -2781,6 +2857,19 @@ Public Class Main_Form
                 menu_auto_assemble()
             Case "iteration"
                 menu_iteration()
+            Case "plant_cp"
+                menu_plant_cp()
+            Case "plant_mito"
+                menu_plant_mito()
+            Case "animal_mito"
+                menu_animal_mito()
+            Case "batch_plant_cp"
+                menu_batch_plant_cp()
+            Case "batch_plant_mito"
+                menu_batch_plant_mito()
+            Case "batch_animal_mito"
+                menu_batch_animal_mito()
+
             Case "null"
             Case Else
         End Select
@@ -2972,16 +3061,5 @@ Public Class Main_Form
         PB_value = 0
     End Sub
 
-    Private Sub 过滤参数设定ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过滤参数设定ToolStripMenuItem.Click
-        DataGridView1.EndEdit()
-        DataGridView2.EndEdit()
-        DataGridView1.Refresh()
-        DataGridView2.Refresh()
-        MenuClicked = "null"
-        form_config_basic.GroupBox2.Enabled = True
-        form_config_basic.GroupBox3.Enabled = False
-        form_config_basic.GroupBox4.Enabled = False
-        form_config_basic.NumericUpDown1.Value = 16
-        form_config_basic.Show()
-    End Sub
+
 End Class

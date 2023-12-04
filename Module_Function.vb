@@ -1,6 +1,9 @@
 ﻿Imports System.IO
 Imports System.Net
 Imports System.Net.Http
+Imports System.Threading
+Imports System.Text.RegularExpressions
+
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Module Module_Function
     Public Function ReadSettings(filePath As String) As Dictionary(Of String, String)
@@ -118,6 +121,12 @@ Module Module_Function
                 path_char = "\"
         End Select
         root_path = (Application.StartupPath + path_char).Replace(path_char + path_char, path_char)
+        Dim RegCHZN As New Regex("[\u4e00-\u9fa5]")
+        Dim m As Match = RegCHZN.Match(root_path)
+        If m.Success Then
+            MsgBox("程序所在路径不得含有中文（亚洲语言字符）！" + Chr(13) + "The installation path should not contain Asian language characters.")
+            End
+        End If
         Dec_Sym = CInt("0").ToString("F1").Replace("0", "")
         If Dec_Sym <> "." Then
             MsgBox("Notice: We will use dat (.) as decimal quotation instead of comma (,). We recommand to change your system's number format to English! ")
@@ -224,24 +233,38 @@ Module Module_Function
         Return stopwatch.ElapsedMilliseconds
     End Function
     Public Async Function get_genome_data(ByVal database_type As String, ByVal file_type As String, ByVal gb_id As String) As Task(Of String)
-        Try
-            Dim data_folder As String = currentDirectory & "database\" & database_type & "_" & file_type & "\" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "\" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "\"
-            Dim file_path As String = data_folder & gb_id & "." & file_type
+        Dim data_folder As String = currentDirectory & "database\" & database_type & "_" & file_type & "\" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "\" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "\"
+        Dim file_path As String = data_folder & gb_id & "." & file_type
 
-            If Not File.Exists(file_path) Then
-                Dim source_file As String = database_url & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
-                My.Computer.FileSystem.CreateDirectory(data_folder)
+        Dim retryCount As Integer = 0
+        Dim maxRetries As Integer = 1 ' 设置最大重试次数为1
+        Dim httpClient As New HttpClient()
+        httpClient.Timeout = TimeSpan.FromSeconds(10)
 
-                Dim response = Await client.GetAsync(source_file)
-                response.EnsureSuccessStatusCode()
+        While retryCount <= maxRetries
+            Try
+                If Not File.Exists(file_path) Then
+                    Dim source_file As String = database_url & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
+                    My.Computer.FileSystem.CreateDirectory(data_folder)
 
-                Dim content = Await response.Content.ReadAsByteArrayAsync()
-                File.WriteAllBytes(file_path, content)
-            End If
-            Return file_path
-        Catch ex As Exception
-            Return ""
-        End Try
+                    Dim response = Await httpClient.GetAsync(source_file)
+                    response.EnsureSuccessStatusCode()
+
+                    Dim content = Await response.Content.ReadAsByteArrayAsync()
+                    File.WriteAllBytes(file_path, content)
+                End If
+                Return file_path
+            Catch ex As Exception
+                ' 如果发生异常，等待一段时间后重试
+                form_main.RichTextBox1.AppendText("Could not download " + gb_id + vbCrLf)
+                retryCount += 1
+                If retryCount <= maxRetries Then
+                    Thread.Sleep(TimeSpan.FromSeconds(1)) ' 等待5秒后重试
+                Else
+                    Return ""
+                End If
+            End Try
+        End While
     End Function
 
     Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)

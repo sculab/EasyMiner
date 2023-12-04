@@ -109,11 +109,11 @@ Partial Class Config_Basic
         ' 
         NumericUpDown1.Location = New Point(111, 52)
         NumericUpDown1.Maximum = New Decimal(New Integer() {300, 0, 0, 0})
-        NumericUpDown1.Minimum = New Decimal(New Integer() {19, 0, 0, 0})
+        NumericUpDown1.Minimum = New Decimal(New Integer() {16, 0, 0, 0})
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(54, 23)
         NumericUpDown1.TabIndex = 3
-        NumericUpDown1.Value = New Decimal(New Integer() {21, 0, 0, 0})
+        NumericUpDown1.Value = New Decimal(New Integer() {31, 0, 0, 0})
         ' 
         ' Label2
         ' 

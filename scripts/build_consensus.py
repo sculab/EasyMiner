@@ -9,6 +9,8 @@ import os
 import sys
 import csv
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import gaussian_kde
 # Dictionary to translate IUPAC ambiguities, lowercase letters are used when "-" or "N" were present for a position,
 # however, software like Genious for example are case insensitive and will imply ignore capitalization
 amb = {"-": "-", "A": "A", "C": "C", "G": "G", "N": "N", "T": "T",
@@ -40,13 +42,13 @@ def parse_cigar(cigarstring, seq, pos_ref):
 def parse_args():
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"E:\run\results\Barcode3.sam",
+    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\Barcode_adapter_BA7.sam",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
     parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75",
                         help="List of consensus threshold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.75")
     parser.add_argument("-n", action="store", dest="n", type=int, default=0,
                         help="Split FASTA output sequences every n nucleotides, default=do not split sequence")
-    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"E:\run\results",
+    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"D:\HIVTEST\app\results",
                         help="Name of output folder, default=same folder as input")
     parser.add_argument("-p", "--prefix", action="store", dest="prefix", default="",
                         help="Prefix for output file name, default=input filename without .sam extension")
@@ -56,7 +58,7 @@ def parse_args():
                         help="Character for padding regions not covered in the reference, default= - (gap)")
     parser.add_argument("-d", "--maxdel", action="store", dest="maxdel", default=150,
                         help="Ignore deletions longer than this value, default=150")
-    parser.add_argument("-s", "--save_pos", action="store", dest="save_pos", default=1,
+    parser.add_argument("-s", "--save_mutations", action="store", dest="save_mutations", default=1,
                         help="保存碱基的比例")
     return parser.parse_args()
 
@@ -64,7 +66,7 @@ def process_sam_header(mapfile):
     sequences = {}
     coverages = {}
     insertions = {}
-
+    refname = ""
     for line in mapfile:
         if line.startswith("@"):
             if line.startswith("@SQ"):
@@ -204,62 +206,7 @@ def filter_empty_references(sequences, coverages, insertions):
         del insertions[refname]
     return sequences
 
-def save_fastas(fastas, outfolder, prefix, nchar, thresholds):
-    for reference in fastas:
-        outfile = open(os.path.join(outfolder, prefix+".fasta"), "w")
-        if nchar == 0:
-            outfile.write("\n".join([i[0] + "\n" + i[1] for i in fastas[reference]]) + "\n")
-        else:
-            outfile.write("\n".join([i[0] + "\n" + "\n".join([i[1][s:s+nchar] for s in range(0, len(i[1]), nchar)]) for i in fastas[reference]]) + "\n")
-        outfile.close()
-        if len(thresholds) == 1:
-            print(f"Consensus sequence at {int(thresholds[0]*100)}% saved for {reference} in: {outfolder+prefix}.fasta")
-        else:
-            print(f"Consensus sequences at {','.join([str(int(i*100))+'%' for i in thresholds])} saved for {reference} in: {outfolder+prefix}.fasta")
-    print("Done.\n")
-
-def main():
-    args = parse_args()
-    filename = args.filename
-    opener = gzip.open if filename.endswith(".gz") else open
-    thresholds = [float(i) for i in args.thresholds.split(",")]
-    prefix = args.prefix or os.path.splitext(os.path.basename(args.filename))[0]
-    outfolder = args.outfolder
-    os.makedirs(outfolder, exist_ok=True)
-    min_depth = args.min_depth
-    nchar = args.n
-    fill = args.fill
-    maxdel = args.maxdel
-
-    sequences, coverages, insertions, refname, reflength = process_sam_header(opener(filename))
-    reads_total, reads_mapped = parse_sam_file(opener(filename), sequences, coverages, insertions, refname, args.maxdel)
-    print(f"A total of {reads_total} reads were processed, out of which, {reads_mapped} reads were mapped.\n")
-    sequences = reformat_sequences(sequences, coverages, insertions)
-    sequences = filter_empty_references(sequences, coverages, insertions)
-    if args.save_pos:
-        pos_dict = {}
-        for refname in sequences:
-            for pos, cov in enumerate(coverages[refname]):
-                if sequences[refname][pos]:
-                    if cov >= min_depth:
-                        nucs = []
-                        for count in sequences[refname][pos]:
-                            for n in count[1]:
-                                nucs.append((n, count[0]))
-                        pos_dict[f"{refname}_{pos}"] = nucs
-
-        save_to_csv(pos_dict, os.path.join(outfolder, prefix.replace("_tmp","") +".csv"))
-        filted_dict = filter_by_max_proportion(calculate_proportions(pos_dict))
-        if filted_dict:
-            save_to_csv(filted_dict, os.path.join(outfolder, prefix.replace("_tmp","") +".pec.csv"))
-            data = []
-            for v in filted_dict.values():
-                for x in v:
-                    if x[1]<0.9 and x[1]>0.1:
-                        data.append(x[1])
-            plt.hist(data, bins=8, edgecolor='k')
-            plt.savefig(os.path.join(outfolder, prefix.replace("_tmp","") +".png"))
-
+def save_fastas(sequences, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds):
     fastas = {}
     for refname in sequences:
         for t in thresholds:
@@ -295,7 +242,72 @@ def main():
                 else:
                     fastas[refname].append([fasta_header, fasta_seqout])
 
-    save_fastas(fastas, outfolder, prefix, nchar, thresholds)
+    for reference in fastas:
+        outfile = open(os.path.join(outfolder, prefix+".fasta"), "w")
+        if nchar == 0:
+            outfile.write("\n".join([i[0] + "\n" + i[1] for i in fastas[reference]]) + "\n")
+        else:
+            outfile.write("\n".join([i[0] + "\n" + "\n".join([i[1][s:s+nchar] for s in range(0, len(i[1]), nchar)]) for i in fastas[reference]]) + "\n")
+        outfile.close()
+        if len(thresholds) == 1:
+            print(f"Consensus sequence at {int(thresholds[0]*100)}% saved for {reference} in: {outfolder+prefix}.fasta")
+        else:
+            print(f"Consensus sequences at {','.join([str(int(i*100))+'%' for i in thresholds])} saved for {reference} in: {outfolder+prefix}.fasta")
+    print("Done.\n")
+
+def save_mutations_table(sequences, coverages, outfolder, prefix, min_depth):
+    pos_dict = {}
+    for refname in sequences:
+        for pos, cov in enumerate(coverages[refname]):
+            if sequences[refname][pos]:
+                if cov >= min_depth:
+                    nucs = []
+                    for count in sequences[refname][pos]:
+                        for n in count[1]:
+                            nucs.append((n, count[0]))
+                    pos_dict[f"{refname}_{pos}"] = nucs
+
+    save_to_csv(pos_dict, os.path.join(outfolder, prefix +".csv"))
+    filted_dict = filter_by_max_proportion(calculate_proportions(pos_dict))
+    if filted_dict:
+        save_to_csv(filted_dict, os.path.join(outfolder, prefix +".pec.csv"))
+        data = []
+        for v in filted_dict.values():
+            for x in v:
+                if x[1] < 0.9 and x[1]>0.1:
+                    data.append(x[1])
+        if len(data) > 0:
+            density = gaussian_kde(data)
+            xs = np.linspace(min(data), max(data), 200)
+            density.covariance_factor = lambda : .2
+            density._compute_covariance()
+            # 绘制概率密度曲线
+            plt.plot(xs, density(xs))
+            plt.savefig(os.path.join(outfolder, prefix +".png"))
+
+
+
+def main():
+    args = parse_args()
+    filename = args.filename
+    opener = gzip.open if filename.endswith(".gz") else open
+    thresholds = [float(i) for i in args.thresholds.split(",")]
+    prefix = args.prefix or os.path.splitext(os.path.basename(args.filename))[0]
+    outfolder = args.outfolder
+    os.makedirs(outfolder, exist_ok=True)
+    min_depth = args.min_depth
+    nchar = args.n
+    fill = args.fill
+    maxdel = args.maxdel
+
+    sequences, coverages, insertions, refname, reflength = process_sam_header(opener(filename))
+    reads_total, reads_mapped = parse_sam_file(opener(filename), sequences, coverages, insertions, refname, args.maxdel)
+    print(f"A total of {reads_total} reads were processed, out of which, {reads_mapped} reads were mapped.\n")
+    sequences = reformat_sequences(sequences, coverages, insertions)
+    sequences = filter_empty_references(sequences, coverages, insertions)
+    if args.save_mutations: save_mutations_table(sequences, coverages, outfolder, prefix.replace("_tmp",""), min_depth)
+    save_fastas(sequences, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds)
+
 
 if __name__ == "__main__":
     main()
