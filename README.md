@@ -24,8 +24,10 @@ You can also download from [SourceForge](https://sourceforge.net/projects/scueas
 For users who want to use command line version, Please see our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
 
 # Usage
+### note:The detailed usage and tutorials can be found at [here](manual\ZH_CN\readmeall.pdf)
 
-### note:The detailed usage and tutorials can be found at [here](https://github.com/sculab/EasyMiner/blob/master/manual/ZH_CN/Manual_CH.pdf).
+
+## Part1:How to get specific gene?
 This example shows how to extract specific genes from second-generation sequencing files of *Arabidopsis thaliana* using gene sequences from the closely related species *Arabidopsis lyrata* as reference.
 
 **Data Preparation**:
@@ -76,8 +78,42 @@ Click **[Analyse>Filter&Splice]** to run the programme with default parameters a
 
 Click on the **"Open"** button to view the results file. The assembled files are saved in the **results** directory in fasta format.
 
-See the Gitee homepage for more examples.
-Whole page of manual click [here](manual\ZH_CN\readmeall.pdf)
+## Part2 :How to get plastid genome?
+This example shows how to mine chloroplast and mitochondrial genomes from the second generation sequencing data of *Arabidopsis thaliana*.
+**Note: Plant Chloroplast Genome assembly is required before Plant Mitochondrial Genome assembly can be performed.** 
+
+### Step1 Get Plant Chlororplast Genome
+**Data Preparation**:
+All example files mentioned below are available in
+[DEMO · sculab/EasyMiner - 码云 - 开源中国 (gitee.com)](https://gitee.com/sculab/EasyMiner/tree/master/DEMO)
+
+Alternatively, you can prepare your own:
+**Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
+
+
+**Load Data**: 
+![](english_figs/load_seq.jpg)
+Click **[File>Load Sequencing Files]** to select sequencing data file。
+
+
+**Running Programme**
+![](english_figs/analyse.jpg)
+
+Click **[Analyse>Plant_Chloroplast_Genome]** to download the reference genome of closely related species.
+![](english_figs/download_genome.jpg)
+
+Click **OK** ,using default parameters to .
+![](english_figs/Novoplasty.jpg)
+
+**View Results**
+![](english_figs/find_results.jpg)
+Click on the **"Open"** button to view the results file. The assembled files are saved in the **Organelle** directory in both gb and fasta format.You can get specific gene of genome by load and export gb file.**[File>Load_reference]**.**[File>Export_reference]**
+
+### Step2 Get Plant Mitochondrial Genome
+![](english_figs/mito.png)
+Same  as Plant Chloroplast Genome assembly process, however, you need to **load the previously result of Plant Chloroplast Genome** first.
+
+**See the Gitee homepage for more examples.**
 
 # Questions
 **1.** **What is the meaning of filter depth in the result list?**
@@ -109,7 +145,7 @@ The software does not require much memory, you can adjust the number of processe
 Firstly, get the complete gb file by [Analyse>Plant Chloroplast Genome], then import the gb file,click yes to report file as gene list. Then tick [Exclude Exonic Regions], and choose the length of the intron region in [Extended Boundary Length].
 
 **7. About the cut-and-align function?**
-[Batch>Merge&Trim] is to merge and trim the results files in batch. [Other Tools>Trimmed Alignment] is to align and trim the reference sequences you chose in the terminal to the result files.
+[Batch>Merge&Trim] is to merge and trim the results files in batch. Make sure that your sequencing sequence ID strictly corresponds to the results folder ID and that you put in the reference sequence you want to analyse.
 
 **8. No results for PPD?**
 
