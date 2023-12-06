@@ -152,6 +152,10 @@ Firstly, get the complete gb file by [Analyse>Plant Chloroplast Genome], then im
 PPD is only applied for 353 data, please ensure there are three or more species are selected for batch extraction.
 *Ensure that there is no Chinese catalog folder.
 
+**9. No results for Mitochondrial Genome?**
+
+It is recommended that the full read length of the sequencing file be used for mitochondrial genome assembly. You can untick **[Reads/File(M)]** checkbox at **[Analysis>Filter]** to analyse the full read length data.
+
 # Contact
 If you have any questions, suggestions, or comments about EasyMiner, feel free to contact the developer at Xinyi_Yu2021@163.com.
 
