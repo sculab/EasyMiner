@@ -92,7 +92,7 @@ def Make_Assemble_Dict(file_list, kmer_size, _kmer_dict, _ref_dict, Filted_File_
                     else:
                         if kmer in _ref_dict: # kmer的位置
                             temp_int = int(_ref_dict[kmer])
-                            temp_depth = (temp_int >> 10) & ((1<<20) -1)
+                            temp_depth = (temp_int >> 10) & ((1<<20) -1) #在参考序列中的深度
                             if  temp_int & 1073741824: # 判断是否为反向互补的序列
                                 temp_pos = 1000 - (temp_int & 1023)
                                 temp_list = [1, temp_pos, 1, temp_depth] # 标记为反向的的kmer
@@ -261,7 +261,7 @@ def Get_Weight(_pos, new_pos, weight = 4):
     """ 
     return int.bit_length((1024 - abs(_pos - new_pos)) >> 2) if (_pos and new_pos) else weight
 
-def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024, weight = 4):
+def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024):
     """
     带权重的DBG贪婪拼接
     :param _pos: 当前kmer在参考序列的位置
@@ -276,14 +276,13 @@ def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024, weight = 4):
     _pos, node_distance, best_kmc_sum  = 0, 0, 0
     MASK = (1 << ((kmer_size << 1) - 2)) - 1
     while True and iteration:
-        #node = [[i, _dict[i][1], _dict[i][0] << Get_Weight(_pos, _dict[i][1], weight), ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
-        node = [[i, _dict[i][1], _dict[i][0] + _dict[i][2], ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
+        node = [[i, _dict[i][1], _dict[i][0] + _dict[i][3], ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
         node.sort(key = itemgetter(2), reverse=True)
         while node and node[0][0] in temp_list: node.pop(0) 
         if not node: 
             iteration -= 1
             cur_kmc_sum = sum(cur_kmc)
-            contigs.append((cur_kmc_sum, cur_seq.copy()))
+            contigs.append((cur_kmc.copy(), cur_seq.copy()))
             if cur_kmc_sum > best_kmc_sum:
                 best_kmc_sum = cur_kmc_sum
             for _ in range(node_distance):
@@ -321,7 +320,13 @@ def count_duplicates(numbers):
     
     return duplicates_count
 
-def Process_Contigs(contigs, max_weight, slice_len, reads_dict):
+def find_position(dq, n):
+    for i in range(len(dq) - 1, -1, -1):
+        if dq[i] >= n:
+            return i
+    return -1
+
+def Process_Contigs(contigs, max_weight, slice_len, reads_dict, soft_boundary = 0):
     """
     通过将contigs与reads进行map，来检测contig的可靠性
     :param contigs: 拼接过程获取的contigs
@@ -330,7 +335,17 @@ def Process_Contigs(contigs, max_weight, slice_len, reads_dict):
     :param reads_dict: reads的高质量切片的词典
     :return: 按照map上的reads的数量倒序排序过后的contigs
     """ 
-    processed_contigs = sorted([[''.join(ACGT_DICT[k] for k in x[1]), x[0], 0] for x in contigs if x[0] > max_weight >> 1], key=itemgetter(1), reverse=True)
+    # 基于soft_boundary和四分位点切割序列两端
+    for i, contig in enumerate(contigs):
+        if len(contig[0]) > 2:
+            cut_value = Quartile(contig[0])[0]
+            cut_pos = find_position(contig[0], cut_value)
+            if cut_pos != -1 and cut_pos + soft_boundary + 1 < len(contig[0]):
+                while len(contig[0]) > cut_pos + soft_boundary + 1:
+                    contig[0].pop()
+                    contig[1].pop()
+
+    processed_contigs = sorted([[''.join(ACGT_DICT[k] for k in x[1]), sum(x[0]), 0] for x in contigs if sum(x[0]) > max_weight >> 1], key=itemgetter(1), reverse=True)
     for x in processed_contigs:
         contig_len = len(x[0])
         for j in range(contig_len - slice_len):
@@ -341,34 +356,8 @@ def Process_Contigs(contigs, max_weight, slice_len, reads_dict):
     processed_contigs.sort(key=itemgetter(2), reverse=True)
     return processed_contigs
 
-def Get_Contig_v5(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 1024, weight = 4):
-    """
-    获取最优的contig
-    :param _reads_dict: reads的高质量切片的词典
-    :param slice_len: reads的高质量切片的长度
-    :param _dict: 用于拼接的kmer字典
-    :param seed: 拼接种子
-    :param kmer_size: kmer的长度
-    :param iteration: 构建contig时允许的最大路径分支数
-    :param weight: 没有ref时的默认权重
-    :return: 最优contigs，用到所有的kmer的集合，contig的大概位置，contig的权重，map到contig上的reads数量
-    """ 
-    contigs_1, kmer_list_1, pos_list_1, weight_1 = Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration, weight)
-    contigs_2, kmer_list_2, pos_list_2, weight_2 = Get_Forward_Contig_v6(_dict, Reverse_Int(seed, kmer_size), kmer_size, iteration, weight)
-    # 清理位置列表
-    pos_list = [x for x in pos_list_1+ pos_list_2 if x > 0 and x < 1000]
-    # 获取位置中位数
-    contig_pos = int(Quartile(pos_list)[1] if len(pos_list)>1 else -1)
-    # 获取最可能的两侧的contig
-    contigs_1_16 = Process_Contigs(contigs_1, weight_1, slice_len, _reads_dict)
-    contigs_2_16 = Process_Contigs(contigs_2, weight_2, slice_len, _reads_dict)
-    # 组合contig
-    contig = (Reverse_Complement_ACGT(contigs_2_16[0][0]) if contigs_2_16 else '') + Int_To_Seq(seed, kmer_size) + (contigs_1_16[0][0] if contigs_1_16 else '')
-    contig_weight = contigs_1_16[0][1] if contigs_1_16 else 0 + contigs_2_16[0][1] if contigs_2_16 else 0
-    contig_count = contigs_1_16[0][2] if contigs_1_16 else 0 + contigs_2_16[0][2] if contigs_2_16 else 0
-    return contig, set(kmer_list_1 + kmer_list_2), contig_pos, contig_weight, contig_count
 
-def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 1024, weight = 4):
+def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 1024, soft_boundary = 0):
     """
     获取最优的contig
     :param _reads_dict: reads的高质量切片的词典
@@ -380,15 +369,15 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
     :param weight: 没有ref时的默认权重
     :return: contigs的集合，用到所有的kmer的集合，contig的大概位置
     """ 
-    contigs_1, kmer_list_1, pos_list_1, weight_1 = Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration, weight)
-    contigs_2, kmer_list_2, pos_list_2, weight_2 = Get_Forward_Contig_v6(_dict, Reverse_Int(seed, kmer_size), kmer_size, iteration, weight)
+    contigs_1, kmer_list_1, pos_list_1, weight_1 = Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration)
+    contigs_2, kmer_list_2, pos_list_2, weight_2 = Get_Forward_Contig_v6(_dict, Reverse_Int(seed, kmer_size), kmer_size, iteration)
     # 清理位置列表
     pos_list = [x for x in pos_list_1+ pos_list_2 if x > 0 and x < 1000]
     # 获取位置中位数
     contig_pos = int(Quartile(pos_list)[1] if len(pos_list)>1 else -1)
     # 获取最可能的两侧的contig
-    contigs_1_16 = Process_Contigs(contigs_1, weight_1, slice_len, _reads_dict)
-    contigs_2_16 = Process_Contigs(contigs_2, weight_2, slice_len, _reads_dict)
+    contigs_1_16 = Process_Contigs(contigs_1, weight_1, slice_len, _reads_dict, soft_boundary)
+    contigs_2_16 = Process_Contigs(contigs_2, weight_2, slice_len, _reads_dict, soft_boundary)
     processed_contigs = []
     if not contigs_1_16: contigs_1_16.append(['',0,0])
     if not contigs_2_16: contigs_2_16.append(['',0,0])
@@ -410,7 +399,7 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
             processed_contigs.append([c, c_weight, r_count, count_duplicates(paired_count)])
     return processed_contigs, set(kmer_list_1 + kmer_list_2), contig_pos
 
-def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, iteration, cur_weight, loop_count):
+def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, iteration, soft_boundary, loop_count):
     limit = args.limit_count
     depth = 0
     contig_best_path = os.path.join(args.o, "results", key + ".fasta")
@@ -437,6 +426,9 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         ref_dict, filtered_dict, reads_dict = {}, {}, {}
         # 获取最大切片长度，建立reads切片字典
         slice_len = Make_Reads_Dict([filtered_file_path], reads_dict)
+        # 自动调整soft_boundary
+        if soft_boundary == -1:
+            soft_boundary = int(slice_len/2)
         if not reads_dict:
             failed_count += 1
             if os.path.isfile(contig_best_path): os.remove(contig_best_path)
@@ -475,6 +467,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         if limit > 0:
             filtered_dict = {k: v for k, v in filtered_dict.items() if v[0] > limit or v[3] > 0}
         # 纠正深度上限, 获取参考序列的深度修正权重
+        # filtered_dict[0排除了上限的过滤深度，1位置，2方向，3修正参考序列深度]
         temp_quar = Quartile([v[0] for v in filtered_dict.values()])
         depth_upper = int((temp_quar[2] - temp_quar[0]) * 1.5 + temp_quar[2])
         for k, v in list(filtered_dict.items()): 
@@ -522,7 +515,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         # 获取contigs
         while len(seed_list) > seed_list_len * 0.5: # 已经耗费了大于一半的seed就没必要再做了 
             # org_contigs: 0序列 1序列的拼接权重 2切片数 3配对的切片数
-            org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = iteration, weight = cur_weight)
+            org_contigs, kmer_set, contig_pos = Get_Contig_v6(reads_dict, slice_len, filtered_dict, seed_list[0][0], current_ka, iteration = iteration, soft_boundary = soft_boundary)
             seed_list = [item for item in seed_list if (item[0] not in kmer_set) and (Reverse_Int(item[0], current_ka) not in kmer_set)]
             for contig in org_contigs:
                 if contig[2] * slice_len > len(contig[0]): # 起码要有reads高质量切片能够覆盖contig，否则就是错误的拼接
@@ -580,7 +573,8 @@ if __name__ == '__main__':
     pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=63)
     pars.add_argument('-k_min', metavar='<int>', type=int, help='''max kmer of assemble''',  default=21)
     pars.add_argument('-limit_count', metavar='<int>', type=int, help='''limit of kmer count''', required=False, default=2)
-    pars.add_argument('-iteration', metavar='<int>', type=int, help='''iteration''', required=False, default=9192)
+    pars.add_argument('-iteration', metavar='<int>', type=int, help='''iteration''', required=False, default=8192)
+    pars.add_argument('-sb', '--soft_boundary', metavar='<int>', type=int, help='''soft boundary，default = [0], -1时为切片长度的一半''', required=False, default=0)
     pars.add_argument('-p', '--processes', metavar='<int>', type=int, help='Number of processes for multiprocessing', default= max(multiprocessing.cpu_count()-1,2))
     args = pars.parse_args()
     # try:
@@ -600,19 +594,19 @@ if __name__ == '__main__':
 
     Write_Print(os.path.join(args.o,  "log.txt"), '======================== Assemble =========================')
     # 定义默认权重值
-    cur_weight, failed_count  = 4, 0
+    failed_count  = 0
     result_dict = {}
 
     pool = multiprocessing.Pool(args.processes)
     results = []
 
     for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
-        results.append(pool.apply_async(process_key_value, (args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, cur_weight, loop_count)))
+        results.append(pool.apply_async(process_key_value, (args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count)))
     pool.close()
     pool.join()
 
     # for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
-    #     results.append(process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, cur_weight, loop_count))
+    #     results.append(process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count))
     
     for result in results:
         failed_count_update, key_update, result_dict_entry = result if type(result) == tuple else result.get()

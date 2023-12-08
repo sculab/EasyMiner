@@ -31,6 +31,8 @@ Partial Class Config_Basic
         CheckBox2 = New CheckBox()
         NumericUpDown2 = New NumericUpDown()
         GroupBox4 = New GroupBox()
+        ComboBox1 = New ComboBox()
+        Label3 = New Label()
         NumericUpDown8 = New NumericUpDown()
         Label5 = New Label()
         Label7 = New Label()
@@ -71,7 +73,7 @@ Partial Class Config_Basic
         GroupBox2.Controls.Add(NumericUpDown2)
         GroupBox2.Location = New Point(12, 12)
         GroupBox2.Name = "GroupBox2"
-        GroupBox2.Size = New Size(175, 146)
+        GroupBox2.Size = New Size(175, 149)
         GroupBox2.TabIndex = 6
         GroupBox2.TabStop = False
         GroupBox2.Text = "过滤"
@@ -129,7 +131,7 @@ Partial Class Config_Basic
         CheckBox2.AutoSize = True
         CheckBox2.Checked = True
         CheckBox2.CheckState = CheckState.Checked
-        CheckBox2.Location = New Point(8, 115)
+        CheckBox2.Location = New Point(8, 117)
         CheckBox2.Name = "CheckBox2"
         CheckBox2.Size = New Size(119, 21)
         CheckBox2.TabIndex = 18
@@ -147,6 +149,8 @@ Partial Class Config_Basic
         ' 
         ' GroupBox4
         ' 
+        GroupBox4.Controls.Add(ComboBox1)
+        GroupBox4.Controls.Add(Label3)
         GroupBox4.Controls.Add(NumericUpDown8)
         GroupBox4.Controls.Add(Label5)
         GroupBox4.Controls.Add(Label7)
@@ -155,12 +159,31 @@ Partial Class Config_Basic
         GroupBox4.Controls.Add(CheckBox1)
         GroupBox4.Controls.Add(NumericUpDown7)
         GroupBox4.Controls.Add(NumericUpDown6)
-        GroupBox4.Location = New Point(367, 12)
+        GroupBox4.Location = New Point(193, 12)
         GroupBox4.Name = "GroupBox4"
-        GroupBox4.Size = New Size(168, 145)
+        GroupBox4.Size = New Size(168, 186)
         GroupBox4.TabIndex = 8
         GroupBox4.TabStop = False
         GroupBox4.Text = "拼接"
+        ' 
+        ' ComboBox1
+        ' 
+        ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
+        ComboBox1.FormattingEnabled = True
+        ComboBox1.Items.AddRange(New Object() {"Auto", "0", "Unlimited"})
+        ComboBox1.Location = New Point(80, 145)
+        ComboBox1.Name = "ComboBox1"
+        ComboBox1.Size = New Size(80, 25)
+        ComboBox1.TabIndex = 20
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Location = New Point(8, 148)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(44, 17)
+        Label3.TabIndex = 18
+        Label3.Text = "边界："
         ' 
         ' NumericUpDown8
         ' 
@@ -246,16 +269,16 @@ Partial Class Config_Basic
         GroupBox3.Controls.Add(NumericUpDown9)
         GroupBox3.Controls.Add(Label8)
         GroupBox3.Controls.Add(Label4)
-        GroupBox3.Location = New Point(193, 13)
+        GroupBox3.Location = New Point(12, 167)
         GroupBox3.Name = "GroupBox3"
-        GroupBox3.Size = New Size(168, 145)
+        GroupBox3.Size = New Size(175, 84)
         GroupBox3.TabIndex = 10
         GroupBox3.TabStop = False
         GroupBox3.Text = "进一步过滤"
         ' 
         ' NumericUpDown4
         ' 
-        NumericUpDown4.Location = New Point(106, 22)
+        NumericUpDown4.Location = New Point(111, 22)
         NumericUpDown4.Maximum = New Decimal(New Integer() {2048, 0, 0, 0})
         NumericUpDown4.Minimum = New Decimal(New Integer() {64, 0, 0, 0})
         NumericUpDown4.Name = "NumericUpDown4"
@@ -265,7 +288,7 @@ Partial Class Config_Basic
         ' 
         ' NumericUpDown9
         ' 
-        NumericUpDown9.Location = New Point(106, 51)
+        NumericUpDown9.Location = New Point(111, 53)
         NumericUpDown9.Maximum = New Decimal(New Integer() {64, 0, 0, 0})
         NumericUpDown9.Minimum = New Decimal(New Integer() {4, 0, 0, 0})
         NumericUpDown9.Name = "NumericUpDown9"
@@ -276,7 +299,7 @@ Partial Class Config_Basic
         ' Label8
         ' 
         Label8.AutoSize = True
-        Label8.Location = New Point(8, 53)
+        Label8.Location = New Point(8, 55)
         Label8.Name = "Label8"
         Label8.Size = New Size(92, 17)
         Label8.TabIndex = 19
@@ -293,7 +316,7 @@ Partial Class Config_Basic
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(460, 163)
+        Button2.Location = New Point(285, 215)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 62
@@ -302,7 +325,7 @@ Partial Class Config_Basic
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(379, 163)
+        Button1.Location = New Point(204, 215)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 61
@@ -313,7 +336,7 @@ Partial Class Config_Basic
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(549, 203)
+        ClientSize = New Size(372, 262)
         ControlBox = False
         Controls.Add(Button2)
         Controls.Add(Button1)
@@ -367,4 +390,6 @@ Partial Class Config_Basic
     Friend WithEvents Label4 As Label
     Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
+    Friend WithEvents Label3 As Label
+    Friend WithEvents ComboBox1 As ComboBox
 End Class
