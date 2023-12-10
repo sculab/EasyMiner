@@ -33,7 +33,7 @@ This example shows how to extract specific genes from second-generation sequenci
 **Data Preparation**:
 
 All example files mentioned below are available in
-[DEMO · sculab/EasyMiner - 码云 - 开源中国 (gitee.com)](https://gitee.com/sculab/EasyMiner/tree/master/DEMO)
+[DEMO](https://gitee.com/sculab/EasyMiner/tree/master/DEMO)
 
 Alternatively, you can prepare your own:
 
@@ -45,6 +45,7 @@ Alternatively, you can prepare your own:
 **Load Data**: 
 
 ![](english_figs/load_file.png)
+
 Click **[File>Load Sequencing Files]** to select sequencing data file。
 
 ![](chinese_figs/示例测序输入.jpg)
@@ -55,8 +56,7 @@ Click **[File>Load Reference]** to select a reference sequence file in fasta for
 
 ![](chinese_figs/示例参考序列.jpg)
 
-
- ![](chinese_figs/ref详细.jpg)
+![](chinese_figs/ref详细.jpg)
 
 The imported files display information such as the ID of the reference sequence, gene name, number of sequences and average length of the sequence.
 
