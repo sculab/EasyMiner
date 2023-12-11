@@ -140,6 +140,7 @@ Public Class Config_Plasty
                     If File.Exists(currentDirectory + "temp\output.fasta") Then
                         File.Delete(currentDirectory + "temp\output.fasta")
                     End If
+                    My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
                     If cpg_assemble_mode = 2 Then
                         File.Copy(assemble_file, out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
                         Dim result0 As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -147,9 +148,10 @@ Public Class Config_Plasty
                         If result0 = DialogResult.Yes Then
                             Process.Start("explorer.exe", """" + out_dir.Replace("/", "\") + "\Organelle" + """")
                         End If
+                        Exit Sub
                     End If
                     build_ann(TextBox2.Text, assemble_file, "ref_gb.gb", "output", currentDirectory + "temp\")
-                    My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
+
                     If File.Exists(out_dir + "\Organelle\warning.txt") Then
                         File.Delete(out_dir + "\Organelle\warning.txt")
                     End If

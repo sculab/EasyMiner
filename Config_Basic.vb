@@ -14,6 +14,9 @@
     Public Event CancelClicked()
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+        k1 = NumericUpDown1.Value.ToString
+        k2 = NumericUpDown5.Value.ToString
         Me.Hide()
         RaiseEvent ConfirmClicked()
     End Sub
@@ -21,5 +24,9 @@
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Me.Hide()
         RaiseEvent CancelClicked()
+    End Sub
+
+    Private Sub Config_Basic_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ComboBox1.SelectedIndex = 1
     End Sub
 End Class

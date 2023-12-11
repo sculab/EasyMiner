@@ -9,7 +9,7 @@ Module Module_Var
 #ElseIf TargetOS = "win64" Then
     Public TargetOS As String = "win64"
 #End If
-    Public version As String = "1.0 build 20231130"
+    Public version As String = "1.0b build 20231208"
     Public exe_mode As String = "debug"
     Public database_url As String
     Public settings As Dictionary(Of String, String)
@@ -40,7 +40,7 @@ Module Module_Var
     Public data_loaded As Boolean = False
     Public reads_length As Integer = 0
     Public max_thread As Integer = 8
-    Public ref_dir, out_dir, q1, q2, k1, k2 As String
+    Public ref_dir, out_dir, q1, q2, k1, k2, sb As String
     Public utf8WithoutBom As New UTF8Encoding(False)
     Public cpg_down_mode As Integer = 0
     Public cpg_assemble_mode As Integer = 0

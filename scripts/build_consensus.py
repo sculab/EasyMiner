@@ -267,10 +267,10 @@ def save_mutations_table(sequences, coverages, outfolder, prefix, min_depth):
                             nucs.append((n, count[0]))
                     pos_dict[f"{refname}_{pos}"] = nucs
 
-    save_to_csv(pos_dict, os.path.join(outfolder, prefix +".csv"))
+    # save_to_csv(pos_dict, os.path.join(outfolder, prefix +".csv"))
     filted_dict = filter_by_max_proportion(calculate_proportions(pos_dict))
     if filted_dict:
-        save_to_csv(filted_dict, os.path.join(outfolder, prefix +".pec.csv"))
+        # save_to_csv(filted_dict, os.path.join(outfolder, prefix +".pec.csv"))
         data = []
         for v in filted_dict.values():
             for x in v:

@@ -80,7 +80,7 @@ def update_annotations(mafft_output, ref_gb, output_file):
                         Write_Print(output_file + "_log.txt", "Please check", feature.qualifiers)
 
     # 保存为新的GenBank文件
-    new_record = SeqRecord(seqB_no_gaps, id="XX000000", name="XX000000", description="XX000000 chloroplast, complete genome")
+    new_record = SeqRecord(seqB_no_gaps, id="XX000000", name="XX000000", description="XX000000, complete genome")
     new_record.annotations["molecule_type"] = molecule_type
     new_record.features = updated_features
     SeqIO.write(new_record, output_file + '.gb', "genbank")

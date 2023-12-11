@@ -35,7 +35,7 @@ This example shows how to extract specific genes from second-generation sequenci
 **Data Preparation**:
 
 All example files mentioned below are available in
-[DEMO · sculab/EasyMiner - 码云 - 开源中国 (gitee.com)](https://gitee.com/sculab/EasyMiner/tree/master/DEMO)
+[DEMO](https://gitee.com/sculab/EasyMiner/tree/master/DEMO)
 
 Alternatively, you can prepare your own:
 
@@ -47,6 +47,7 @@ Alternatively, you can prepare your own:
 **Load Data**: 
 
 ![](images/load_file.jpg)
+
 
 Click **[File>Load Sequencing Files]** to select sequencing data file。
 
@@ -63,9 +64,9 @@ Click **[File>Load Reference]** to select a reference sequence file in fasta for
 
 You can also import the reference sequence in gb format, which will appear as follows:
 
-You can optionally expand the left or right intronic regions. The extracted result will contain the boundaries of the embedded subregions after expansion.
+You can optionally expand the left or right intronic regions. 
 
-
+![](images/gb.jpg)
 
 The imported files display information such as the ID of the reference sequence, gene name, number of sequences and average length of the sequence.
 

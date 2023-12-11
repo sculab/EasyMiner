@@ -176,8 +176,8 @@ class Extract_reference():
         # 允许软边界超界限
         # if (end - start < gene_min_length) and (end - start > gene_max_length):
         #     return (start, end)
-        soft_start = start - soft_boundary
-        soft_end = end + soft_boundary
+        soft_start = start - int(soft_boundary.split(",")[0])
+        soft_end = end + int(soft_boundary.split(",")[1])
         if soft_start <= start_all:  # Out of Left Boundary
             start = start
         else:
@@ -480,8 +480,8 @@ if __name__ == '__main__':
         formatter_class=argparse.RawDescriptionHelpFormatter, description=''' build ref YY ''')
     pars.add_argument('-input', metavar='<str>', type=str,
                       help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp.gb")
-    pars.add_argument('-soft_boundary', metavar='<int>', type=int,
-                      help='''soft boundary''', required=False, default=200)
+    pars.add_argument('-soft_boundary', metavar='<int>', type=str,
+                      help='''soft boundary''', required=False, default="200,200")
     pars.add_argument('-max_marker_length', metavar='<int>', type=int,
                       help='''max  marker length''', required=False, default=2000)
     pars.add_argument('-min_marker_length', metavar='<int>', type=int,

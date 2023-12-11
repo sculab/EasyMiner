@@ -31,14 +31,17 @@ Partial Class Config_Split
         NumericUpDown2 = New NumericUpDown()
         Label2 = New Label()
         CheckBox1 = New CheckBox()
+        NumericUpDown1 = New NumericUpDown()
+        Label1 = New Label()
         CType(NumericUpDown4, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(216, 125)
+        Button2.Location = New Point(216, 152)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 44
@@ -47,7 +50,7 @@ Partial Class Config_Split
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(135, 125)
+        Button1.Location = New Point(135, 152)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 43
@@ -70,7 +73,7 @@ Partial Class Config_Split
         Label4.Name = "Label4"
         Label4.Size = New Size(80, 17)
         Label4.TabIndex = 30
-        Label4.Text = "扩展边界长度"
+        Label4.Text = "扩展边界左侧"
         ' 
         ' NumericUpDown3
         ' 
@@ -113,19 +116,39 @@ Partial Class Config_Split
         ' CheckBox1
         ' 
         CheckBox1.AutoSize = True
-        CheckBox1.Location = New Point(13, 100)
+        CheckBox1.Location = New Point(13, 127)
         CheckBox1.Name = "CheckBox1"
         CheckBox1.Size = New Size(99, 21)
         CheckBox1.TabIndex = 45
         CheckBox1.Text = "去除外显子区"
         CheckBox1.UseVisualStyleBackColor = True
         ' 
+        ' NumericUpDown1
+        ' 
+        NumericUpDown1.Location = New Point(204, 98)
+        NumericUpDown1.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
+        NumericUpDown1.Name = "NumericUpDown1"
+        NumericUpDown1.Size = New Size(87, 23)
+        NumericUpDown1.TabIndex = 47
+        NumericUpDown1.Value = New Decimal(New Integer() {200, 0, 0, 0})
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(13, 100)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(80, 17)
+        Label1.TabIndex = 46
+        Label1.Text = "扩展边界右侧"
+        ' 
         ' Config_Split
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(302, 161)
+        ClientSize = New Size(302, 189)
         ControlBox = False
+        Controls.Add(NumericUpDown1)
+        Controls.Add(Label1)
         Controls.Add(CheckBox1)
         Controls.Add(Button2)
         Controls.Add(Button1)
@@ -142,6 +165,7 @@ Partial Class Config_Split
         CType(NumericUpDown4, ComponentModel.ISupportInitialize).EndInit()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).EndInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).EndInit()
+        CType(NumericUpDown1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -154,4 +178,6 @@ Partial Class Config_Split
     Friend WithEvents NumericUpDown2 As NumericUpDown
     Friend WithEvents Label2 As Label
     Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents NumericUpDown1 As NumericUpDown
+    Friend WithEvents Label1 As Label
 End Class

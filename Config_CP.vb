@@ -288,12 +288,11 @@ Public Class Config_CP
                 End If
             End If
         Next
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
         If File.Exists(out_dir + "\ref_reads_count_dict.txt") Then
             File.Delete(out_dir + "\ref_reads_count_dict.txt")
         End If
-        If File.Exists(out_dir + "\kmer_dict_k16.dict") Then
-            File.Delete(out_dir + "\kmer_dict_k16.dict")
+        If File.Exists(out_dir + "\kmer_dict_k" + k1.ToString + ".dict") Then
+            File.Delete(out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
         End If
 
         Dim SI_filter As New ProcessStartInfo()
@@ -310,7 +309,7 @@ Public Class Config_CP
         SI_filter.Arguments += " -kf " + k1
         SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
         SI_filter.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
-        SI_filter.Arguments += " -lkd kmer_dict_k16.dict"
+        SI_filter.Arguments += " -lkd kmer_dict_k" + k1.ToString + ".dict"
         If form_config_basic.CheckBox3.Checked Then
             SI_filter.Arguments += " -m_reads " + form_config_basic.NumericUpDown3.Value.ToString
         Else

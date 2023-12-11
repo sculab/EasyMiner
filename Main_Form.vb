@@ -195,6 +195,7 @@ Public Class Main_Form
         SI_assembler.Arguments += " -k_max " + form_config_basic.NumericUpDown7.Value.ToString
         SI_assembler.Arguments += " -limit_count " + form_config_basic.NumericUpDown8.Value.ToString
         SI_assembler.Arguments += " -p " + max_thread.ToString
+        SI_assembler.Arguments += " -sb " + sb
         Dim process_filter As Process = Process.Start(SI_assembler)
         process_filter.WaitForExit()
         process_filter.Close()
@@ -272,6 +273,7 @@ Public Class Main_Form
         End Try
 
     End Sub
+
     Private Sub Main_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CheckForIllegalCrossThreadCalls = False
         currentDirectory = Application.StartupPath
@@ -441,8 +443,8 @@ Public Class Main_Form
     End Function
 
     Public Sub batch_assemble(ByVal database_type As String)
-        If File.Exists(TextBox1.Text + "\kmer_dict_k16.dict") Then
-            File.Delete(TextBox1.Text + "\kmer_dict_k16.dict")
+        If File.Exists(TextBox1.Text + "\kmer_dict_k" + k1.ToString + ".dict") Then
+            File.Delete(TextBox1.Text + "\kmer_dict_k" + k1.ToString + ".dict")
         End If
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
@@ -467,10 +469,10 @@ Public Class Main_Form
                 SI_filter.Arguments = "-r " + """" + ref_dir + """"
                 SI_filter.Arguments += " -q1" + q1 + " -q2" + q2
                 SI_filter.Arguments += " -o " + """" + out_dir + "\NOVOPlasty" + """"
-                SI_filter.Arguments += " -kf 16"
+                SI_filter.Arguments += " -kf " + k1.ToString
                 SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
                 SI_filter.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
-                SI_filter.Arguments += " -lkd ..\..\kmer_dict_k16.dict"
+                SI_filter.Arguments += " -lkd ..\..\kmer_dict_k" + k1.ToString + ".dict"
                 If form_config_basic.CheckBox3.Checked Then
                     SI_filter.Arguments += " -m_reads " + form_config_basic.NumericUpDown3.Value.ToString
                 Else
@@ -774,8 +776,6 @@ Public Class Main_Form
         out_dir = TextBox1.Text.Replace("\", "/")
         q1 = ""
         q2 = ""
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
-        k2 = form_config_basic.NumericUpDown5.Value.ToString
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -840,8 +840,6 @@ Public Class Main_Form
             My.Computer.FileSystem.CreateDirectory(out_dir)
             q1 = ""
             q2 = ""
-            k1 = form_config_basic.NumericUpDown1.Value.ToString
-            k2 = form_config_basic.NumericUpDown5.Value.ToString
             DeleteDir(ref_dir)
             My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -894,7 +892,6 @@ Public Class Main_Form
         out_dir = TextBox1.Text.Replace("\", "/")
         q1 = ""
         q2 = ""
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -958,7 +955,6 @@ Public Class Main_Form
         out_dir = TextBox1.Text.Replace("\", "/")
         q1 = ""
         q2 = ""
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -1151,8 +1147,6 @@ Public Class Main_Form
         out_dir = TextBox1.Text.Replace("\", "/")
         q1 = ""
         q2 = ""
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
-        k2 = form_config_basic.NumericUpDown5.Value.ToString
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -1226,7 +1220,7 @@ Public Class Main_Form
                         Exit Sub
                     End If
                     Dim th1 As New Threading.Thread(AddressOf export_seq)
-                    th1.Start({reads_skip, reads_keep, opendialog.SelectedPath})
+                    th1.Start({reads_skip.ToString, reads_keep.ToString, opendialog.SelectedPath})
                 End If
 
             End If
@@ -1354,8 +1348,6 @@ Public Class Main_Form
         My.Computer.FileSystem.CreateDirectory(out_dir)
         q1 = ""
         q2 = ""
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
-        k2 = form_config_basic.NumericUpDown5.Value.ToString
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -1397,8 +1389,6 @@ Public Class Main_Form
             DeleteDir(out_dir + "/results")
             q1 = ""
             q2 = ""
-            k1 = form_config_basic.NumericUpDown1.Value.ToString
-            k2 = form_config_basic.NumericUpDown5.Value.ToString
             DeleteDir(ref_dir)
             My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -1564,70 +1554,6 @@ Public Class Main_Form
         PB_value = -1
     End Sub
 
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
-
-    End Sub
-
-
-    'Private Sub 过滤拼接切齐ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过滤拼接切齐ToolStripMenuItem.Click
-    '    If TextBox1.Text <> "" Then
-    '        DataGridView1.EndEdit()
-    '        If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 Then
-    '            Dim result As DialogResult = MessageBox.Show("Clear the output directory?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-    '            If result = DialogResult.Yes Then
-    '                DeleteDir(TextBox1.Text)
-    '                My.Computer.FileSystem.CreateDirectory(TextBox1.Text)
-    '            End If
-    '        End If
-    '        Dim refs_count As Integer = 0
-    '        Dim seqs_count As Integer = 0
-    '        reads_length = 0
-    '        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
-    '        out_dir = TextBox1.Text.Replace("\", "/")
-    '        q1 = ""
-    '        q2 = ""
-    '        k1 = NumericUpDown1.Value.ToString
-    '        k2 = NumericUpDown5.Value.ToString
-    '        DeleteDir(ref_dir)
-    '        My.Computer.FileSystem.CreateDirectory(ref_dir)
-
-
-    '        For i As Integer = 1 To refsView.Count
-    '            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-    '                refs_count += 1
-    '                safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
-    '            End If
-    '        Next
-    '        For i As Integer = 1 To refsView.Count
-    '            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-    '                If File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-    '                    File.Delete(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
-    '                End If
-    '            End If
-    '        Next
-
-    '        For i As Integer = 1 To seqsView.Count
-    '            If DataGridView2.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-    '                seqs_count += 1
-    '                q1 += " " + """" + DataGridView2.Rows(i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
-    '                If DataGridView2.Rows(i - 1).Cells(3).FormattedValue.ToString = "" Then
-    '                    q2 += " " + """" + DataGridView2.Rows(i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
-    '                Else
-    '                    q2 += " " + """" + DataGridView2.Rows(i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
-    '                End If
-    '            End If
-    '        Next
-
-    '        If seqs_count >= 1 And refs_count >= 1 Then
-    '            Dim th1 As New Thread(AddressOf do_filer_assemble_trim)
-    '            th1.Start()
-    '        Else
-    '            MsgBox("Please select at least one reference and one sequencing data!")
-    '        End If
-    '    Else
-    '        MsgBox("Please select an output folder!")
-    '    End If
-    'End Sub
     Public Sub do_filer_assemble_trim(Optional no_window As Boolean = False)
         do_filter(False, no_window)
         do_filter(True, no_window)
@@ -1674,8 +1600,6 @@ Public Class Main_Form
         Dim refs_count As Integer = 0
         reads_length = 0
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
-        k1 = form_config_basic.NumericUpDown1.Value.ToString
-        k2 = form_config_basic.NumericUpDown5.Value.ToString
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
 
@@ -1709,10 +1633,12 @@ Public Class Main_Form
                         File.Move(pre_out + "\kmer_dict_k" + k1.ToString + ".dict", out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
                     End If
                 End If
-
-
                 q1 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
                 q2 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
+                If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
+                    DeleteDir(Path.Combine(out_dir, "results"))
+                End If
+
                 do_filer_assemble(True)
                 If DebugToolStripMenuItem.Checked = False Then
                     'If Directory.Exists(out_dir + "\filtered") Then
@@ -1955,7 +1881,10 @@ Public Class Main_Form
                                                                                  sr_line = sr_res.ReadLine
                                                                                  If sr_line IsNot Nothing Then
                                                                                      If sr_line <> "" Then
-                                                                                         sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name + "-" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString)
+                                                                                         sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name)
+
+                                                                                         'sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name + "-" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString)
+
                                                                                          sw_res.WriteLine(sr_line)
                                                                                      End If
 
@@ -1984,9 +1913,28 @@ Public Class Main_Form
 
                                                              End Sub)
         PB_value = -1
+        combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "-")
+        combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combine_trimed.fasta", "-")
         MsgBox("Analysis completed!")
     End Sub
 
+    Public Sub combine_file_horizontal(ByVal From_dir As String, ByVal exts As String, ByVal new_name As String, ByVal missingchar As String)
+        If Not (From_dir Is Nothing) Then
+            Dim startInfo As New ProcessStartInfo()
+            startInfo.FileName = currentDirectory + "analysis\merge_seq.exe" ' 替换为实际的命令行程序路径
+            startInfo.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+            startInfo.CreateNoWindow = True
+            startInfo.Arguments = "-input " + """" + From_dir + """"
+            startInfo.Arguments += " -output " + """" + new_name + """"
+            startInfo.Arguments += " -exts " + exts
+            startInfo.Arguments += " -missing " + missingchar
+            Dim process As Process = Process.Start(startInfo)
+            process.WaitForExit()
+            process.Close()
+        End If
+        info_text = ""
+        PB_value = 0
+    End Sub
 
     Private Sub NumericUpDown10_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown10.ValueChanged
         max_thread = NumericUpDown10.Value
@@ -2081,7 +2029,7 @@ Public Class Main_Form
         form_config_basic.GroupBox2.Enabled = True
         form_config_basic.GroupBox3.Enabled = False
         form_config_basic.GroupBox4.Enabled = False
-        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.NumericUpDown1.Value = 31
         form_config_basic.Show()
 
     End Sub
@@ -2107,7 +2055,7 @@ Public Class Main_Form
         form_config_basic.GroupBox2.Enabled = True
         form_config_basic.GroupBox3.Enabled = False
         form_config_basic.GroupBox4.Enabled = False
-        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.NumericUpDown1.Value = 31
         form_config_basic.Show()
     End Sub
     Private Sub menu_batch_plant_cp()
@@ -2318,7 +2266,7 @@ Public Class Main_Form
                                                                                  SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
                                                                                  SI_consensus.WorkingDirectory = out_path
                                                                                  SI_consensus.CreateNoWindow = True
-                                                                                 SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """"
+                                                                                 SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
                                                                                  Dim process_consensus As Process = Process.Start(SI_consensus)
                                                                                  process_consensus.WaitForExit()
                                                                                  process_consensus.Close()
@@ -2393,7 +2341,7 @@ Public Class Main_Form
                                                                                      SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
                                                                                      SI_consensus.WorkingDirectory = out_path
                                                                                      SI_consensus.CreateNoWindow = True
-                                                                                     SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """"
+                                                                                     SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
                                                                                      Dim process_consensus As Process = Process.Start(SI_consensus)
                                                                                      process_consensus.WaitForExit()
                                                                                      process_consensus.Close()
@@ -2595,7 +2543,7 @@ Public Class Main_Form
         form_config_basic.GroupBox2.Enabled = True
         form_config_basic.GroupBox3.Enabled = False
         form_config_basic.GroupBox4.Enabled = False
-        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.NumericUpDown1.Value = 31
         form_config_basic.Show()
     End Sub
     Private Sub menu_plant_cp()
@@ -2630,7 +2578,7 @@ Public Class Main_Form
                 form_config_basic.GroupBox2.Enabled = True
                 form_config_basic.GroupBox3.Enabled = False
                 form_config_basic.GroupBox4.Enabled = False
-                form_config_basic.NumericUpDown1.Value = 16
+                form_config_basic.NumericUpDown1.Value = 31
                 form_config_basic.Show()
             End If
         End If
@@ -2788,7 +2736,7 @@ Public Class Main_Form
         form_config_basic.GroupBox2.Enabled = True
         form_config_basic.GroupBox3.Enabled = False
         form_config_basic.GroupBox4.Enabled = False
-        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.NumericUpDown1.Value = 31
         form_config_basic.Show()
     End Sub
     Private Sub menu_animal_mito()
@@ -2812,7 +2760,7 @@ Public Class Main_Form
         form_config_basic.GroupBox2.Enabled = True
         form_config_basic.GroupBox3.Enabled = False
         form_config_basic.GroupBox4.Enabled = False
-        form_config_basic.NumericUpDown1.Value = 16
+        form_config_basic.NumericUpDown1.Value = 31
         form_config_basic.Show()
 
 
@@ -2858,20 +2806,35 @@ Public Class Main_Form
             Case "iteration"
                 menu_iteration()
             Case "plant_cp"
+                form_config_plasty.NumericUpDown1.Value = 31
                 menu_plant_cp()
             Case "plant_mito"
+                form_config_plasty.NumericUpDown1.Value = 63
                 menu_plant_mito()
             Case "animal_mito"
+                form_config_plasty.NumericUpDown1.Value = 31
                 menu_animal_mito()
             Case "batch_plant_cp"
+                form_config_plasty.NumericUpDown1.Value = 31
                 menu_batch_plant_cp()
             Case "batch_plant_mito"
+                form_config_plasty.NumericUpDown1.Value = 63
                 menu_batch_plant_mito()
             Case "batch_animal_mito"
+                form_config_plasty.NumericUpDown1.Value = 31
                 menu_batch_animal_mito()
-
+            Case "batch_re_assemble"
+                menu_batch_re_assemble()
             Case "null"
             Case Else
+        End Select
+        Select Case form_config_basic.ComboBox1.SelectedIndex
+            Case 0
+                sb = -1
+            Case 1
+                sb = 0
+            Case 2
+                sb = 10000
         End Select
     End Sub
 
@@ -3061,5 +3024,68 @@ Public Class Main_Form
         PB_value = 0
     End Sub
 
+    Private Sub ToolStripMenuItem4_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem4.Click
+        If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
+            MenuClicked = "batch_re_assemble"
+            form_config_basic.GroupBox2.Enabled = False
+            form_config_basic.GroupBox3.Enabled = False
+            form_config_basic.GroupBox4.Enabled = True
+            form_config_basic.NumericUpDown1.Value = 31
+            form_config_basic.Show()
 
+        Else
+            MsgBox("Please select an output folder!")
+        End If
+    End Sub
+    Private Sub menu_batch_re_assemble()
+        Dim refs_count As Integer = 0
+        reads_length = 0
+        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+        DeleteDir(ref_dir)
+        My.Computer.FileSystem.CreateDirectory(ref_dir)
+
+        timer_id = 4
+        PB_value = 0
+        For i As Integer = 1 To refsView.Count
+            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                refs_count += 1
+                safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
+            End If
+        Next
+        If refs_count >= 1 Then
+            Dim th1 As New Thread(AddressOf batch_re_assemble)
+            th1.Start()
+        Else
+            MsgBox("Please select at least one reference and one sequencing data!")
+        End If
+    End Sub
+    Public Sub batch_re_assemble()
+        For batch_i As Integer = 1 To seqsView.Count
+            PB_value = batch_i / seqsView.Count * 100
+            If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+
+                Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                Dim pre_out As String = out_dir
+                out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                q1 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
+                q2 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
+                My.Computer.FileSystem.CreateDirectory(out_dir)
+                If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
+                    DeleteDir(Path.Combine(out_dir, "results"))
+                End If
+                do_assemble(True)
+                If DebugToolStripMenuItem.Checked = False Then
+                    If Directory.Exists(out_dir + "\large_files") Then
+                        Directory.Delete(out_dir + "\large_files", True)
+                    End If
+                End If
+            End If
+        Next
+        PB_value = -1
+        MsgBox("Analysis completed!")
+    End Sub
 End Class
