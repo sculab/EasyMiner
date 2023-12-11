@@ -2,7 +2,9 @@
 # Overview
 
 EasyMiner是基于我们前期开发的[Easy353](https://github.com/plant720/Easy353)和[GeneMiner](https://github.com/sculab/GeneMiner)，在Windows上设计的增强版本。EasyMiner具有用户友好的Windows图形界面，可在个人电脑上高效准确地进行分子标记提取，无需依赖服务器。EasyMiner通过特别设计的拼接算法，能基于近源物种的参考基因从二代测序中快速准确的提取分子标记，并同时兼具细胞器基因组组装、genbank文件中基因序列分解、识别旁系同源基因等功能。
- ![](english_figs/main_page.jpg)
+
+ ![](images/main_page.jpg)
+
 EasyMiner is an enhanced version of our previous developments [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner), running on Windows. EasyMiner features a user-friendly Windows graphical interface for efficient and accurate extraction of molecular markers on personal computers, without the need for a server. By using specially designed stitching algorithms, EasyMiner can quickly and accurately extract molecular markers from second-generation sequencing based on reference genes from closely related species, while also providing functions for cell organelle genome assembly, gene sequence decomposition in genbank files, and  the identification of paralogs.
 # Dependencies
 
@@ -44,19 +46,26 @@ Alternatively, you can prepare your own:
 
 **Load Data**: 
 
-![](english_figs/load_file.png)
+![](images/load_file.jpg)
+
 Click **[File>Load Sequencing Files]** to select sequencing data file。
 
-![](chinese_figs/示例测序输入.jpg)
+![](images/chinese_ex_import.jpg)
 
 **Note**: For paired (paired) sequence files, you need to select two (even numbered) data files at the same time and load them together, if only one is selected, it will be loaded as single-ended sequencing data.
 
 Click **[File>Load Reference]** to select a reference sequence file in fasta format, and you can select multiple reference sequence files at once.
 
-![](chinese_figs/示例参考序列.jpg)
+![](images/chinese_ref_import.jpg)
 
 
- ![](chinese_figs/ref详细.jpg)
+![](images/chinese_ref_xiangxi.jpg)
+
+You can also import the reference sequence in gb format, which will appear as follows:
+
+You can optionally expand the left or right intronic regions. The extracted result will contain the boundaries of the embedded subregions after expansion.
+
+
 
 The imported files display information such as the ID of the reference sequence, gene name, number of sequences and average length of the sequence.
 
@@ -64,7 +73,7 @@ The imported files display information such as the ID of the reference sequence,
 
 **Running Programme**
 
-![](english_figs/analyse_ex.jpg)
+![](images/analyse_ex.jpg)
 
 Click **[Analyse>Filter&Splice]** to run the programme with default parameters and wait for the programme to finish.
 
@@ -74,43 +83,53 @@ Click **[Analyse>Filter&Splice]** to run the programme with default parameters a
 
 **View Results**
 
-![](english_figs/find_results.jpg)
+![](images/find_results.jpg)
 
 Click on the **"Open"** button to view the results file. The assembled files are saved in the **results** directory in fasta format.
 
 ## Part2 :How to get plastid genome?
 This example shows how to mine chloroplast and mitochondrial genomes from the second generation sequencing data of *Arabidopsis thaliana*.
+
 **Note: Plant Chloroplast Genome assembly is required before Plant Mitochondrial Genome assembly can be performed.** 
 
 ### Step1 Get Plant Chlororplast Genome
 **Data Preparation**:
+
 All example files mentioned below are available in
 [DEMO · sculab/EasyMiner - 码云 - 开源中国 (gitee.com)](https://gitee.com/sculab/EasyMiner/tree/master/DEMO)
 
-Alternatively, you can prepare your own:
-**Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
+Alternatively, you can prepare your own **Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
 
 
 **Load Data**: 
-![](english_figs/load_seq.jpg)
+
+![](images/load_seq.jpg)
+
 Click **[File>Load Sequencing Files]** to select sequencing data file。
 
 
+
 **Running Programme**
-![](english_figs/analyse.jpg)
+
+![](images/analyse.jpg)
 
 Click **[Analyse>Plant_Chloroplast_Genome]** to download the reference genome of closely related species.
-![](english_figs/download_genome.jpg)
+![](images/download_genome.jpg)
 
-Click **OK** ,using default parameters to .
-![](english_figs/Novoplasty.jpg)
+Click **OK** ,using default parameters to assemble.
+
+![](images/Novoplasty.jpg)
 
 **View Results**
-![](english_figs/find_results.jpg)
+
+![](images/find_results.jpg)
+
 Click on the **"Open"** button to view the results file. The assembled files are saved in the **Organelle** directory in both gb and fasta format.You can get specific gene of genome by load and export gb file.**[File>Load_reference]**.**[File>Export_reference]**
 
 ### Step2 Get Plant Mitochondrial Genome
-![](english_figs/mito.png)
+
+![](images/mito.jpg)
+
 Same  as Plant Chloroplast Genome assembly process, however, you need to **load the previously result of Plant Chloroplast Genome** first.
 
 **See the Gitee homepage for more examples.**
@@ -143,12 +162,12 @@ The software does not require much memory, you can adjust the number of processe
 
 **6. How do I get the intron sequence data?**
 Firstly, get the complete gb file by [Analyse>Plant Chloroplast Genome], then import the gb file,click yes to report file as gene list. Then tick [Exclude Exonic Regions], and choose the length of the intron region in [Extended Boundary Length].
+**Note: When performing splicing, if the reference sequence (exon sequence) has an internal vacant intron region, the software splicing result will include the middle vacant intron.**
 
-**7. About the cut-and-align function?**
-[Batch>Merge&Trim] is to merge and trim the results files in batch. Make sure that your sequencing sequence ID strictly corresponds to the results folder ID and that you put in the reference sequence you want to analyse.
+**7. No result for [Merge & Trim]?**
+[Batch>Merge & Trim] requires the  existence of: an imported sequencing file, an imported reference sequence file, and a result catalogue folder where results exist. Note: The sequencing sequence ID number in the result folder should be the same as the imported sequencing file ID.
 
 **8. No results for PPD?**
-
 PPD is only applied for 353 data, please ensure there are three or more species are selected for batch extraction.
 *Ensure that there is no Chinese catalog folder.
 
