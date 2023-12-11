@@ -78,6 +78,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 **View Results**
 
 Click **"Open"**  to view the results.
+<br />
 ![](images/find_results.jpg)
 
 ## Part2 :How to get plastid genome?
@@ -99,30 +100,42 @@ Click **[File>Load Sequencing Files]** to select sequencing data file.
 
 ![](images/load_seq.jpg)
 <br />
+<br />
 
 **Running Programme**
+<br />
 Click **[Analyse>Plant_Chloroplast_Genome]** to download the reference genome of closely related species.
 
 ![](images/analyse.jpg)
 
 ![](images/download_genome.jpg)
+<br />
 
 Click **OK** and proceed with the default parameters for assembly.
 
 ![](images/Novoplasty.jpg)
+<br />
+<br />
 
 **View Results**
 
 ![](images/find_results.jpg)
 
-Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. Specific genes can be extracted from the genome by loading and exporting the gb file:
+Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. 
+Specific genes can be extracted from the genome by loading and exporting the gb file:
 You can extract specific genes from the genome by loading and exporting the gb file: **[File>Load_reference]**.**[File>Export_reference]**
+
+<br />
+<br />
 
 ### Step2 Plant Mitochondrial Genome
 
-![](images/mito.jpg)
 
 Follow the same process as the Plant Chloroplast Genome assembly. However, **import the results of the previous Plant Chloroplast Genome** assembly first.
+
+![](images/mito.jpg)
+<br />
+<br />
 
 # Questions
 **1.** **Does sequencing data require the removal of junctions and low-quality reads?**
@@ -151,10 +164,10 @@ Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then impo
 
 [Batch > Merge & Trim] requires the existence of: sequencing data, reference sequence,  catalogue folder where results exist. 
 
-![](images/trim_details.jpg)
-
 **Note:** The ID number in the result folder(3) should match the imported sequencing file ID(2).  
 *Make sure there is no Chinese catalog folder.
+
+![](images/trim_details.jpg)
 
 **6. No results for PPD?**
 PPD application is limited to 353 data. Ensure the selection of three or more species for batch extraction.
@@ -163,8 +176,10 @@ PPD application is limited to 353 data. Ensure the selection of three or more sp
 **7. No results for Mitochondrial Genome?**
 For mitochondrial genome assembly, utilizing the full read length of the sequencing file is recommended.
 You can untick **[Reads/File(M)]** checkbox at **[Analysis>Filter]** to analyse the full read length data.
+<br />
+<br />
 
-**Note**:For detailed instructions and tutorials, visit [here](manual\ZH_CN\readmeall.pdf)
+For detailed instructions and tutorials, visit [here](manual\ZH_CN\readmeall.pdf)
 
 # Contact
 If you have any questions, suggestions, or comments about EasyMiner, feel free to contact the developer at Xinyi_Yu2021@163.com.
