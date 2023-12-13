@@ -72,7 +72,7 @@ https://github.com/sculab/EasyMiner
 
 该实例演示了利用来自琴叶拟南芥(*Arabidopsis lyrata*)的基因序列，从拟南芥(*Arabidopsis thaliana*)的二代测序文件中获取对应的基因。
 
-#### 数据准备:
+### 数据准备:
 
 **（1）测序数据**: 二代测序的数据文件，文件格式为.gz或.fq。EasyMiner主要针对短读长的测序文件（reads长度为100、150、300等）。一般而言，浅层基因组、转录组、全基因组的双端或者单端测序文件都可以使用。
 
@@ -102,7 +102,7 @@ https://github.com/sculab/EasyMiner
 导入文件后会显示参考序列的ID、基因名、序列数量、序列平均长度等信息。
 
 
-#### 运行程序
+### 运行程序
 
 ![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E7%A4%BA%E4%BE%8B%E5%88%86%E6%9E%90%E8%BF%87%E6%BB%A4%E6%8B%BC%E6%8E%A5.jpg)
 
@@ -112,7 +112,7 @@ https://github.com/sculab/EasyMiner
 
  
 
-#### 查看结果
+### 查看结果
 
 ![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E4%BE%A7%E8%BE%B9%E6%A0%8F.png)
 
@@ -124,9 +124,9 @@ https://github.com/sculab/EasyMiner
 
 该实例演示了利用拟南芥(*Arabidopsis thaliana*)的二代测序文件，组装叶绿体和线粒体基因组。
 
-### 组装叶绿体基因组
+## 组装叶绿体基因组
 
-#### 数据准备:
+### 数据准备:
 
 **测序数据**: 二代测序的数据文件，文件格式为.gz或.fq。
 
@@ -141,7 +141,7 @@ https://github.com/sculab/EasyMiner
 
 
 
-#### 运行程序:  
+### 运行程序:  
 
 点击[**分析>植物叶绿体基因组**]下载近缘物种参考基因组。 
 
@@ -155,7 +155,7 @@ https://github.com/sculab/EasyMiner
 
 
 
-#### 查看结果:  
+### 查看结果:  
 
 点击**打开目录**查看结果。
 
@@ -177,7 +177,7 @@ https://github.com/sculab/EasyMiner
 
 
 
-### 组装线粒体基因组
+## 组装线粒体基因组
 
 遵循与植物叶绿体基因组组装相同的过程。但需要先导入刚刚得到的植物叶绿体基因组的组装结果。
 

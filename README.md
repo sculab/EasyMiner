@@ -46,12 +46,12 @@ For users who want to use command line version, Please see our [Easy353](https:/
 
 # Usage
 
-## Part1:How to get specific gene?
+# Part1:How to get specific gene?
 
 This section demonstrates extracting specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
 
-#### Data Preparation:
+### Data Preparation:
 
 
 **1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
@@ -82,7 +82,7 @@ The imported files display information such as the reference sequence ID, gene n
 ![](images/chinese_ref_xiangxi.jpg)
 
 
-#### Running Programme:
+### Running Programme:
 
 
 Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
@@ -96,7 +96,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 **Note:** Do not manually close the command line window; please wait patiently for it to close automatically. 
 
 
-#### View Results:
+### View Results:
 
 
 Click **"Open"**  to view the results.
@@ -105,17 +105,17 @@ Click **"Open"**  to view the results.
 ![](images/find_results.jpg)
 
 
-## Part2 :How to get plastid genome?
+# Part2 :How to get plastid genome?
 This example covers mining chloroplast and mitochondrial genomes from second-generation sequencing data of Arabidopsis thaliana.
 
 
 **Note:** Plant Chloroplast Genome assembly is required before Plant Mitochondrial Genome assembly.
 
 
-### Step1 Plant Chlororplast Genome
+## Step1 Plant Chlororplast Genome
 
 
-#### Data Preparation:
+### Data Preparation:
 
 
 **1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
@@ -146,7 +146,7 @@ Click **OK** and proceed with the default parameters for assembly.
 
 
 
-#### View Results:
+### View Results:
 
 
 Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. 
@@ -158,7 +158,7 @@ You can extract specific genes from the genome by loading and exporting the gb f
 
 
 
-### Step2 Plant Mitochondrial Genome
+## Step2 Plant Mitochondrial Genome
 
 
 Follow the same process as the Plant Chloroplast Genome assembly. However, **import the results of the previous Plant Chloroplast Genome** assembly first.
