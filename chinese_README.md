@@ -81,9 +81,11 @@ https://github.com/sculab/EasyMiner
 
 **载入数据**: 
 
-![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E7%A4%BA%E4%BE%8B%E6%96%87%E4%BB%B6%E8%BD%BD%E5%85%A5.jpg)
+![](images/load_all_chinese.jpg)
 
 点击 **[文件>载入测序文件]** 选择测序数据文件。
+
+
 
 ![](images/chinese_ex_import.jpg)
 
