@@ -1,6 +1,6 @@
 
 # Overview
-[Here](D:\app\Gitee_easyminer\EasyMiner\manual\ZH_CN\chinese_README) to view the chinese version manual.
+[Here](chinese_README.md) to view the chinese version manual.
 
  ![](images/main_page.jpg)
 
@@ -36,7 +36,7 @@ Alternatively, download from [SourceForge](https://sourceforge.net/projects/scue
 
 
 # More Details
-For detailed instructions and tutorials, visit [here](manual\ZH_CN\readmeall.pdf)
+For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf)
 
 
 ## Command Line (cmd)
@@ -46,7 +46,7 @@ For users who want to use command line version, Please see our [Easy353](https:/
 
 # Usage
 
-## Part1:How to get cds?
+## Part1:How to get specific gene?
 
 This section demonstrates extracting specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
