@@ -32,7 +32,7 @@ Alternatively, download from [SourceForge](https://sourceforge.net/projects/scue
 **Demo3**:demo of Animal Mitochondrial Genome  [DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
 
 
-**Demo4**:demo of 353 Genes  [DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+**Demo4**:demo of 353 Genes  [DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
 
 
 # More Details

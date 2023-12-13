@@ -147,9 +147,9 @@ https://github.com/sculab/EasyMiner
 
 点击[**分析>植物叶绿体基因组**]下载近缘物种参考基因组。 
 
-![](images\analyse_chinese.jpg) 
+![](images/analyse_chinese.jpg)
 
-![](images\download_chinese.jpg)  
+![](images/download_chinese.jpg)
 
 单击确定并继续使用装配的默认参数。
 
@@ -168,7 +168,7 @@ https://github.com/sculab/EasyMiner
 **[文件>载入参考序列]**：导入结果gb文件，可以选择想要扩展的内含子边界。
 
 **[文件>导出参考序列]**：可以勾选想要导出的基因组中的特定基因文件。导出为fasta格式。 
-
+![](images/file_chinese.jpg)
 
 
 
@@ -184,59 +184,45 @@ https://github.com/sculab/EasyMiner
 # 常见问题
 
 **1.** **结果列表中过滤深度(filter depth)的含义？**
-
 列表中显示的是如果将所有reads都用于拼接，理论上所能达到的最大深度，这个数值远大于实际拼接深度。
 
-**2.** **组装kmer值如何确定？**
 
+**2.** **组装kmer值如何确定？**
 将所有读长序列与参考序列进行比对，计算其最大共有序列的长度作为kmer值。
 
-**3.** **测序数据是否需要去除接头和低质量reads？**
 
+**3.** **测序数据是否需要去除接头和低质量reads？**
 建议使用测序公司提供的HQ版本的数据，使用低质量数据可能导致提取结果效果不好。如果没有HQ数据建议去除接头和低质量reads。
 
+
 **4.** **得不到结果序列可能原因和解决办法?**
-
-选用的参考序列不够近源（手动查找更为近源的序列）
-
-测序数据的深度太浅（可以尝试把过滤K值调低）
-
-尝试迭代重新分析
+· 选用的参考序列不够近源（手动查找更为近源的序列）
+· 测序数据的深度太浅（可以尝试把过滤K值调低）
+· 尝试迭代重新分析
 
 *降低kmer得到的结果可能精确度不够，对于假阳性等错误序列，需要自己手动筛选分辨
 
-**5. 软件对电脑内存的需求？**
 
+**5. 软件对电脑内存的需求？**
 对内存需求不大，可以对进程数量进行调节以适应电脑内存。
+
 
 **6. 我该如何获取内含子序列数据？**
 首先通过叶绿体基因组组装得到完整的gb文件，之后再将gb文件导入，勾选去除外显子区域，并在扩展边界长度选择您需要的内含子区长度。
 **注意：在进行拼接时，如果参考序列（外显子序列）的内部空缺内含子区域，软件拼接结果会包含中间空缺的内含子。**
 
-**7.没有切齐的结果？**
 
+**7.没有切齐的结果？**
 [批量>合并&切齐]需要同时存在：导入的测序文件、导入的参考序列文件、存在结果的结果目录文件夹。注意：结果文件夹中的测序序列ID号要与导入的测序文件ID相同。
 
-**8.PPD没有结果？**
 
+**8.PPD没有结果？**
 PPD仅针对353数据应用，请保证选择了三个及以上的物种类群进行批量提取。
 保证无中文目录文件夹。
 
-**9.为什么没有线粒体基因组的组装结果？**
 
+**9.为什么没有线粒体基因组的组装结果？**
 建议将测序文件的完整读长长度用于线粒体基因组组装。您可以在[分析>过滤]处取消勾选[读取/文件(M)]，以分析完整读取长度数据。
 
 
-
-## 参考文献
-
-Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955
-
-Dierckxsens N., Mardulyn P. and Smits G. (2019) Unraveling heteroplasmy patterns with NOVOPlasty. NAR Genomics and Bioinformatics, https://doi.org/10.1093/nargab/lqz011
-
-Zhen Zhang, Pulin Xie, Yongling Guo, Wenbin Zhou, Enyan Liu, Yan Yu. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution. msac261 (2022). https://doi.org/10.1093/molbev/msac261.
-
-Baker W.J., Bailey P., Barber V., Barker A., Bellot S., Bishop D., Botigue L.R., Brewer G., Carruthers T., Clarkson J.J., Cook J., Cowan R.S., Dodsworth S., Epitawalage N., Francoso E., Gallego B., Johnson M., Kim J.T., Leempoel K., Maurin O., McGinnie C., Pokorny L., Roy S., Stone M., Toledo E., Wickett N.J., Zuntini A.R., Eiserhardt W.L., Kersey P.J., Leitch I.J. & Forest F. A Comprehensive Phylogenomic Platform for Exploring the Angiosperm Tree of Life. Systematic Biology. 71: 301–319. https://doi.org/10.1093/sysbio/syab035.
-
-Wenbin Z,John S,Jenny Q X. A New Pipeline for Removing Paralogs in Target Enrichment Data.[J]. Systematic biology,2021,71(2).
 
