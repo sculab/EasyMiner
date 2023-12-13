@@ -3088,4 +3088,68 @@ Public Class Main_Form
         PB_value = -1
         MsgBox("Analysis completed!")
     End Sub
+
+    Private Sub 拆分fq文件ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 拆分fq文件ToolStripMenuItem.Click
+        timer_id = 4
+        Dim th1 As New Thread(AddressOf do_SplitFastqFile)
+        th1.Start()
+    End Sub
+
+    Public Sub do_SplitFastqFile()
+        Dim count As Integer = 0
+        Dim parallelOptions As New ParallelOptions()
+        parallelOptions.MaxDegreeOfParallelism = max_thread
+        'Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
+        For i As Integer = 1 To refsView.Count
+                                                                     count += 1
+                                                                     PB_value = count / refsView.Count * 100
+                                                                     If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                         Dim inputFilePath As String = out_dir + "\filtered\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fq"
+                                                                         If File.Exists(inputFilePath) Then
+                                                                             SplitFastqFile(inputFilePath)
+
+                                                                         End If
+                                                                     End If
+                                                                 Next
+
+
+                                                                 'End Sub)
+                                                                 PB_value = -1
+
+        MsgBox("Analysis completed!")
+    End Sub
+    Public Sub SplitFastqFile(inputFilePath As String)
+        Dim directoryPath As String = Path.GetDirectoryName(inputFilePath)
+        Dim baseFileName As String = Path.GetFileNameWithoutExtension(inputFilePath)
+        Dim outputFilePath1 As String = Path.Combine(directoryPath, baseFileName & ".1.fq")
+        Dim outputFilePath2 As String = Path.Combine(directoryPath, baseFileName & ".2.fq")
+
+        Using reader As StreamReader = New StreamReader(inputFilePath)
+            Using writer1 As StreamWriter = New StreamWriter(outputFilePath1)
+                Using writer2 As StreamWriter = New StreamWriter(outputFilePath2)
+
+                    Dim line As String
+                    Dim readNumber As Integer = 1
+
+                    While (Not reader.EndOfStream)
+                        line = reader.ReadLine()
+                        If readNumber Mod 2 <> 0 Then
+                            WriteRead(writer1, line, reader)
+                        Else
+                            WriteRead(writer2, line, reader)
+                        End If
+
+                        readNumber += 1
+                    End While
+
+                End Using
+            End Using
+        End Using
+    End Sub
+    Private Sub WriteRead(writer As StreamWriter, firstLine As String, reader As StreamReader)
+        writer.WriteLine(firstLine)
+        For i As Integer = 1 To 3
+            writer.WriteLine(reader.ReadLine())
+        Next
+    End Sub
 End Class
