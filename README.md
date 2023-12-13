@@ -51,7 +51,7 @@ For users who want to use command line version, Please see our [Easy353](https:/
 This section demonstrates extracting specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
 
-**Data Preparation**:
+#### Data Preparation:
 
 
 **1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
@@ -82,7 +82,7 @@ The imported files display information such as the reference sequence ID, gene n
 ![](images/chinese_ref_xiangxi.jpg)
 
 
-**Running Programme**:
+#### Running Programme:
 
 
 Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
@@ -96,7 +96,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 **Note:** Do not manually close the command line window; please wait patiently for it to close automatically. 
 
 
-**View Results**
+#### View Results:
 
 
 Click **"Open"**  to view the results.
@@ -115,7 +115,7 @@ This example covers mining chloroplast and mitochondrial genomes from second-gen
 ### Step1 Plant Chlororplast Genome
 
 
-**Data Preparation**:
+#### Data Preparation:
 
 
 **1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
@@ -130,7 +130,7 @@ Click **[File>Load Sequencing Files]** to select sequencing data file.
 
 
 
-**Running Programme**:
+#### Running Programme:
 
 
 Click**[Analyse>Plant_Chloroplast_Genome]**to download the reference genome of closely related species.
@@ -146,7 +146,7 @@ Click **OK** and proceed with the default parameters for assembly.
 
 
 
-**View Results**:
+#### View Results:
 
 
 Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. 
@@ -168,6 +168,8 @@ Follow the same process as the Plant Chloroplast Genome assembly. However, **imp
 
 
 # Questions
+
+
 **1.** **Does sequencing data require the removal of junctions and low-quality reads?**
 It is recommended to use the HQ version of the data provided by the sequencing company. Utilizing low-quality data may lead to suboptimal extraction outcomes. In the absence of HQ data, it is recommended to remove junctions and low-quality reads to improve results.
 
@@ -185,17 +187,17 @@ It is recommended to use the HQ version of the data provided by the sequencing c
 **Note:** It is recommended to set the Kmer value to be greater than 17, ensuring that the chosen value is an odd number.
 
 
-**3. What is the memory requirement of the software?**
+**3.** **What is the memory requirement of the software?**
 The software has minimal memory requirements. Adjust the [Threads] setting to match your computer's memory capacity.
 
 
-**4. How to obtain the intron sequence data?**
+**4.** **How to obtain the intron sequence data?**
 Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then import this file using [File > Load Reference]. Confirm to report the file as a gene list. Next, determine the intron region length using [Extend Left] and [Extend Right].
 
 **Note:** If the imported reference cds includes an internal vacant intron region, the software's analysis result will encompass this vacant intron.
 
 
-**5. No result for  [Merge & Trim]?**
+**5.** **No result for  [Merge & Trim]?**
 [Batch > Merge & Trim] requires the existence of: sequencing data, reference sequence,  catalogue folder where results exist. 
 
 **Note:** The ID number in the result folder(3) should match the imported sequencing file ID(2).  
@@ -204,12 +206,12 @@ Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then impo
 ![](images/trim_details.jpg)
 
 
-**6. No results for PPD?**
+**6.** **No results for PPD?**
 PPD application is limited to 353 data. Ensure the selection of three or more species for batch extraction.
 *Make sure there is no Chinese catalog folder.
 
 
-**7. No results for Mitochondrial Genome?**
+**7.** **No results for Mitochondrial Genome?**
 For mitochondrial genome assembly, utilizing the full read length of the sequencing file is recommended.
 You can untick **[Reads/File(M)]** checkbox at **[Analysis>Filter]** to analyse the full read length data.
 
@@ -217,7 +219,7 @@ You can untick **[Reads/File(M)]** checkbox at **[Analysis>Filter]** to analyse 
 
 
 # Contact
-If you have any questions, suggestions, or comments about EasyMiner, feel free to contact the developer at Xinyi_Yu2021@163.com.
+If you have any questions, suggestions, or comments about EasyMiner, feel free to contact Xinyi_Yu2021@163.com.
 
 
 
