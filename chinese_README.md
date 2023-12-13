@@ -133,22 +133,30 @@ https://github.com/sculab/EasyMiner
 
 
 
-**加载数据**:  
+**载入数据**:  
 
 点击[**文件>载入测序文件**]选择序列数据文件。
 
- ![](images/file_chinese.jpg)
+
+![](images/load_seq_chinese.jpg)
+
 
 
 ### 运行程序:  
 
 点击[**分析>植物叶绿体基因组**]下载近缘物种参考基因组。 
 
-![](images/analyse_chinese.jpg)
+![](images/analyse_genome_chinese.jpg)
+
+
+下载近源物种的参考基因组。
+
 
 ![](images/download_chinese.jpg)
 
-单击确定并继续使用装配的默认参数。
+
+
+单击确定使用组装的默认参数。
 
 ![](images/Novoplasty.jpg)  
 
