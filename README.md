@@ -39,11 +39,11 @@ Alternatively, download from [SourceForge](https://sourceforge.net/projects/scue
 For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf)
 
 
-## Command Line (cmd)
+# Command Line (cmd)
 
 For users who want to use command line version, Please see our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
 
-
+---
 # Usage
 
 # Part1:How to get specific gene?
@@ -104,7 +104,7 @@ Click **"Open"**  to view the results.
 
 ![](images/find_results.jpg)
 
-
+---
 # Part2 :How to get plastid genome?
 This example covers mining chloroplast and mitochondrial genomes from second-generation sequencing data of Arabidopsis thaliana.
 
@@ -118,7 +118,8 @@ This example covers mining chloroplast and mitochondrial genomes from second-gen
 ### Data Preparation:
 
 
-**1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
+**Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
+
 
 
 **Load Data**:
@@ -133,9 +134,9 @@ Click **[File>Load Sequencing Files]** to select sequencing data file.
 ### Running Programme:
 
 
-Click**[Analyse>Plant_Chloroplast_Genome]**to download the reference genome of closely related species.
+Click[**Analyse>Plant_Chloroplast_Genome**]to download the reference genome of closely related species.
 
-![](images/analyse.jpg)
+![](images/step1.jpg)
 
 ![](images/download_genome.jpg)
 
@@ -156,6 +157,7 @@ Click **"Open"** to view the results. Assembled files are stored in the **Organe
 Specific genes can be extracted from the genome by loading and exporting the gb file:
 You can extract specific genes from the genome by loading and exporting the gb file: **[File>Load_reference]**.**[File>Export_reference]**
 
+---
 
 
 ## Step2 Plant Mitochondrial Genome
@@ -165,7 +167,7 @@ Follow the same process as the Plant Chloroplast Genome assembly. However, **imp
 
 ![](images/mito.jpg)
 
-
+---
 
 # Questions
 
