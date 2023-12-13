@@ -44,7 +44,6 @@ https://github.com/sculab/EasyMiner
 # 示例数据
 
 
-
 **Demo of Part1**:提取cds所需测序数据，选用拟南芥(*Arabidopsis thaliana*)二代测序数据进行提取，使用近源物种琴叶拟南芥(*Arabidopsis lyrata*)的基因作为参考序列。[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
@@ -63,7 +62,7 @@ https://github.com/sculab/EasyMiner
 
 # 详细
 
-有关软件的详细说明。请见： [here](manual\ZH_CN\readmeall.pdf)
+有关软件的详细说明。请见： [here](manual/ZH_CN/readmeall.pdf)
 
 
 
@@ -159,7 +158,11 @@ https://github.com/sculab/EasyMiner
 
 **查看结果**:  
 
-点击**“打开目录”**查看结果。汇编文件以gb和fasta两种格式存储在**Organelle**目录中。 
+点击**打开目录**查看结果。
+
+![](images/right_page.jpg)
+
+结果文件以gb和fasta两种格式存储**Organelle**目录中。 
 
 ![](images\novo_chinese.jpg)
 
@@ -168,6 +171,7 @@ https://github.com/sculab/EasyMiner
 **[文件>载入参考序列]**：导入结果gb文件，可以选择想要扩展的内含子边界。
 
 **[文件>导出参考序列]**：可以勾选想要导出的基因组中的特定基因文件。导出为fasta格式。 
+
 ![](images/file_chinese.jpg)
 
 
