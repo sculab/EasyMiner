@@ -93,18 +93,18 @@ https://github.com/sculab/EasyMiner
 
   点击 **[文件>载入参考序列]** 选择fasta格式的参考序列文件，可以一次选择多个参考序列文件。
 
-![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E7%A4%BA%E4%BE%8B%E5%8F%82%E8%80%83%E5%BA%8F%E5%88%97.jpg)
+![](images/refs.jpg)
 
 示例: 载入 DEMO/A_lyrata/ 下的所有fasta文件 (ITS、martK、psbA、rbcL、rps16)，包括1个核基因和4个叶绿体基因的参考序列，所有这些序列来都自拟南芥同属的近缘种琴叶拟南芥(*A. lyrata*)。
 
- ![](https://gitee.com/yyy-onetwothree/readme/raw/master/ref%E8%AF%A6%E7%BB%86.jpg)
+ ![](images/refs_xiang.jpg)
 
 导入文件后会显示参考序列的ID、基因名、序列数量、序列平均长度等信息。
 
 
 ### 运行程序
 
-![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E7%A4%BA%E4%BE%8B%E5%88%86%E6%9E%90%E8%BF%87%E6%BB%A4%E6%8B%BC%E6%8E%A5.jpg)
+![](images/analyse_ex_chinese.jpg)
 
 点击[分析>过滤&拼接] 使用默认参数运行程序，等待程序运行结束。
 
@@ -114,7 +114,7 @@ https://github.com/sculab/EasyMiner
 
 ### 查看结果
 
-![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E4%BE%A7%E8%BE%B9%E6%A0%8F.png)
+![](images/right_page.jpg)
 
 点击“打开目录”按钮，查看结果文件。拼接后的文件以fasta格式保存于results目录中。
 
@@ -137,8 +137,7 @@ https://github.com/sculab/EasyMiner
 
 点击[**文件>载入测序文件**]选择序列数据文件。
 
- ![](D:\app\Gitee_easyminer\EasyMiner\images\file_chinese.jpg)  
-
+ ![](images/file_chinese.jpg)
 
 
 ### 运行程序:  
