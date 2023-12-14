@@ -26,21 +26,6 @@ https://github.com/sculab/EasyMiner
 
 
 
-# 依赖环境
-
-[.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
-
-
-
-# 下载和安装
-
-
-由vb.net和python3开发的EasyMiner只适用于64位Windows系统。
-
-点击这里下载最新版 [here](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).或 [SourceForge](https://sourceforge.net/projects/scueasyminer/).
-
-
-
 # 示例数据
 
 
@@ -56,7 +41,7 @@ https://github.com/sculab/EasyMiner
 
 
 
-**Demo4**:提取被子植物353基因集所需数据，选用紫花阔叶柴胡（*Bupleurum boissieuanum*）二代测序数据。demo of 353 Genes  [DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+**Demo4**:提取被子植物353基因集所需数据，选用拟南芥二代测序数据。demo of 353 Genes  [DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
 
 
 
