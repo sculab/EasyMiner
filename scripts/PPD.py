@@ -247,8 +247,9 @@ def mafft_alignment(seq_directory, threads=1):
             fname = os.path.join(genes_result_s3, file).replace("\\","/").replace("//","/")
             output_name = os.path.join(genes_result_s4, file).replace("\\","/").replace("//","/")
             if file != ".DS_Store":
-                cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --auto --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
+                #cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --auto --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
                 #cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --maxiterate 1000 --globalpair --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"
+                cmd = r"..\analysis\muscle5.1.win64.exe -align" + " " + '"' + fname + '"' + " -output " + '"' + output_name + '"'
                 commands.append(cmd)
 
         # Use multiprocessing to execute the commands in parallel

@@ -1,15 +1,8 @@
 ﻿Imports System.Text
 
 Module Module_Var
-#Const TargetOS = "win64"
-#If TargetOS = "linux" Then
-    Public TargetOS As String = "linux"
-#ElseIf TargetOS = "macos" Then
-    Public TargetOS As String = "macos"
-#ElseIf TargetOS = "win64" Then
     Public TargetOS As String = "win64"
-#End If
-    Public version As String = "1.0b build 20231208"
+    Public version As String = "1.0b build 20231212"
     Public exe_mode As String = "debug"
     Public database_url As String
     Public settings As Dictionary(Of String, String)

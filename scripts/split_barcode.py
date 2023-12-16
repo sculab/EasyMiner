@@ -101,9 +101,9 @@ def split_wo_combine(query_file, subject_file, word_size, out_folder):
 
 def main():
     parser = argparse.ArgumentParser(description="基于Blast分割barcode")
-    parser.add_argument("-i", "--input", required=False, default=r"E:\HLA\data\20231120_Sync_H43_01_H01_Run0001.fa", help="选项文件夹的路径")
-    parser.add_argument("-r", "--ref", required=False, default=r"E:\HLA\barcode.fasta", help="barcode序列的路径")
-    parser.add_argument("-o", "--output", required=False, default=r'E:\run\results', help="结果文件夹的路径")
+    parser.add_argument("-i", "--input", required=False, default=r"D:\20231207", help="选项文件夹的路径")
+    parser.add_argument("-r", "--ref", required=False, default=r"D:\HIVTEST\barcode.fasta", help="barcode序列的路径")
+    parser.add_argument("-o", "--output", required=False, default=r'D:\HIVTEST\app\results', help="结果文件夹的路径")
     parser.add_argument('-w', "--word_size", required=False, type=int, default = 15, help='''word size''')
     parser.add_argument('-p', "--processes", required=False, type=int, default=8, help='Number of processes')
     args = parser.parse_args()
@@ -113,8 +113,8 @@ def main():
     if os.path.isdir(args.input):
         files_to_process = []
         for filename in os.listdir(args.input):
-            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta"):
-                query_file = os.path.join(args.input, filename)
+            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") or filename.endswith(".fq"):
+                query_file = fq_to_fasta(os.path.join(args.input, filename))
                 out_folder = os.path.join(args.output, os.path.splitext(filename)[0])
                 if os.path.exists(out_folder):
                     shutil.rmtree(out_folder)
@@ -128,8 +128,8 @@ def main():
             shutil.rmtree(combine_folder)
         os.makedirs(combine_folder, exist_ok=True)
         for filename in os.listdir(args.input):
-            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta"):
-                query_file = os.path.join(args.input, filename)
+            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") or filename.endswith(".fq"):
+                query_file = fq_to_fasta(os.path.join(args.input, filename))
                 seq_file_name = os.path.basename(os.path.splitext(query_file)[0])
                 out_folder = os.path.join(args.output, seq_file_name)
                 for new_file in os.listdir(out_folder):
@@ -139,7 +139,7 @@ def main():
                             for line in query_f:
                                 combined_f.write(line)
     else:
-        query_file = args.input 
+        query_file = fq_to_fasta(args.input)
         seq_file_name = os.path.basename(os.path.splitext(query_file)[0])
         out_folder = os.path.join(args.output, seq_file_name)
         if os.path.exists(out_folder):
@@ -171,6 +171,31 @@ def main():
     with Pool(args.processes) as pool:
         pool.starmap(split_subreads, files_to_process)
     print("Analysis complete!")
+
+def fq_to_fasta(input_file):
+    # 检查文件扩展名
+    if input_file.endswith('.fq.gz'):
+        open_func = gzip.open
+        output_file = './' + input_file.replace("\\","/").split('/')[-1].replace('.fq.gz', '.fasta')
+    elif input_file.endswith('.fq'):
+        open_func = open
+        output_file = './' + input_file.replace("\\","/").split('/')[-1].replace('.fq', '.fasta')
+    else:
+        return input_file
+
+    with open_func(input_file, 'rt') as fq, open(output_file, 'w') as fasta:
+        while True:
+            header = fq.readline().strip()
+            if not header:
+                break
+            sequence = fq.readline().strip()
+            fq.readline()  # + line (ignored)
+            fq.readline()  # quality line (ignored)
+
+            fasta_header = '>' + header[1:]  # Convert FASTQ header to FASTA header
+            fasta.write(fasta_header + '\n')
+            fasta.write(sequence + '\n')
+    return output_file
 
 
 def split_subreads(query_file, subject_file, word_size, seq_file_name, out_folder):

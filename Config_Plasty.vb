@@ -141,7 +141,7 @@ Public Class Config_Plasty
                         File.Delete(currentDirectory + "temp\output.fasta")
                     End If
                     My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
-                    If cpg_assemble_mode = 2 Then
+                    If cpg_assemble_mode = 2 Or TargetOS = "macos" Then
                         File.Copy(assemble_file, out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
                         Dim result0 As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         ' 根据用户的选择执行相应的操作
@@ -150,6 +150,7 @@ Public Class Config_Plasty
                         End If
                         Exit Sub
                     End If
+
                     build_ann(TextBox2.Text, assemble_file, "ref_gb.gb", "output", currentDirectory + "temp\")
 
                     If File.Exists(out_dir + "\Organelle\warning.txt") Then

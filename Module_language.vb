@@ -3,7 +3,7 @@ Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
 
 Module Module_Language
     Public Sub to_en()
-        form_main.Text = "EasyMiner" + " ver. " + version
+        form_main.Text = "EasyMiner" + " ver. " + version + " " + TargetOS
         form_main.文件ToolStripMenuItem.Text = "File"
         form_main.载入参考序列ToolStripMenuItem.Text = "Load References"
         form_main.测序文件ToolStripMenuItem.Text = "Load Sequencing Files"
@@ -132,7 +132,7 @@ Module Module_Language
     End Sub
 
     Public Sub to_ch()
-        form_main.Text = "EasyMiner" + " ver. " + version
+        form_main.Text = "EasyMiner" + " ver. " + version + " " + TargetOS
         form_main.文件ToolStripMenuItem.Text = "文件"
         form_main.载入参考序列ToolStripMenuItem.Text = "载入参考序列"
         form_main.测序文件ToolStripMenuItem.Text = "载入测序文件"
@@ -177,7 +177,7 @@ Module Module_Language
         form_main.序列比对ToolStripMenuItem1.Text = "序列比对"
         form_main.切齐比对ToolStripMenuItem1.Text = "切齐比对"
         form_main.ToolStripMenuItem4.Text = "重新拼接"
-        form_main.RichTextBox1.Text = "双击此处查看最近的日志"
+        form_main.RichTextBox1.Text = "Double-click to view logs"
         form_main.分析ToolStripMenuItem.Text = "分析"
         form_main.EnglishToolStripMenuItem.Text = "English"
         form_main.GroupBox1.Text = "输出目录"
