@@ -81,6 +81,7 @@ Partial Class Main_Form
         序列比对ToolStripMenuItem1 = New ToolStripMenuItem()
         切齐比对ToolStripMenuItem1 = New ToolStripMenuItem()
         DebugToolStripMenuItem = New ToolStripMenuItem()
+        拆分fq文件ToolStripMenuItem = New ToolStripMenuItem()
         EnglishToolStripMenuItem = New ToolStripMenuItem()
         DataGridView1 = New DataGridView()
         ContextMenuStrip2 = New ContextMenuStrip(components)
@@ -446,7 +447,7 @@ Partial Class Main_Form
         ' 
         ' 三方工具ToolStripMenuItem
         ' 
-        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {序列比对ToolStripMenuItem1, 切齐比对ToolStripMenuItem1, DebugToolStripMenuItem})
+        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {序列比对ToolStripMenuItem1, 切齐比对ToolStripMenuItem1, 拆分fq文件ToolStripMenuItem, DebugToolStripMenuItem})
         三方工具ToolStripMenuItem.Name = "三方工具ToolStripMenuItem"
         三方工具ToolStripMenuItem.Size = New Size(44, 21)
         三方工具ToolStripMenuItem.Text = "其他"
@@ -468,6 +469,12 @@ Partial Class Main_Form
         DebugToolStripMenuItem.Name = "DebugToolStripMenuItem"
         DebugToolStripMenuItem.Size = New Size(180, 22)
         DebugToolStripMenuItem.Text = "Debug"
+        ' 
+        ' 拆分fq文件ToolStripMenuItem
+        ' 
+        拆分fq文件ToolStripMenuItem.Name = "拆分fq文件ToolStripMenuItem"
+        拆分fq文件ToolStripMenuItem.Size = New Size(180, 22)
+        拆分fq文件ToolStripMenuItem.Text = "拆分fq文件"
         ' 
         ' EnglishToolStripMenuItem
         ' 
@@ -793,4 +800,5 @@ Partial Class Main_Form
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
     Friend WithEvents 用迭代覆盖ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem4 As ToolStripMenuItem
+    Friend WithEvents 拆分fq文件ToolStripMenuItem As ToolStripMenuItem
 End Class
