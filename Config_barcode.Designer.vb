@@ -187,7 +187,7 @@ Partial Class Config_barcode
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(368, 194)
+        ClientSize = New Size(368, 215)
         ControlBox = False
         Controls.Add(Label5)
         Controls.Add(NumericUpDown2)

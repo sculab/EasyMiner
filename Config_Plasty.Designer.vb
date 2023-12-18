@@ -22,7 +22,7 @@ Partial Class Config_Plasty
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(Config_Plasty))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Config_Plasty))
         Label1 = New Label()
         ComboBox1 = New ComboBox()
         Label2 = New Label()
@@ -286,7 +286,7 @@ Partial Class Config_Plasty
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(317, 408)
+        ClientSize = New Size(317, 429)
         ControlBox = False
         Controls.Add(Button5)
         Controls.Add(CheckBox1)

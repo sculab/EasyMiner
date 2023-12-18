@@ -139,6 +139,7 @@ def main():
     with open(input_file2, "r") as file2:
         sequences_file2 = file2.readlines()
     merged_sequences = sequences_file1 + sequences_file2
+
     with open(output_file, "w") as output:
         output.writelines(merged_sequences)
 

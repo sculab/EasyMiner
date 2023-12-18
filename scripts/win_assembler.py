@@ -399,14 +399,13 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
             processed_contigs.append([c, c_weight, r_count, count_duplicates(paired_count)])
     return processed_contigs, set(kmer_list_1 + kmer_list_2), contig_pos
 
-def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, iteration, soft_boundary, loop_count):
+def process_key_value(args, key, failed_count, result_dict, ref_path_dict, iteration, soft_boundary, loop_count):
     limit = args.limit_count
     depth = 0
     contig_best_path = os.path.join(args.o, "results", key + ".fasta")
     contig_all_path = os.path.join(args.o, "contigs_all", key + ".fasta")
     if os.path.isfile(contig_best_path) == False:
         with open(contig_best_path, 'w') as out: pass
-        write_contig = False
         # 检查是哪种扩展名
         file_extensions = ['.fasta', '.fq']
         Filted_File_Ext = '.fq'
@@ -421,7 +420,8 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
         if os.path.isfile(os.path.join(args.o, 'filtered', key + Filted_File_Ext )) == False:
             if os.path.isfile(contig_best_path): os.remove(contig_best_path)
             if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-            return failed_count, key, {"status": "skipped"}
+            result_dict[key] =  {"status":"no filtered file", "value": 0}
+            return failed_count, key, result_dict[key]
         # 获取种子列表
         ref_dict, filtered_dict, reads_dict = {}, {}, {}
         # 获取最大切片长度，建立reads切片字典
@@ -434,8 +434,8 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
             if os.path.isfile(contig_best_path): os.remove(contig_best_path)
             if os.path.isfile(contig_all_path): os.remove(contig_all_path)
             Write_Print(os.path.join(args.o,  "log.txt"), "No reads were obtained for the", key)
-            result_dict[key] = ["no reads",0]
-            return failed_count, key, {"status": "skipped"}
+            result_dict[key] =  {"status":"no reads", "value": 0}
+            return failed_count, key, result_dict[key]
         # 构建当前参考序列列表
         # 如果不指定ka, 估算最大ka，执行动态高精度拼接
         current_ka = args.ka
@@ -443,14 +443,14 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
             ref_list = Get_Ref_List([ref_path_dict[key]])
             # 获取reads和参考序列的最大重叠长度
             keys_with_slice_len = {key for key in reads_dict.keys() if len(key) == slice_len}
-            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = 8, max_overlap_limit = min((args.k_max + 2),slice_len-1))
+            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = 1, max_overlap_limit = min((args.k_max + 2),slice_len-1))
             if not current_ka:
                 failed_count += 1
                 if os.path.isfile(contig_best_path): os.remove(contig_best_path)
                 if os.path.isfile(contig_all_path): os.remove(contig_all_path)
                 Write_Print(os.path.join(args.o,  "log.txt"), "The reference sequence for the ", key, " may be too distantly related or the sequencing depth may be too low.", sep='')
-                result_dict[key] = {"status":"distant references", "value": 0}
-                return failed_count, key, {"status": "skipped"}
+                result_dict[key] = {"status":"Low k Lower Limit", "value": 0}
+                return failed_count, key, result_dict[key]
             # 略微降低一个级别的k提供更好的兼容性
             current_ka -= 2
             Write_Print(os.path.join(args.o,  "log.txt"), "Use k=", current_ka, " for assembling the ", key ,".", sep='')
@@ -487,7 +487,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
             if os.path.isfile(contig_all_path): os.remove(contig_all_path)
             Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough reads from filter. Estimate depth:', depth ,' '*16)
             result_dict[key] = {"status":"insufficient reads", "value": 0}
-            return failed_count, key, {"status": "skipped"}
+            return failed_count, key, result_dict[key]
         # 处理ref_dict，标记不在filtered_dict中的kmer
         for i in ref_dict:
             if i not in filtered_dict:
@@ -504,7 +504,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
             if os.path.isfile(contig_all_path): os.remove(contig_all_path)
             Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough seeds. Estimate depth:', depth ," "*16)
             result_dict[key] = {"status":"no seed", "value": 0}
-            return failed_count, key, {"status": "skipped"}
+            return failed_count, key, result_dict[key]
         # 获取seed集合，用来加速集合操作
         seed_list_len = len(seed_list)
         seed_set = set([i[0] for i in seed_list])
@@ -535,7 +535,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
                 if os.path.isfile(contig_all_path): os.remove(contig_all_path)
                 Write_Print(os.path.join(args.o,  "log.txt"), "Insufficient reads coverage, unable to obtain valid contig.")
                 result_dict[key] = {"status":"no contigs", "value":0}
-                return failed_count, key, {"status": "skipped"}
+                return failed_count, key, result_dict[key]
             else:
                 contigs_all_low.sort(key=lambda x: x[4], reverse=True)
                 contigs_best.append(contigs_all_low[0])
@@ -550,7 +550,7 @@ def process_key_value(args, key, value, failed_count, result_dict, ref_path_dict
                 ref_dict, filtered_dict = {}, {}
                 result_dict[key] = {"status":"low quality","value": contigs_best[0][4]}
                 gc.collect()
-                return failed_count, key, {"status": "skipped"}
+                return failed_count, key, result_dict[key]
         with open(contig_best_path, 'w') as out:
             for x in contigs_best:
                 out.write('>contig_' + str(len(x[0])) + '_' + str(x[1]) + '_' + str(x[2]) + '_' + str(x[3]) + '_' + str(x[4]) + '_' + str(x[5]) + '\n')
@@ -600,8 +600,8 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(args.processes)
     results = []
 
-    for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
-        results.append(pool.apply_async(process_key_value, (args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count)))
+    for loop_count, (key, _) in enumerate(ref_length_dict.items(), start=1):
+        results.append(pool.apply_async(process_key_value, (args, key, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count)))
     pool.close()
     pool.join()
 

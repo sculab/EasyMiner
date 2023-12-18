@@ -3,6 +3,9 @@ Imports System.Net
 Imports System.Net.Http
 Imports System.Threading
 Imports System.Text.RegularExpressions
+Imports System.Text
+Imports System.Security.Cryptography
+
 
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Module Module_Function
@@ -267,16 +270,53 @@ Module Module_Function
         End While
     End Function
 
-    Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)
-        Dim SI_build_ann As New ProcessStartInfo()
-        SI_build_ann.FileName = currentDirectory + "analysis\build_ann.exe" ' 替换为实际的命令行程序路径
-        SI_build_ann.WorkingDirectory = WorkingDirectory ' 替换为实际的运行文件夹路径
-        SI_build_ann.CreateNoWindow = False
-        SI_build_ann.Arguments = "-i1 " + """" + input1 + """" + " -i2 " + """" + input2 + """" + " -gb " + """" + gb_file + """" + " -o " + """" + output_file + """"
-        Dim process_build_ann As Process = New Process()
-        process_build_ann.StartInfo = SI_build_ann
-        process_build_ann.Start()
-        process_build_ann.WaitForExit()
-        process_build_ann.Close()
+    'Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)
+    '    Dim SI_build_ann As New ProcessStartInfo()
+    '    SI_build_ann.FileName = currentDirectory + "analysis\build_ann.exe" ' 替换为实际的命令行程序路径
+    '    SI_build_ann.WorkingDirectory = WorkingDirectory ' 替换为实际的运行文件夹路径
+    '    SI_build_ann.CreateNoWindow = False
+    '    SI_build_ann.Arguments = "-i1 " + """" + input1 + """" + " -i2 " + """" + input2 + """" + " -gb " + """" + gb_file + """" + " -o " + """" + output_file + """"
+    '    Dim process_build_ann As Process = New Process()
+    '    process_build_ann.StartInfo = SI_build_ann
+    '    process_build_ann.Start()
+    '    process_build_ann.WaitForExit()
+    '    process_build_ann.Close()
+    'End Sub
+    Function GenerateRandomString(ByVal length As Integer) As String
+        Dim allowedChars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        Dim randomBytes(length - 1) As Byte
+        Dim rng As RandomNumberGenerator = RandomNumberGenerator.Create()
+        rng.GetBytes(randomBytes)
+        Dim result As New StringBuilder(length)
+
+        For Each randomByte In randomBytes
+            Dim index As Integer = randomByte Mod allowedChars.Length
+            result.Append(allowedChars(index))
+        Next
+
+        Return result.ToString()
+    End Function
+    Public Sub do_PGA(ByVal gb_file As String, ByVal taregt_file As String, ByVal output_dir As String)
+        Dim random_folder As String = GenerateRandomString(8)
+        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "target"))
+        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "reference"))
+        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "result"))
+        safe_copy(gb_file, Path.Combine(currentDirectory, "temp", random_folder, "reference", "my_ref.gb"))
+        safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "target", "my_target.fasta"))
+
+        Dim SI_PGA As New ProcessStartInfo()
+        SI_PGA.FileName = currentDirectory + "analysis\PGA.exe" ' 替换为实际的命令行程序路径
+        SI_PGA.WorkingDirectory = currentDirectory + "analysis" ' 替换为实际的运行文件夹路径
+        SI_PGA.CreateNoWindow = False
+        SI_PGA.Arguments = "-r ..\temp\" + random_folder + "\reference -t ..\temp\" + random_folder + "\target -o  ..\temp\" + random_folder + "\result"
+        Dim process_PGA As Process = New Process()
+        process_PGA.StartInfo = SI_PGA
+        process_PGA.Start()
+        process_PGA.WaitForExit()
+        process_PGA.Close()
+        safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "result", "my_target.gb"), Path.Combine(output_dir, "output.gb"))
+        safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "result", "warning.log"), Path.Combine(output_dir, "warning.log"))
+        safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "target", "my_target.fasta"), Path.Combine(output_dir, "output.fasta"))
+        Directory.Delete(Path.Combine(currentDirectory, "temp", random_folder), True)
     End Sub
 End Module
