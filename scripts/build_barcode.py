@@ -113,14 +113,52 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
     subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     print("Making alignment ...")
-    build_mafft_cmd = [r"..\analysis\mafft-win\mafft.bat", "--maxiterate 1000 --globalpair --inputorder", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f'> "{os.path.join(out_folder, folder_name + ".fasta")}"']
-    subprocess.run(" ".join(build_mafft_cmd), shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    build_muscle_cmd = [r"..\analysis\muscle5.1.win64.exe", "-align", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f' -output "{os.path.join(out_folder, folder_name + ".fasta")}"']
+    subprocess.run(" ".join(build_muscle_cmd), shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    reorder_sequences(os.path.join(out_folder, folder_name + "_tmp.fasta"), os.path.join(out_folder, folder_name + ".fasta"))
+    
     os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
     os.remove(os.path.join(out_folder, folder_name + ".sam"))
     os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
     print("Making final results")
     check_degenerate(os.path.join(out_folder, folder_name + ".fasta"), level, "", keep_best)
 
+def reorder_sequences(input_fas_file, input_aln_fas_file):
+    # 读取 input.fas 文件中的序列顺序和名称
+    with open(input_fas_file, 'r') as f:
+        input_fas_lines = f.readlines()
+    # 创建一个字典，将序列名映射到序列内容
+    input_fas_dict = {}
+    current_seq_name = ''
+    current_seq = ''
+    for line in input_fas_lines:
+        if line.startswith('>'):
+            # 如果是序列名称行，则保存当前序列
+            if current_seq_name:
+                input_fas_dict[current_seq_name] = current_seq
+            current_seq_name = line.strip()
+            current_seq = ''
+        else:
+            current_seq += line.strip()
+    if current_seq_name:
+        input_fas_dict[current_seq_name] = current_seq
+
+    # 读取 input_aln.fas 文件中的序列顺序
+    with open(input_aln_fas_file, 'r') as f:
+        input_aln_fas_lines = f.readlines()
+
+    # 根据 input.fas 中的顺序重新排列序列，并保存到 input_aln.fas 文件中
+    with open(input_aln_fas_file, 'w') as f:
+        current_seq_name = ''
+        for line in input_aln_fas_lines:
+            if line.startswith('>'):
+                current_seq_name = line.strip()
+            elif current_seq_name:
+                # 如果在 input.fas 中找到相应的序列，则写入到 input_aln.fas
+                if current_seq_name in input_fas_dict:
+                    f.write(current_seq_name + '\n')
+                    f.write(input_fas_dict[current_seq_name] + '\n')
+                current_seq_name = ''
 
 def check_degenerate(input_aligment, level, output_aligment = "", keep_best = True):
     processed_sequences = []
@@ -173,9 +211,9 @@ def process_query_file(input_file, subject_file, word_size, out_folder, con_thr,
 
 def main():
     parser = argparse.ArgumentParser(description="构建合并后的序列")
-    parser.add_argument("-i", "--input", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\clean_data\Barcode_adapter_BA7_clean.fasta", help="选项文件夹的路径")
-    parser.add_argument("-r", "--ref", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp_refs\barcode_refs.fasta", help="参考序列的路径")
-    parser.add_argument("-o", "--output", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results", help="结果文件夹的路径")
+    parser.add_argument("-i", "--input", required=False, default=r"E:\测试数据\HIV\combined\Barcode_adapter_BA1.fasta", help="选项文件夹的路径")
+    parser.add_argument("-r", "--ref", required=False, default=r"E:\测试数据\HIVTEST\barcode.fasta", help="参考序列的路径")
+    parser.add_argument("-o", "--output", required=False, default=r"E:\测试数据\HIV", help="结果文件夹的路径")
     parser.add_argument('-w', "--word_size", required=False, default = "7", help='''word size''')
     parser.add_argument("-c", "--con_thr", required=False, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75", help="List of consensus thresold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.25")
     parser.add_argument("-l", "--level", required=False, type=int, default=4, help='level of mix 1~4')

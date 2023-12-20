@@ -278,7 +278,13 @@ Public Class Main_Form
         CheckForIllegalCrossThreadCalls = False
         currentDirectory = Application.StartupPath
         initialize_data()
-        TextBox1.Text = currentDirectory + "results"
+        If TargetOS = "macos" Then
+            TextBox1.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "EasyMiner")
+            My.Computer.FileSystem.CreateDirectory(TextBox1.Text)
+        Else
+            TextBox1.Text = currentDirectory + "results"
+        End If
+
         NumericUpDown10.Maximum = System.Environment.ProcessorCount
         AddHandler form_config_basic.ConfirmClicked, AddressOf ConfirmClickedHandler
         AddHandler form_config_basic.CancelClicked, AddressOf SubCancel
@@ -555,11 +561,7 @@ Public Class Main_Form
                         End If
                         If File.Exists(out_dir + "\NOVOPlasty\Option_1_Project1.fasta") Then
                             Dim SI_check_option As New ProcessStartInfo()
-                            If database_type = "mito_plant" Then
-                                SI_check_option.FileName = currentDirectory + "analysis\check_option_blast.exe"
-                            Else
-                                SI_check_option.FileName = currentDirectory + "analysis\check_option_mafft.exe"
-                            End If
+                            SI_check_option.FileName = currentDirectory + "analysis\check_option_blast.exe"
                             SI_check_option.WorkingDirectory = out_dir + "\NOVOPlasty\"
                             SI_check_option.CreateNoWindow = False
                             SI_check_option.Arguments = "-i " + """" + out_dir + "\NOVOPlasty" + """" + " -r " + """" + best_ref + ".fasta" + """" + " -o " + "best.fasta"
@@ -573,7 +575,7 @@ Public Class Main_Form
                             End If
                         End If
                         If File.Exists(assemble_file) Then
-                            If database_type = "mito_plant" Then
+                            If database_type <> "cp" Then
                                 Dim lines As List(Of String) = File.ReadAllLines(assemble_file).ToList()
                                 If lines.Count > 0 Then
                                     lines(0) = ">" + folder_name
@@ -581,23 +583,23 @@ Public Class Main_Form
                                 File.WriteAllLines(out_dir + "\Organelle\" + folder_name + ".fasta", lines)
                                 Continue For
                             End If
-                            build_ann(out_dir + "\NOVOPlasty\" + best_ref + ".fasta", assemble_file, out_dir + "\NOVOPlasty\ref_gb.gb", out_dir + "\NOVOPlasty\output", currentDirectory + "temp\")
+
+                            do_PGA(out_dir + "\NOVOPlasty\ref_gb.gb", assemble_file, out_dir + "\NOVOPlasty")
                             My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
-                            If File.Exists(out_dir + "\Organelle\warning.txt") Then
-                                File.Delete(out_dir + "\Organelle\warning.txt")
+                            If File.Exists(out_dir + "\Organelle\warning.log") Then
+                                File.Delete(out_dir + "\Organelle\warning.log")
                             End If
-                            If File.Exists(out_dir + "\NOVOPlasty\output.fasta") Then
+                            If File.Exists(out_dir + "\NOVOPlasty\output.gb") Then
                                 Dim lines As List(Of String) = File.ReadAllLines(out_dir + "\NOVOPlasty\output.fasta").ToList()
                                 If lines.Count > 0 Then
                                     lines(0) = ">" + folder_name
                                 End If
                                 File.WriteAllLines(out_dir + "\Organelle\" + folder_name + ".fasta", lines)
 
-                                Dim formattedDate As String = Date.Now.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture).ToUpper()
                                 lines = File.ReadAllLines(out_dir + "\NOVOPlasty\output.gb").ToList()
                                 If lines.Count > 12 Then
                                     For i As Integer = 0 To 6
-                                        lines(i) = lines(i).Replace("XX000000", folder_name).Replace("UNK 01-JAN-1980", formattedDate)
+                                        lines(i) = lines(i).Replace("my_target", folder_name)
                                     Next
                                 End If
                                 File.WriteAllLines(out_dir + "\Organelle\" + folder_name + ".gb", lines)
@@ -610,8 +612,8 @@ Public Class Main_Form
                                 File.AppendAllText(TextBox1.Text + "\log.txt", "The organelle genome of the " + folder_name + " lacks annotation." & Environment.NewLine)
 
                             End If
-                            If File.Exists(out_dir + "\NOVOPlasty\output_log.txt") Then
-                                File.Copy(out_dir + "\NOVOPlasty\output_log.txt", out_dir + "\Organelle\" + folder_name + "_warning.txt", True)
+                            If File.Exists(out_dir + "\NOVOPlasty\warning.log") Then
+                                File.Copy(out_dir + "\NOVOPlasty\warning.log", out_dir + "\Organelle\" + folder_name + "_warning.log", True)
                             End If
                         Else
                             File.AppendAllText(TextBox1.Text + "\log.txt", "The organelle genome of the " + folder_name + " is not circularized." & Environment.NewLine)
@@ -790,17 +792,17 @@ Public Class Main_Form
             End If
         Next
         If has_assemble Then
-            Dim result As DialogResult = MessageBox.Show("Reassemble the successfully processed entries?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-            ' 根据用户的选择执行相应的操作
-            If result = DialogResult.Yes Then
-                For i As Integer = 1 To refsView.Count
+            'Dim result As DialogResult = MessageBox.Show("Reassemble All Selected Genes?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            '' 根据用户的选择执行相应的操作
+            'If result = DialogResult.Yes Then
+            For i As Integer = 1 To refsView.Count
                     If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                         If File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
                             File.Delete(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                         End If
                     End If
                 Next
-            End If
+            'End If
         End If
 
         For i As Integer = 1 To seqsView.Count
@@ -957,6 +959,9 @@ Public Class Main_Form
         q2 = ""
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
+        If File.Exists(out_dir + "\kmer_dict_k" + k1.ToString + ".dict") Then
+            File.Delete(out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
+        End If
 
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -1149,8 +1154,9 @@ Public Class Main_Form
         q2 = ""
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
-
-
+        If File.Exists(out_dir + "\kmer_dict_k" + k1.ToString + ".dict") Then
+            File.Delete(out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
+        End If
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                 refs_count += 1
@@ -1277,34 +1283,8 @@ Public Class Main_Form
                                                                      'If File.Exists(TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
                                                                      Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                      Dim out_path As String = TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                     do_muscle_align(in_path, out_path)
 
-                                                                     Dim SI_mafft As New ProcessStartInfo()
-                                                                     SI_mafft.FileName = currentDirectory + "analysis\mafft-win\mafft.bat" ' 替换为实际的命令行程序路径
-                                                                     SI_mafft.WorkingDirectory = currentDirectory + "analysis\mafft-win\" ' 替换为实际的运行文件夹路径
-                                                                     SI_mafft.CreateNoWindow = True
-                                                                     SI_mafft.UseShellExecute = False ' 必须为False以重定向输出和错误
-                                                                     SI_mafft.RedirectStandardOutput = True
-                                                                     SI_mafft.RedirectStandardError = True
-                                                                     SI_mafft.Arguments = "--auto --inputorder " + """" + in_path + """" + ">" + """" + out_path + """"
-                                                                     Dim process_mafft As Process = New Process()
-                                                                     process_mafft.StartInfo = SI_mafft
-                                                                     AddHandler process_mafft.OutputDataReceived, Sub(sender, e)
-                                                                                                                      If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                          '处理输出数据
-                                                                                                                          Console.WriteLine(e.Data)
-                                                                                                                      End If
-                                                                                                                  End Sub
-                                                                     AddHandler process_mafft.ErrorDataReceived, Sub(sender, e)
-                                                                                                                     If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                         '处理错误数据
-                                                                                                                         Console.WriteLine("ERROR: " + e.Data)
-                                                                                                                     End If
-                                                                                                                 End Sub
-                                                                     process_mafft.Start()
-                                                                     process_mafft.BeginOutputReadLine() '开始异步读取输出
-                                                                     process_mafft.BeginErrorReadLine() '开始异步读取错误
-                                                                     process_mafft.WaitForExit()
-                                                                     process_mafft.Close()
                                                                  End If
                                                              End Sub)
         PB_value = -1
@@ -1440,6 +1420,18 @@ Public Class Main_Form
             MsgBox("Please select an output folder!")
         End If
     End Sub
+
+    Public Sub do_muscle_align(ByVal in_path As String, ByVal out_path As String, Optional method As String = "-align ")
+        Dim startInfo As New ProcessStartInfo()
+        startInfo.FileName = currentDirectory + "analysis\muscle5.1.win64.exe" ' 替换为实际的命令行程序路径
+        startInfo.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+        startInfo.CreateNoWindow = True
+        startInfo.Arguments = method + " " + """" + in_path + """" + " -output " + """" + out_path + """"
+        Dim process As Process = Process.Start(startInfo)
+        process.WaitForExit()
+        process.Close()
+    End Sub
+
     Public Sub do_mafft_align(ByVal in_path As String, ByVal out_path As String, Optional method As String = "--auto ")
         Dim SI_mafft As New ProcessStartInfo()
         SI_mafft.FileName = currentDirectory + "analysis\mafft-win\mafft.bat"
@@ -1507,35 +1499,7 @@ Public Class Main_Form
                                                                      If File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
                                                                          Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                          Dim out_path As String = out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-
-                                                                         Dim SI_mafft As New ProcessStartInfo()
-                                                                         SI_mafft.FileName = currentDirectory + "analysis\mafft-win\mafft.bat" ' 替换为实际的命令行程序路径
-                                                                         SI_mafft.WorkingDirectory = currentDirectory + "analysis\mafft-win\" ' 替换为实际的运行文件夹路径
-                                                                         SI_mafft.CreateNoWindow = True
-                                                                         SI_mafft.UseShellExecute = False ' 必须为False以重定向输出和错误
-                                                                         SI_mafft.RedirectStandardOutput = True
-                                                                         SI_mafft.RedirectStandardError = True
-                                                                         SI_mafft.Arguments = "--auto --inputorder " + """" + in_path + """" + ">" + """" + out_path + """"
-                                                                         Dim process_mafft As Process = New Process()
-                                                                         process_mafft.StartInfo = SI_mafft
-                                                                         AddHandler process_mafft.OutputDataReceived, Sub(sender, e)
-                                                                                                                          If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                              '处理输出数据
-                                                                                                                              Console.WriteLine(e.Data)
-                                                                                                                          End If
-                                                                                                                      End Sub
-                                                                         AddHandler process_mafft.ErrorDataReceived, Sub(sender, e)
-                                                                                                                         If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                             '处理错误数据
-                                                                                                                             Console.WriteLine("ERROR: " + e.Data)
-                                                                                                                         End If
-                                                                                                                     End Sub
-                                                                         process_mafft.Start()
-                                                                         process_mafft.BeginOutputReadLine() '开始异步读取输出
-                                                                         process_mafft.BeginErrorReadLine() '开始异步读取错误
-                                                                         process_mafft.WaitForExit()
-                                                                         process_mafft.Close()
-
+                                                                         do_muscle_align(in_path, out_path)
 
                                                                          Dim SI_trimed As New ProcessStartInfo()
                                                                          SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
@@ -1715,35 +1679,8 @@ Public Class Main_Form
 
                                                                  Dim in_path As String = ref_dir + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
                                                                  Dim out_path As String = tmp_aligns + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
+                                                                 do_muscle_align(in_path, out_path)
 
-                                                                 Dim SI_mafft As New ProcessStartInfo()
-                                                                 SI_mafft.FileName = currentDirectory + "analysis\mafft-win\mafft.bat"
-                                                                 SI_mafft.WorkingDirectory = currentDirectory + "analysis\mafft-win\"
-                                                                 SI_mafft.CreateNoWindow = True
-                                                                 SI_mafft.UseShellExecute = False
-                                                                 SI_mafft.RedirectStandardOutput = True
-                                                                 SI_mafft.RedirectStandardError = True
-                                                                 SI_mafft.Arguments = "--auto --inputorder " + """" + in_path + """" + ">" + """" + out_path + """"
-
-                                                                 Dim process_mafft As Process = New Process()
-                                                                 process_mafft.StartInfo = SI_mafft
-                                                                 AddHandler process_mafft.OutputDataReceived, Sub(sender, e)
-                                                                                                                  If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                      '处理输出数据
-                                                                                                                      Console.WriteLine(e.Data)
-                                                                                                                  End If
-                                                                                                              End Sub
-                                                                 AddHandler process_mafft.ErrorDataReceived, Sub(sender, e)
-                                                                                                                 If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                     '处理错误数据
-                                                                                                                     Console.WriteLine("ERROR: " + e.Data)
-                                                                                                                 End If
-                                                                                                             End Sub
-                                                                 process_mafft.Start()
-                                                                 process_mafft.BeginOutputReadLine()
-                                                                 process_mafft.BeginErrorReadLine()
-                                                                 process_mafft.WaitForExit()
-                                                                 process_mafft.Close()
                                                              End If
                                                          End Sub)
     End Sub
@@ -1767,35 +1704,7 @@ Public Class Main_Form
                                                                              If File.Exists(add_path) Then
                                                                                  Dim in_path As String = tmp_aligns + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                                  Dim out_path As String = temp_out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-
-                                                                                 Dim SI_mafft As New ProcessStartInfo()
-                                                                                 SI_mafft.FileName = currentDirectory + "analysis\mafft-win\mafft.bat" ' 替换为实际的命令行程序路径
-                                                                                 SI_mafft.WorkingDirectory = currentDirectory + "analysis\mafft-win\" ' 替换为实际的运行文件夹路径
-                                                                                 SI_mafft.CreateNoWindow = True
-                                                                                 SI_mafft.UseShellExecute = False ' 必须为False以重定向输出和错误
-                                                                                 SI_mafft.RedirectStandardOutput = True
-                                                                                 SI_mafft.RedirectStandardError = True
-                                                                                 SI_mafft.Arguments = "--add " + """" + add_path + """" + " " + """" + in_path + """" + ">" + """" + out_path + """"
-                                                                                 Dim process_mafft As Process = New Process()
-                                                                                 process_mafft.StartInfo = SI_mafft
-                                                                                 AddHandler process_mafft.OutputDataReceived, Sub(sender, e)
-                                                                                                                                  If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                                      '处理输出数据
-                                                                                                                                      Console.WriteLine(e.Data)
-                                                                                                                                  End If
-                                                                                                                              End Sub
-                                                                                 AddHandler process_mafft.ErrorDataReceived, Sub(sender, e)
-                                                                                                                                 If Not String.IsNullOrEmpty(e.Data) Then
-                                                                                                                                     '处理错误数据
-                                                                                                                                     Console.WriteLine("ERROR: " + e.Data)
-                                                                                                                                 End If
-                                                                                                                             End Sub
-                                                                                 process_mafft.Start()
-                                                                                 process_mafft.BeginOutputReadLine() '开始异步读取输出
-                                                                                 process_mafft.BeginErrorReadLine() '开始异步读取错误
-                                                                                 process_mafft.WaitForExit()
-                                                                                 process_mafft.Close()
-
+                                                                                 do_muscle_align(in_path, out_path)
 
                                                                                  Dim SI_trimed As New ProcessStartInfo()
                                                                                  SI_trimed.FileName = currentDirectory + "analysis\build_trimed.exe" ' 替换为实际的命令行程序路径
@@ -1896,7 +1805,8 @@ Public Class Main_Form
                                                                      Next
                                                                      sw_res.Close()
                                                                      If do_align Then
-                                                                         do_mafft_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                                                                         do_muscle_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                                                                         'do_mafft_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
 
                                                                          Dim SI_trimed As New ProcessStartInfo()
                                                                          SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
@@ -2095,10 +2005,11 @@ Public Class Main_Form
     Private Sub 失败的项ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 失败的项ToolStripMenuItem.Click
         Dim sel_count As Integer = 0
         For i As Integer = 1 To refsView.Count
-            If DataGridView1.Rows(i - 1).Cells(6).Value = "failed" Then
+            If DataGridView1.Rows(i - 1).Cells(6).Value <> "success" Then
                 DataGridView1.Rows(i - 1).Cells(0).Value = True
                 sel_count += 1
-
+            Else
+                DataGridView1.Rows(i - 1).Cells(0).Value = False
             End If
         Next
         MsgBox(sel_count.ToString + " were selected!")
@@ -2484,7 +2395,8 @@ Public Class Main_Form
             RichTextBox1.Text = "Cite PPD:" + vbCrLf + " Zhou, W., Soghigian, J., Xiang, Q. 2022, A New Pipeline for Removing Paralogs in Target Enrichment Data. Systematic Biology, syab044. DOI: /10.1093/sysbio/syab044"
             Dim th1 As New Thread(AddressOf run_ppd)
             th1.Start(TextBox1.Text)
-
+        Else
+            MsgBox("You should Generate Consensus first." + vbCrLf + "您需要先进行一致性重构.")
         End If
 
     End Sub
@@ -2503,7 +2415,11 @@ Public Class Main_Form
         Dim process_PPD As Process = Process.Start(SI_PPD)
         process_PPD.WaitForExit()
         process_PPD.Close()
-
+        Dim result As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        ' 根据用户的选择执行相应的操作
+        If result = DialogResult.Yes Then
+            Process.Start("explorer.exe", """" + Path.Combine(out_path, "PPD", "result", "supercontig", "s8_rm_paralogs", "Final_kept_genes") + """")
+        End If
     End Sub
 
 
@@ -2855,7 +2771,7 @@ Public Class Main_Form
     End Sub
     Public Sub check_paralogs()
         If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
-            Dim paralogs_dir As String = Path.Combine(out_dir, "paralogs")
+            Dim paralogs_dir As String = Path.Combine(out_dir, "muticopy")
             DeleteDir(paralogs_dir)
             My.Computer.FileSystem.CreateDirectory(paralogs_dir)
             Dim count As Integer = 0
@@ -2915,7 +2831,7 @@ Public Class Main_Form
                 Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
                 out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
 
-                Dim paralogs_dir As String = Path.Combine(out_dir, "paralogs")
+                Dim paralogs_dir As String = Path.Combine(out_dir, "muticopy")
                 My.Computer.FileSystem.CreateDirectory(paralogs_dir)
                 Dim count As Integer = 0
                 Dim parallelOptions As New ParallelOptions()
@@ -2929,7 +2845,6 @@ Public Class Main_Form
                                                                              Dim out_path_file As String = Path.Combine(paralogs_dir, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + "_ref.fasta")
 
                                                                              If File.Exists(in_path_fasta) AndAlso File.Exists(in_path_fq) Then
-
                                                                                  safe_copy(in_path_fasta, out_path_file, True)
                                                                                  Dim SI_build_barcode As New ProcessStartInfo()
                                                                                  SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
@@ -3101,20 +3016,20 @@ Public Class Main_Form
         parallelOptions.MaxDegreeOfParallelism = max_thread
         'Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
         For i As Integer = 1 To refsView.Count
-                                                                     count += 1
-                                                                     PB_value = count / refsView.Count * 100
-                                                                     If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                         Dim inputFilePath As String = out_dir + "\filtered\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fq"
-                                                                         If File.Exists(inputFilePath) Then
-                                                                             SplitFastqFile(inputFilePath)
+            count += 1
+            PB_value = count / refsView.Count * 100
+            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                Dim inputFilePath As String = out_dir + "\filtered\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fq"
+                If File.Exists(inputFilePath) Then
+                    SplitFastqFile(inputFilePath)
 
-                                                                         End If
-                                                                     End If
-                                                                 Next
+                End If
+            End If
+        Next
 
 
-                                                                 'End Sub)
-                                                                 PB_value = -1
+        'End Sub)
+        PB_value = -1
 
         MsgBox("Analysis completed!")
     End Sub
@@ -3151,5 +3066,41 @@ Public Class Main_Form
         For i As Integer = 1 To 3
             writer.WriteLine(reader.ReadLine())
         Next
+    End Sub
+
+    Public Sub do_orthofinder(ByVal genome_dir As String)
+        Dim SI_orthofinder As New ProcessStartInfo()
+        SI_orthofinder.FileName = Path.Combine(currentDirectory, "analysis", "orthofinder.exe")
+        SI_orthofinder.WorkingDirectory = Path.Combine(currentDirectory, "analysis")
+        SI_orthofinder.CreateNoWindow = False
+        SI_orthofinder.Arguments = " -d -og -f " + """" + genome_dir + """"
+        Dim process_orthofinder As Process = Process.Start(SI_orthofinder)
+        process_orthofinder.WaitForExit()
+        process_orthofinder.Close()
+        Dim result As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        ' 根据用户的选择执行相应的操作
+        If result = DialogResult.Yes Then
+            Process.Start("explorer.exe", """" + genome_dir + """")
+        End If
+    End Sub
+
+    Private Sub 获取单拷贝基因ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 获取单拷贝基因ToolStripMenuItem.Click
+        Dim refs_count As Integer = 0
+        Dim genome_dir As String = (TextBox1.Text + "\OrthoFinder")
+        DeleteDir(genome_dir)
+        My.Computer.FileSystem.CreateDirectory(genome_dir)
+        For i As Integer = 1 To refsView.Count
+            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                refs_count += 1
+                safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", genome_dir + "\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
+            End If
+        Next
+
+        If refs_count >= 1 Then
+            Dim th1 As New Thread(AddressOf do_orthofinder)
+            th1.Start(genome_dir)
+        Else
+            MsgBox("Please select at least one genome data!")
+        End If
     End Sub
 End Class

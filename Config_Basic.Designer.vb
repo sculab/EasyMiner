@@ -316,7 +316,7 @@ Partial Class Config_Basic
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(285, 215)
+        Button2.Location = New Point(285, 220)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 62
@@ -325,7 +325,7 @@ Partial Class Config_Basic
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(204, 215)
+        Button1.Location = New Point(204, 220)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 61
@@ -336,7 +336,7 @@ Partial Class Config_Basic
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(372, 262)
+        ClientSize = New Size(372, 281)
         ControlBox = False
         Controls.Add(Button2)
         Controls.Add(Button1)

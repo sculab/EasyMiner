@@ -193,7 +193,7 @@ def add_ref_to_each_gene(seq_directory, reference_name):
         Write_Print("../temp/PPD.log",genes_result_s3)
     # print genes_result_s3
 
-    ### if the s2 directory is not empty, run mafft.
+    ### if the s2 directory is not empty, run muscle.
     try:
         ### copy the genes from s2 to s3 folder for adding the ref to the current genes
         cmd = f"xcopy /E /I \"{genes_result_s2}\" \"{genes_result_s3}\""
@@ -226,11 +226,11 @@ def add_ref_to_each_gene(seq_directory, reference_name):
 
 
 
-def run_mafft(cmd):
+def run_muscle(cmd):
     Write_Print("../temp/PPD.log",cmd)
     os.system(cmd + " 2>nul")
 
-def mafft_alignment(seq_directory, threads=1):
+def muscle_alignment(seq_directory, threads=1):
     ### input files are from s3
     genes_result_s3 = seq_directory.replace("s1_Gene/", "s3_add_ref_Gene/")
 
@@ -247,13 +247,12 @@ def mafft_alignment(seq_directory, threads=1):
             fname = os.path.join(genes_result_s3, file).replace("\\","/").replace("//","/")
             output_name = os.path.join(genes_result_s4, file).replace("\\","/").replace("//","/")
             if file != ".DS_Store":
-                cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --auto --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
-                #cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --maxiterate 1000 --globalpair --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"
+                cmd = r"..\analysis\muscle5.1.win64.exe -align" + " " + '"' + fname + '"' + " -output " + '"' + output_name + '"'
                 commands.append(cmd)
 
         # Use multiprocessing to execute the commands in parallel
         with Pool(processes=threads) as pool:
-            pool.map(run_mafft, commands)
+            pool.map(run_muscle, commands)
 
     except Exception as e:
         Write_Print("../temp/PPD.log",f"An error occurred: {e}. Please check the previous step.")
@@ -884,7 +883,7 @@ def Write_Print(log_path, *log_str, sep = " "):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="To find putative paralogs in 353 enrichment data. It requires three input components and one output component. The '-he' and '-hs' are not necessary. Dependencies: mafft and trimal installed by conda. The '-ifa', '-ina', '-iref', '-io', '-o' are required arguments.",
+    parser = argparse.ArgumentParser(description="To find putative paralogs in 353 enrichment data. It requires three input components and one output component. The '-he' and '-hs' are not necessary. Dependencies: muscle and trimal installed by conda. The '-ifa', '-ina', '-iref', '-io', '-o' are required arguments.",
                                      formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument("-ifa", "--inputfastadir", dest='input_dir', type=str, default="supercontigs",
@@ -931,6 +930,9 @@ def main():
 
     parser.add_argument("-th", "--thread", dest='threads_num', type=int, default=8,
                         help='the number of CPUs you are using. Default is 1.')
+    
+    parser.add_argument("-aln", "--alignment", dest='alignment app', type=str, default="mucscle",
+                        help='the app to aligment. Default is 1.')
 
     args = parser.parse_args()
 
@@ -987,7 +989,7 @@ def main():
         output_directory_s4 = output_directory + "/" + args.seq_type + "/" + "s4_alignments/"
         if os.path.isdir(output_directory_s4) == False:
 
-            mafft_alignment(seq_result_path, threads = args.threads_num)
+            muscle_alignment(seq_result_path, threads = args.threads_num)
             Write_Print("../temp/PPD.log",args.threads_num)
             Write_Print("../temp/PPD.log","s4 finished and ready for s5")
 

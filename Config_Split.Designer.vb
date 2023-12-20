@@ -145,7 +145,7 @@ Partial Class Config_Split
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(302, 189)
+        ClientSize = New Size(302, 201)
         ControlBox = False
         Controls.Add(NumericUpDown1)
         Controls.Add(Label1)

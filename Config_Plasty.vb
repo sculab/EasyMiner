@@ -108,14 +108,7 @@ Public Class Config_Plasty
         End If
         If File.Exists(currentDirectory + "temp\NOVOPlasty\Option_1_Project1.fasta") Then
             Dim SI_check_option As New ProcessStartInfo()
-            Select Case cpg_assemble_mode
-                Case 0, 1
-                    SI_check_option.FileName = currentDirectory + "analysis\check_option_mafft.exe"
-                Case 2
-                    SI_check_option.FileName = currentDirectory + "analysis\check_option_blast.exe"
-                Case Else
-            End Select
-
+            SI_check_option.FileName = currentDirectory + "analysis\check_option_blast.exe"
             SI_check_option.WorkingDirectory = currentDirectory + "temp\"
             SI_check_option.CreateNoWindow = False
             SI_check_option.Arguments = "-i " + """" + currentDirectory + "temp\NOVOPlasty" + """" + " -r " + """" + TextBox2.Text + """" + " -o " + "best.fasta"
@@ -141,7 +134,7 @@ Public Class Config_Plasty
                         File.Delete(currentDirectory + "temp\output.fasta")
                     End If
                     My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
-                    If cpg_assemble_mode = 2 Then
+                    If cpg_assemble_mode <> 0 Or TargetOS = "macos" Then
                         File.Copy(assemble_file, out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
                         Dim result0 As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                         ' 根据用户的选择执行相应的操作
@@ -150,14 +143,12 @@ Public Class Config_Plasty
                         End If
                         Exit Sub
                     End If
-                    build_ann(TextBox2.Text, assemble_file, "ref_gb.gb", "output", currentDirectory + "temp\")
+                    do_PGA(currentDirectory + "temp\ref_gb.gb", assemble_file, currentDirectory + "temp")
 
-                    If File.Exists(out_dir + "\Organelle\warning.txt") Then
-                        File.Delete(out_dir + "\Organelle\warning.txt")
-                    End If
-                    If File.Exists(currentDirectory + "temp\output.fasta") Then
-                        File.Copy(currentDirectory + "temp\output.gb", out_dir + "\Organelle\" + TextBox5.Text + ".gb", True)
-                        File.Copy(currentDirectory + "temp\output.fasta", out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
+                    If File.Exists(currentDirectory + "temp\output.gb") Then
+                        safe_copy(currentDirectory + "temp\output.gb", out_dir + "\Organelle\" + TextBox5.Text + ".gb", True)
+                        safe_copy(currentDirectory + "temp\output.fasta", out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
+                        safe_copy(currentDirectory + "temp\warning.log", out_dir + "\Organelle\warning.log", True)
                     Else
                         MsgBox("Error in annotate.")
                         Dim result1 As DialogResult = MessageBox.Show("Unable to annotate. Would you like to view the temp file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)

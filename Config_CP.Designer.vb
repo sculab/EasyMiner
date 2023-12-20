@@ -163,9 +163,9 @@ Partial Class Config_CP
         ' 
         ' Config_CP
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 17.0F)
+        AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(459, 255)
+        ClientSize = New Size(459, 277)
         ControlBox = False
         Controls.Add(CheckBox2)
         Controls.Add(CheckBox1)

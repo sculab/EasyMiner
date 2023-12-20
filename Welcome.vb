@@ -20,7 +20,9 @@ Public Class Welcome
         settings = ReadSettings(root_path + "analysis\" + "setting.ini")
 
         ' 读取 language 和 mode 设置
+        TargetOS = settings.GetValueOrDefault("os", "macos")
         language = settings.GetValueOrDefault("language", "EN")
+        exe_mode = settings.GetValueOrDefault("mode", "basic")
         database_url = settings.GetValueOrDefault("database_url", "http://life-bioinfo.tpddns.cn:8445/database/")
 
         If language = "CH" Then
