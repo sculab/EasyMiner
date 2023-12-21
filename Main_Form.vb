@@ -1412,12 +1412,12 @@ Public Class Main_Form
         End If
     End Sub
 
-    Public Sub do_muscle_align(ByVal in_path As String, ByVal out_path As String, Optional method As String = "-align ")
+    Public Sub do_muscle_align(ByVal in_path As String, ByVal out_path As String)
         Dim startInfo As New ProcessStartInfo()
-        startInfo.FileName = currentDirectory + "analysis\muscle5.1.win64.exe" ' 替换为实际的命令行程序路径
+        startInfo.FileName = currentDirectory + "analysis\muscle_warpper.exe" ' 替换为实际的命令行程序路径
         startInfo.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
         startInfo.CreateNoWindow = True
-        startInfo.Arguments = method + " " + """" + in_path + """" + " -output " + """" + out_path + """"
+        startInfo.Arguments = "-i " + """" + in_path + """" + " -o " + """" + out_path + """"
         Dim process As Process = Process.Start(startInfo)
         process.WaitForExit()
         process.Close()
@@ -1808,6 +1808,11 @@ Public Class Main_Form
                                                                      Next
                                                                      sw_res.Close()
                                                                      If do_align Then
+                                                                         If TargetOS = "macos" Then
+
+                                                                         Else
+
+                                                                         End If
                                                                          do_muscle_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                                                                          'do_mafft_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
 

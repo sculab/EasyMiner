@@ -247,9 +247,8 @@ def muscle_alignment(seq_directory, threads=1):
             fname = os.path.join(genes_result_s3, file).replace("\\","/").replace("//","/")
             output_name = os.path.join(genes_result_s4, file).replace("\\","/").replace("//","/")
             if file != ".DS_Store":
-                cmd = r"..\analysis\muscle5.1.win64.exe -align" + " " + '"' + fname + '"' + " -output " + '"' + output_name + '"'
+                cmd = r"..\analysis\muscle_warpper.exe -i" + " " + '"' + fname + '"' + " -o " + '"' + output_name + '"'
                 commands.append(cmd)
-
         # Use multiprocessing to execute the commands in parallel
         with Pool(processes=threads) as pool:
             pool.map(run_muscle, commands)

@@ -116,10 +116,8 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
         subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         print("Making alignment ...")
-        build_muscle_cmd = [r"..\analysis\muscle5.1.win64.exe", "-align", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f'-output "{os.path.join(out_folder, folder_name + ".fasta")}"']
+        build_muscle_cmd = [r"..\analysis\muscle_warpper.exe", "-i", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f'-o "{os.path.join(out_folder, folder_name + ".fasta")}"']
         subprocess.run(" ".join(build_muscle_cmd), shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-        reorder_sequences(os.path.join(out_folder, folder_name + "_tmp.fasta"), os.path.join(out_folder, folder_name + ".fasta"))
     except:
         if os.path.exists(os.path.join(out_folder, folder_name + "_tmp.fasta")): os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
         if os.path.exists(os.path.join(out_folder, folder_name + ".sam")): os.remove(os.path.join(out_folder, folder_name + ".sam"))
@@ -132,42 +130,7 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
     print("Making final results")
     check_degenerate(os.path.join(out_folder, folder_name + ".fasta"), level, "", keep_best)
 
-def reorder_sequences(input_fas_file, input_aln_fas_file):
-    # 读取 input.fas 文件中的序列顺序和名称
-    with open(input_fas_file, 'r') as f:
-        input_fas_lines = f.readlines()
-    # 创建一个字典，将序列名映射到序列内容
-    input_fas_dict = {}
-    current_seq_name = ''
-    current_seq = ''
-    for line in input_fas_lines:
-        if line.startswith('>'):
-            # 如果是序列名称行，则保存当前序列
-            if current_seq_name:
-                input_fas_dict[current_seq_name] = current_seq
-            current_seq_name = line.strip()
-            current_seq = ''
-        else:
-            current_seq += line.strip()
-    if current_seq_name:
-        input_fas_dict[current_seq_name] = current_seq
 
-    # 读取 input_aln.fas 文件中的序列顺序
-    with open(input_aln_fas_file, 'r') as f:
-        input_aln_fas_lines = f.readlines()
-
-    # 根据 input.fas 中的顺序重新排列序列，并保存到 input_aln.fas 文件中
-    with open(input_aln_fas_file, 'w') as f:
-        current_seq_name = ''
-        for line in input_aln_fas_lines:
-            if line.startswith('>'):
-                current_seq_name = line.strip()
-            elif current_seq_name:
-                # 如果在 input.fas 中找到相应的序列，则写入到 input_aln.fas
-                if current_seq_name in input_fas_dict:
-                    f.write(current_seq_name + '\n')
-                    f.write(input_fas_dict[current_seq_name] + '\n')
-                current_seq_name = ''
 
 def check_degenerate(input_aligment, level, output_aligment = "", keep_best = True):
     processed_sequences = []
