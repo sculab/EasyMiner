@@ -6,6 +6,7 @@ Imports System.Text
 Imports System.Globalization
 Imports System.Reflection.Emit
 Imports System.Text.RegularExpressions
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
 
 
 Public Class Main_Form
@@ -796,12 +797,12 @@ Public Class Main_Form
             '' 根据用户的选择执行相应的操作
             'If result = DialogResult.Yes Then
             For i As Integer = 1 To refsView.Count
-                    If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                        If File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                            File.Delete(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
-                        End If
+                If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                    If File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
+                        File.Delete(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                     End If
-                Next
+                End If
+            Next
             'End If
         End If
 
@@ -842,14 +843,19 @@ Public Class Main_Form
             My.Computer.FileSystem.CreateDirectory(out_dir)
             q1 = ""
             q2 = ""
-            DeleteDir(ref_dir)
+            'DeleteDir(ref_dir)
             My.Computer.FileSystem.CreateDirectory(ref_dir)
 
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    If File.Exists(TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
+                    If x = 1 Then
                         refs_count += 1
-                        safe_copy(TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
+                    Else
+                        If File.Exists(TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
+                            refs_count += 1
+                            '叠加参考序列
+                            MergeFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                        End If
                     End If
                 End If
             Next
@@ -1281,9 +1287,14 @@ Public Class Main_Form
                                                                  PB_value = count / refsView.Count * 100
                                                                  If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                      'If File.Exists(TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                                                                     Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                     Dim out_path As String = TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                     do_muscle_align(in_path, out_path)
+                                                                     Try
+                                                                         Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                         Dim out_path As String = TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                         do_muscle_align(in_path, out_path)
+                                                                     Catch ex As Exception
+                                                                         File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do muscle for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
+                                                                     End Try
+
 
                                                                  End If
                                                              End Sub)
@@ -1312,8 +1323,6 @@ Public Class Main_Form
             form_config_basic.GroupBox4.Enabled = True
             MenuClicked = "iteration"
             form_config_basic.Show()
-
-
         Else
             MsgBox("Please select an output folder!")
         End If
@@ -1403,24 +1412,6 @@ Public Class Main_Form
         End If
     End Sub
 
-
-
-    Private Sub 多次迭代ToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        If TextBox1.Text <> "" Then
-            Dim my_input As String = InputBox("Please enter the number of iterations:", "Iterations", 1)
-            Dim iterations_times As Integer
-            If Not Integer.TryParse(my_input, iterations_times) Then
-                Exit Sub
-            End If
-            timer_id = 4
-            PB_value = 0
-            Dim th1 As New Threading.Thread(AddressOf do_iteration)
-            th1.Start(CInt(iterations_times))
-        Else
-            MsgBox("Please select an output folder!")
-        End If
-    End Sub
-
     Public Sub do_muscle_align(ByVal in_path As String, ByVal out_path As String, Optional method As String = "-align ")
         Dim startInfo As New ProcessStartInfo()
         startInfo.FileName = currentDirectory + "analysis\muscle5.1.win64.exe" ' 替换为实际的命令行程序路径
@@ -1497,20 +1488,25 @@ Public Class Main_Form
                                                                  PB_value = count / refsView.Count * 100
                                                                  If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                      If File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                                                                         Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                         Dim out_path As String = out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                         do_muscle_align(in_path, out_path)
+                                                                         Try
+                                                                             Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                             Dim out_path As String = out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                             do_muscle_align(in_path, out_path)
 
-                                                                         Dim SI_trimed As New ProcessStartInfo()
-                                                                         SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
-                                                                         SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
-                                                                         SI_trimed.CreateNoWindow = True
-                                                                         SI_trimed.Arguments = "-in " + """" + out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                                                                         SI_trimed.Arguments += " -out " + """" + out_dir + "\trimed\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                                                                         SI_trimed.Arguments += " -automated1"
-                                                                         Dim process_trimed As Process = Process.Start(SI_trimed)
-                                                                         process_trimed.WaitForExit()
-                                                                         process_trimed.Close()
+                                                                             Dim SI_trimed As New ProcessStartInfo()
+                                                                             SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
+                                                                             SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+                                                                             SI_trimed.CreateNoWindow = True
+                                                                             SI_trimed.Arguments = "-in " + """" + out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                                                                             SI_trimed.Arguments += " -out " + """" + out_dir + "\trimed\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                                                                             SI_trimed.Arguments += " -automated1"
+                                                                             Dim process_trimed As Process = Process.Start(SI_trimed)
+                                                                             process_trimed.WaitForExit()
+                                                                             process_trimed.Close()
+                                                                         Catch ex As Exception
+                                                                             File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do cut for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
+                                                                         End Try
+
 
                                                                      End If
                                                                  End If
@@ -1676,10 +1672,14 @@ Public Class Main_Form
                                                              count += 1
                                                              PB_value = count / refsView.Count * 100
                                                              If DataGridView1.Rows(i).Cells(0).FormattedValue.ToString = "True" Then
+                                                                 Try
+                                                                     Dim in_path As String = ref_dir + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
+                                                                     Dim out_path As String = tmp_aligns + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
+                                                                     do_muscle_align(in_path, out_path)
 
-                                                                 Dim in_path As String = ref_dir + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
-                                                                 Dim out_path As String = tmp_aligns + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
-                                                                 do_muscle_align(in_path, out_path)
+                                                                 Catch ex As Exception
+                                                                     File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do muscle for " & DataGridView1.Rows(i).Cells(2).ToString & Environment.NewLine)
+                                                                 End Try
 
                                                              End If
                                                          End Sub)
@@ -1702,19 +1702,25 @@ Public Class Main_Form
                                                                          If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                              Dim add_path As String = temp_out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                              If File.Exists(add_path) Then
-                                                                                 Dim in_path As String = tmp_aligns + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                                 Dim out_path As String = temp_out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                                 do_muscle_align(in_path, out_path)
+                                                                                 Try
+                                                                                     Dim in_path As String = tmp_aligns + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                                     Dim out_path As String = temp_out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
+                                                                                     do_muscle_align(in_path, out_path)
 
-                                                                                 Dim SI_trimed As New ProcessStartInfo()
-                                                                                 SI_trimed.FileName = currentDirectory + "analysis\build_trimed.exe" ' 替换为实际的命令行程序路径
-                                                                                 SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
-                                                                                 SI_trimed.CreateNoWindow = True
-                                                                                 SI_trimed.Arguments = "-o " + """" + temp_out_dir + """"
-                                                                                 SI_trimed.Arguments += " -i " + """" + temp_out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                                                                                 Dim process_trimed As Process = Process.Start(SI_trimed)
-                                                                                 process_trimed.WaitForExit()
-                                                                                 process_trimed.Close()
+                                                                                     Dim SI_trimed As New ProcessStartInfo()
+                                                                                     SI_trimed.FileName = currentDirectory + "analysis\build_trimed.exe" ' 替换为实际的命令行程序路径
+                                                                                     SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+                                                                                     SI_trimed.CreateNoWindow = True
+                                                                                     SI_trimed.Arguments = "-o " + """" + temp_out_dir + """"
+                                                                                     SI_trimed.Arguments += " -i " + """" + temp_out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                                                                                     Dim process_trimed As Process = Process.Start(SI_trimed)
+                                                                                     process_trimed.WaitForExit()
+                                                                                     process_trimed.Close()
+                                                                                 Catch ex As Exception
+                                                                                     File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do trim for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
+                                                                                 End Try
+
+
                                                                              End If
                                                                          End If
                                                                      Next
@@ -1791,9 +1797,6 @@ Public Class Main_Form
                                                                                  If sr_line IsNot Nothing Then
                                                                                      If sr_line <> "" Then
                                                                                          sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name)
-
-                                                                                         'sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name + "-" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString)
-
                                                                                          sw_res.WriteLine(sr_line)
                                                                                      End If
 
@@ -2095,19 +2098,24 @@ Public Class Main_Form
                                                                  PB_value = count / refsView.Count * 100
                                                                  If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                      If File.Exists(TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                                                                         Dim SI_trimed As New ProcessStartInfo()
-                                                                         SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
-                                                                         SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
-                                                                         SI_trimed.CreateNoWindow = True
-                                                                         SI_trimed.Arguments = "-in " + """" + TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                                                                         SI_trimed.Arguments += " -out " + """" + TextBox1.Text + "\trimed\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
-                                                                         SI_trimed.Arguments += " -automated1"
-                                                                         If terminalonly Then
-                                                                             SI_trimed.Arguments += " -terminalonly"
-                                                                         End If
-                                                                         Dim process_trimed As Process = Process.Start(SI_trimed)
-                                                                         process_trimed.WaitForExit()
-                                                                         process_trimed.Close()
+                                                                         Try
+                                                                             Dim SI_trimed As New ProcessStartInfo()
+                                                                             SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
+                                                                             SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+                                                                             SI_trimed.CreateNoWindow = True
+                                                                             SI_trimed.Arguments = "-in " + """" + TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                                                                             SI_trimed.Arguments += " -out " + """" + TextBox1.Text + "\trimed\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta" + """"
+                                                                             SI_trimed.Arguments += " -automated1"
+                                                                             If terminalonly Then
+                                                                                 SI_trimed.Arguments += " -terminalonly"
+                                                                             End If
+                                                                             Dim process_trimed As Process = Process.Start(SI_trimed)
+                                                                             process_trimed.WaitForExit()
+                                                                             process_trimed.Close()
+                                                                         Catch ex As Exception
+                                                                             File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do trim for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
+                                                                         End Try
+
                                                                      End If
                                                                  End If
                                                              End Sub)
@@ -2157,31 +2165,36 @@ Public Class Main_Form
                                                                          Dim out_path As String = consensus_dir
                                                                          Dim out_path_file As String = Path.Combine(consensus_dir, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam")
                                                                          If File.Exists(in_path_fasta) AndAlso File.Exists(in_path_fq) Then
-                                                                             Dim SI_minimap2 As New ProcessStartInfo()
-                                                                             SI_minimap2.FileName = Path.Combine(currentDirectory, "analysis", "minimap2.exe")
-                                                                             SI_minimap2.WorkingDirectory = Path.Combine(currentDirectory, "analysis")
-                                                                             SI_minimap2.CreateNoWindow = True
-                                                                             SI_minimap2.UseShellExecute = False
-                                                                             SI_minimap2.RedirectStandardOutput = True
-                                                                             SI_minimap2.Arguments = "-ax sr " + """" + in_path_fasta + """" + " " + """" + in_path_fq + """"
+                                                                             Try
+                                                                                 Dim SI_minimap2 As New ProcessStartInfo()
+                                                                                 SI_minimap2.FileName = Path.Combine(currentDirectory, "analysis", "minimap2.exe")
+                                                                                 SI_minimap2.WorkingDirectory = Path.Combine(currentDirectory, "analysis")
+                                                                                 SI_minimap2.CreateNoWindow = True
+                                                                                 SI_minimap2.UseShellExecute = False
+                                                                                 SI_minimap2.RedirectStandardOutput = True
+                                                                                 SI_minimap2.Arguments = "-ax sr " + """" + in_path_fasta + """" + " " + """" + in_path_fq + """"
 
-                                                                             Using process_minimap2 As Process = Process.Start(SI_minimap2)
-                                                                                 Using reader As StreamReader = process_minimap2.StandardOutput
-                                                                                     Dim my_result As String = reader.ReadToEnd()
-                                                                                     File.WriteAllText(out_path_file, my_result)
+                                                                                 Using process_minimap2 As Process = Process.Start(SI_minimap2)
+                                                                                     Using reader As StreamReader = process_minimap2.StandardOutput
+                                                                                         Dim my_result As String = reader.ReadToEnd()
+                                                                                         File.WriteAllText(out_path_file, my_result)
+                                                                                     End Using
+                                                                                     process_minimap2.WaitForExit()
                                                                                  End Using
-                                                                                 process_minimap2.WaitForExit()
-                                                                             End Using
-                                                                             If File.Exists(out_path_file) Then
-                                                                                 Dim SI_consensus As New ProcessStartInfo()
-                                                                                 SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
-                                                                                 SI_consensus.WorkingDirectory = out_path
-                                                                                 SI_consensus.CreateNoWindow = True
-                                                                                 SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
-                                                                                 Dim process_consensus As Process = Process.Start(SI_consensus)
-                                                                                 process_consensus.WaitForExit()
-                                                                                 process_consensus.Close()
-                                                                             End If
+                                                                                 If File.Exists(out_path_file) Then
+                                                                                     Dim SI_consensus As New ProcessStartInfo()
+                                                                                     SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
+                                                                                     SI_consensus.WorkingDirectory = out_path
+                                                                                     SI_consensus.CreateNoWindow = True
+                                                                                     SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
+                                                                                     Dim process_consensus As Process = Process.Start(SI_consensus)
+                                                                                     process_consensus.WaitForExit()
+                                                                                     process_consensus.Close()
+                                                                                 End If
+                                                                             Catch ex As Exception
+                                                                                 File.AppendAllText(TextBox1.Text + "\log.txt", "Could not make consensus for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
+                                                                             End Try
+
 
 
                                                                          End If
@@ -2232,32 +2245,37 @@ Public Class Main_Form
                                                                              Dim out_path_file As String = Path.Combine(consensus_dir, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam")
 
                                                                              If File.Exists(in_path_fasta) AndAlso File.Exists(in_path_fq) Then
-                                                                                 Dim SI_minimap2 As New ProcessStartInfo()
-                                                                                 SI_minimap2.FileName = Path.Combine(currentDirectory, "analysis", "minimap2.exe")
-                                                                                 SI_minimap2.WorkingDirectory = Path.Combine(currentDirectory, "analysis")
-                                                                                 SI_minimap2.CreateNoWindow = True
-                                                                                 SI_minimap2.UseShellExecute = False
-                                                                                 SI_minimap2.RedirectStandardOutput = True
-                                                                                 SI_minimap2.Arguments = "-ax sr " + """" + in_path_fasta + """" + " " + """" + in_path_fq + """"
+                                                                                 Try
+                                                                                     Dim SI_minimap2 As New ProcessStartInfo()
+                                                                                     SI_minimap2.FileName = Path.Combine(currentDirectory, "analysis", "minimap2.exe")
+                                                                                     SI_minimap2.WorkingDirectory = Path.Combine(currentDirectory, "analysis")
+                                                                                     SI_minimap2.CreateNoWindow = True
+                                                                                     SI_minimap2.UseShellExecute = False
+                                                                                     SI_minimap2.RedirectStandardOutput = True
+                                                                                     SI_minimap2.Arguments = "-ax sr " + """" + in_path_fasta + """" + " " + """" + in_path_fq + """"
 
-                                                                                 Using process_minimap2 As Process = Process.Start(SI_minimap2)
-                                                                                     Using reader As StreamReader = process_minimap2.StandardOutput
-                                                                                         Dim my_result As String = reader.ReadToEnd()
-                                                                                         File.WriteAllText(out_path_file, my_result)
+                                                                                     Using process_minimap2 As Process = Process.Start(SI_minimap2)
+                                                                                         Using reader As StreamReader = process_minimap2.StandardOutput
+                                                                                             Dim my_result As String = reader.ReadToEnd()
+                                                                                             File.WriteAllText(out_path_file, my_result)
+                                                                                         End Using
+                                                                                         process_minimap2.WaitForExit()
                                                                                      End Using
-                                                                                     process_minimap2.WaitForExit()
-                                                                                 End Using
-                                                                                 If File.Exists(out_path_file) Then
-                                                                                     Dim SI_consensus As New ProcessStartInfo()
-                                                                                     SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
-                                                                                     SI_consensus.WorkingDirectory = out_path
-                                                                                     SI_consensus.CreateNoWindow = True
-                                                                                     SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
-                                                                                     Dim process_consensus As Process = Process.Start(SI_consensus)
-                                                                                     process_consensus.WaitForExit()
-                                                                                     process_consensus.Close()
-                                                                                     File.Delete(out_path_file)
-                                                                                 End If
+                                                                                     If File.Exists(out_path_file) Then
+                                                                                         Dim SI_consensus As New ProcessStartInfo()
+                                                                                         SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
+                                                                                         SI_consensus.WorkingDirectory = out_path
+                                                                                         SI_consensus.CreateNoWindow = True
+                                                                                         SI_consensus.Arguments = "-i " + """" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
+                                                                                         Dim process_consensus As Process = Process.Start(SI_consensus)
+                                                                                         process_consensus.WaitForExit()
+                                                                                         process_consensus.Close()
+                                                                                         File.Delete(out_path_file)
+                                                                                     End If
+                                                                                 Catch ex As Exception
+                                                                                     File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do muscle for " & DataGridView1.Rows(i - 1).Cells(2).ToString & " in " & folder_name & Environment.NewLine)
+                                                                                 End Try
+
                                                                              End If
                                                                          End If
                                                                      End Sub)
@@ -2688,14 +2706,7 @@ Public Class Main_Form
         form_config_cp.CheckBox1.Visible = False
         form_config_cp.Show()
     End Sub
-    Private Sub EnglishToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnglishToolStripMenuItem.Click
-        If language = "EN" Then
-            to_ch()
-        Else
-            to_en()
-        End If
-        settings("language") = language
-    End Sub
+
 
 
     Private Sub RichTextBox1_DoubleClick(sender As Object, e As EventArgs) Handles RichTextBox1.DoubleClick
@@ -2721,6 +2732,8 @@ Public Class Main_Form
                 menu_auto_assemble()
             Case "iteration"
                 menu_iteration()
+            Case "muti_iteration"
+                menu_muti_iteration()
             Case "plant_cp"
                 form_config_plasty.NumericUpDown1.Value = 31
                 menu_plant_cp()
@@ -2786,17 +2799,22 @@ Public Class Main_Form
                                                                          Dim in_path_fq As String = Path.Combine(out_dir, "filtered", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fq")
                                                                          Dim out_path As String = paralogs_dir
                                                                          Dim out_path_file As String = Path.Combine(paralogs_dir, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + "_ref.fasta")
-                                                                         If File.Exists(in_path_fasta) AndAlso File.Exists(in_path_fq) Then
-                                                                             safe_copy(in_path_fasta, out_path_file, True)
-                                                                             Dim SI_build_barcode As New ProcessStartInfo()
-                                                                             SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
-                                                                             SI_build_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
-                                                                             SI_build_barcode.CreateNoWindow = True
-                                                                             SI_build_barcode.Arguments = "-i " + """" + in_path_fq + """" + " -o " + """" + out_path + """" + " -p " + max_thread.ToString + " -c 0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75 -l 4 -m 1"
-                                                                             Dim process_build_barcode As Process = Process.Start(SI_build_barcode)
-                                                                             process_build_barcode.WaitForExit()
-                                                                             process_build_barcode.Close()
-                                                                         End If
+                                                                         Try
+                                                                             If File.Exists(in_path_fasta) AndAlso File.Exists(in_path_fq) Then
+                                                                                 safe_copy(in_path_fasta, out_path_file, True)
+                                                                                 Dim SI_build_barcode As New ProcessStartInfo()
+                                                                                 SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
+                                                                                 SI_build_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
+                                                                                 SI_build_barcode.CreateNoWindow = True
+                                                                                 SI_build_barcode.Arguments = "-i " + """" + in_path_fq + """" + " -o " + """" + out_path + """" + " -p " + max_thread.ToString + " -c 0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75 -l 4 -m 1"
+                                                                                 Dim process_build_barcode As Process = Process.Start(SI_build_barcode)
+                                                                                 process_build_barcode.WaitForExit()
+                                                                                 process_build_barcode.Close()
+                                                                             End If
+                                                                         Catch ex As Exception
+                                                                             File.AppendAllText(TextBox1.Text + "\log.txt", "Could not check muticopy for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
+                                                                         End Try
+
                                                                      End If
                                                                  End Sub)
             PB_value = -1
@@ -2820,11 +2838,11 @@ Public Class Main_Form
         DataGridView2.Refresh()
         timer_id = 4
         PB_value = 0
-        Dim th1 As New Thread(AddressOf batch_paralog)
+        Dim th1 As New Thread(AddressOf batch_muticopy)
         th1.Start()
     End Sub
 
-    Public Sub batch_paralog()
+    Public Sub batch_muticopy()
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -2845,15 +2863,20 @@ Public Class Main_Form
                                                                              Dim out_path_file As String = Path.Combine(paralogs_dir, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + "_ref.fasta")
 
                                                                              If File.Exists(in_path_fasta) AndAlso File.Exists(in_path_fq) Then
-                                                                                 safe_copy(in_path_fasta, out_path_file, True)
-                                                                                 Dim SI_build_barcode As New ProcessStartInfo()
-                                                                                 SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
-                                                                                 SI_build_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
-                                                                                 SI_build_barcode.CreateNoWindow = True
-                                                                                 SI_build_barcode.Arguments = "-i " + """" + in_path_fq + """" + " -o " + """" + out_path + """" + " -p " + max_thread.ToString + " -c 0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75 -l 4 -m 1"
-                                                                                 Dim process_build_barcode As Process = Process.Start(SI_build_barcode)
-                                                                                 process_build_barcode.WaitForExit()
-                                                                                 process_build_barcode.Close()
+                                                                                 Try
+                                                                                     safe_copy(in_path_fasta, out_path_file, True)
+                                                                                     Dim SI_build_barcode As New ProcessStartInfo()
+                                                                                     SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
+                                                                                     SI_build_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
+                                                                                     SI_build_barcode.CreateNoWindow = True
+                                                                                     SI_build_barcode.Arguments = "-i " + """" + in_path_fq + """" + " -o " + """" + out_path + """" + " -p " + max_thread.ToString + " -c 0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75 -l 4 -m 1"
+                                                                                     Dim process_build_barcode As Process = Process.Start(SI_build_barcode)
+                                                                                     process_build_barcode.WaitForExit()
+                                                                                     process_build_barcode.Close()
+                                                                                 Catch ex As Exception
+                                                                                     File.AppendAllText(TextBox1.Text + "\log.txt", "Could not check muticopy for " & DataGridView1.Rows(i - 1).Cells(2).ToString & " in " & folder_name & Environment.NewLine)
+                                                                                 End Try
+
                                                                              End If
                                                                          End If
                                                                      End Sub)
@@ -3102,5 +3125,90 @@ Public Class Main_Form
         Else
             MsgBox("Please select at least one genome data!")
         End If
+    End Sub
+
+    Private Sub ToolStripMenuItem5_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem5.Click
+        If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
+            form_config_basic.GroupBox2.Enabled = True
+            form_config_basic.GroupBox3.Enabled = True
+            form_config_basic.GroupBox4.Enabled = True
+            MenuClicked = "muti_iteration"
+            form_config_basic.Show()
+        Else
+            MsgBox("Please select an output folder!")
+        End If
+    End Sub
+    Public Sub menu_muti_iteration()
+        If TextBox1.Text <> "" Then
+            Dim my_input As String = InputBox("Please enter the number of iterations:", "Iterations", 1)
+            Dim iterations_times As Integer
+            If Not Integer.TryParse(my_input, iterations_times) Then
+                Exit Sub
+            End If
+
+
+            ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+            DeleteDir(ref_dir)
+            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            For i As Integer = 1 To refsView.Count
+                If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                    safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
+                End If
+            Next
+
+            timer_id = 4
+            PB_value = 0
+            Dim th1 As New Threading.Thread(AddressOf do_iteration)
+            th1.Start(CInt(iterations_times))
+        Else
+            MsgBox("Please select an output folder!")
+        End If
+    End Sub
+
+    Private Sub 序列切片ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 序列切片ToolStripMenuItem.Click
+        Dim opendialog As New OpenFileDialog
+        opendialog.Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa"
+        opendialog.FileName = ""
+        opendialog.Multiselect = False
+        opendialog.DefaultExt = ".fas"
+        opendialog.CheckFileExists = True
+        opendialog.CheckPathExists = True
+        Dim resultdialog As DialogResult = opendialog.ShowDialog()
+        If resultdialog = DialogResult.OK Then
+            current_file = opendialog.FileName
+            mydata_Dataset.Tables("Refs Table").Clear()
+            DataGridView1.DataSource = Nothing
+            data_loaded = False
+            current_file = opendialog.FileName
+            refs_type = "fasta"
+            DeleteDir(root_path + "temp\org_seq")
+            Dim SI_split_genes As New ProcessStartInfo()
+            SI_split_genes.FileName = currentDirectory + "analysis\split_genes.exe" ' 替换为实际的命令行程序路径
+            SI_split_genes.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
+            SI_split_genes.CreateNoWindow = False
+            SI_split_genes.Arguments = "-input " + """" + current_file + """"
+            Dim my_input As String = InputBox("Enter the length of the input slice and the overlap length, separated by ',':", "Input", "300,150")
+            SI_split_genes.Arguments += " -min_seq_length " + my_input.Split(",")(1) + " -max_seq_length " + my_input.Split(",")(0)
+            SI_split_genes.Arguments += " -intron_only False"
+            SI_split_genes.Arguments += " -out_dir " + """" + root_path + "temp" + """"
+            Dim process_split_genes As Process = Process.Start(SI_split_genes)
+            process_split_genes.WaitForExit()
+            process_split_genes.Close()
+            refresh_file()
+            timer_id = 2
+        End If
+    End Sub
+
+    Private Sub EnglishToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnglishToolStripMenuItem.Click
+        If language = "EN" Then
+            to_ch()
+        Else
+            to_en()
+        End If
+        settings("language") = language
     End Sub
 End Class

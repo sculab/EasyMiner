@@ -96,27 +96,36 @@ def map_file(query_file, subject_file, word_size, folder_name, out_folder, con_t
 
 def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, level, keep_best = True, mmap = "map-pb"):
     print("Mapping to reference ...")
-    minimap2_cmd = [r"..\analysis\minimap2.exe", "-ax", mmap, '"' + os.path.join(out_folder, folder_name + "_ref.fasta") + '"', query_file if query_file[0] == '"' else '"' + query_file + '"', "-o", '"' + os.path.join(out_folder, folder_name + ".sam") + '"']
-    print(" ".join(minimap2_cmd))
-    subprocess.run(" ".join(minimap2_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    try:
+        minimap2_cmd = [r"..\analysis\minimap2.exe", "-ax", mmap, '"' + os.path.join(out_folder, folder_name + "_ref.fasta") + '"', query_file if query_file[0] == '"' else '"' + query_file + '"', "-o", '"' + os.path.join(out_folder, folder_name + ".sam") + '"']
+        print(" ".join(minimap2_cmd))
+        subprocess.run(" ".join(minimap2_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if os.path.exists(os.path.join(out_folder, folder_name + ".sam")) == False:
+            if os.path.exists(os.path.join(out_folder, folder_name + "_ref.fasta")): os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
+            exit(0)
+        build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", "0.75","-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp']
+        print(" ".join(build_consensus_cmd))
+        subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", "0.75","-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp']
-    print(" ".join(build_consensus_cmd))
-    subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        minimap2_cmd = [r"..\analysis\minimap2.exe", "-ax", mmap, '"' + os.path.join(out_folder, folder_name + "_tmp.fasta") + '"', query_file if query_file[0] == '"' else '"' + query_file + '"', "-o", '"' + os.path.join(out_folder, folder_name + ".sam") + '"']
+        print(" ".join(minimap2_cmd))
+        subprocess.run(" ".join(minimap2_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    minimap2_cmd = [r"..\analysis\minimap2.exe", "-ax", mmap, '"' + os.path.join(out_folder, folder_name + "_tmp.fasta") + '"', query_file if query_file[0] == '"' else '"' + query_file + '"', "-o", '"' + os.path.join(out_folder, folder_name + ".sam") + '"']
-    print(" ".join(minimap2_cmd))
-    subprocess.run(" ".join(minimap2_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", con_thr,"-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp', "-s 1"]
+        print(" ".join(build_consensus_cmd))
+        subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", con_thr,"-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp', "-s 1"]
-    print(" ".join(build_consensus_cmd))
-    subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print("Making alignment ...")
+        build_muscle_cmd = [r"..\analysis\muscle5.1.win64.exe", "-align", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f'-output "{os.path.join(out_folder, folder_name + ".fasta")}"']
+        subprocess.run(" ".join(build_muscle_cmd), shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    print("Making alignment ...")
-    build_muscle_cmd = [r"..\analysis\muscle5.1.win64.exe", "-align", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f' -output "{os.path.join(out_folder, folder_name + ".fasta")}"']
-    subprocess.run(" ".join(build_muscle_cmd), shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    reorder_sequences(os.path.join(out_folder, folder_name + "_tmp.fasta"), os.path.join(out_folder, folder_name + ".fasta"))
-    
+        reorder_sequences(os.path.join(out_folder, folder_name + "_tmp.fasta"), os.path.join(out_folder, folder_name + ".fasta"))
+    except:
+        if os.path.exists(os.path.join(out_folder, folder_name + "_tmp.fasta")): os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
+        if os.path.exists(os.path.join(out_folder, folder_name + ".sam")): os.remove(os.path.join(out_folder, folder_name + ".sam"))
+        if os.path.exists(os.path.join(out_folder, folder_name + "_ref.fasta")): os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
+        if os.path.exists(os.path.join(out_folder, folder_name + ".png")): os.remove(os.path.join(out_folder, folder_name + ".pngs"))
+        exit(0)
     os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
     os.remove(os.path.join(out_folder, folder_name + ".sam"))
     os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
@@ -202,6 +211,7 @@ def check_degenerate(input_aligment, level, output_aligment = "", keep_best = Tr
             SeqIO.write(processed_sequences[0], output_fasta, "fasta")
     else:
         os.remove(output_aligment)
+        if os.path.exists(output_aligment.replace(".fasta", ".png")): os.remove(output_aligment.replace(".fasta", ".png"))
 
 def process_query_file(input_file, subject_file, word_size, out_folder, con_thr, level):
     folder_name = os.path.basename(os.path.splitext(input_file.replace("_clean.","."))[0])

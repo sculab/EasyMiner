@@ -42,13 +42,13 @@ def parse_cigar(cigarstring, seq, pos_ref):
 def parse_args():
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\Barcode_adapter_BA7.sam",
+    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\1_RAPiD_Genomics_F088_UFL_394803_P005_WC12_i5_515_i7_132_S988_L002_R_001\muticopy\g6660_mft.sam",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
     parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75",
                         help="List of consensus threshold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.75")
     parser.add_argument("-n", action="store", dest="n", type=int, default=0,
                         help="Split FASTA output sequences every n nucleotides, default=do not split sequence")
-    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"D:\HIVTEST\app\results",
+    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\1_RAPiD_Genomics_F088_UFL_394803_P005_WC12_i5_515_i7_132_S988_L002_R_001\muticopy",
                         help="Name of output folder, default=same folder as input")
     parser.add_argument("-p", "--prefix", action="store", dest="prefix", default="",
                         help="Prefix for output file name, default=input filename without .sam extension")
@@ -184,7 +184,7 @@ def reformat_nucleotide_counts(nucleotide_counts):
     count_nucs = [[i[0] * len(i[1]), i[1]] for i in count_nucs]
     return count_nucs
 
-def add_insertions(fasta_seqout, refname, pos, threshold, insertions):
+def add_insertions(fasta_seqout, coverages, refname, pos, threshold, insertions):
     if refname in insertions and pos in insertions[refname]:
         for col, counts in enumerate(insertions[refname][pos]):
             nucs = []
@@ -206,7 +206,7 @@ def filter_empty_references(sequences, coverages, insertions):
         del insertions[refname]
     return sequences
 
-def save_fastas(sequences, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds):
+def save_fastas(sequences, fill, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds):
     fastas = {}
     for refname in sequences:
         for t in thresholds:
@@ -226,7 +226,7 @@ def save_fastas(sequences, coverages, outfolder, prefix, min_depth, insertions, 
                             else:
                                 break
                         fasta_seqout += amb["".join(sorted(nucs))]
-                        fasta_seqout = add_insertions(fasta_seqout, refname, pos, t, insertions)
+                        fasta_seqout = add_insertions(fasta_seqout, coverages, refname, pos, t, insertions)
 
                     else:
                         fasta_seqout += fill
@@ -276,7 +276,7 @@ def save_mutations_table(sequences, coverages, outfolder, prefix, min_depth):
             for x in v:
                 if x[1] < 0.9 and x[1]>0.1:
                     data.append(x[1])
-        if len(data) > 0:
+        if len(data) > 4:
             density = gaussian_kde(data)
             xs = np.linspace(min(data), max(data), 200)
             density.covariance_factor = lambda : .2
@@ -301,12 +301,12 @@ def main():
     maxdel = args.maxdel
 
     sequences, coverages, insertions, refname, reflength = process_sam_header(opener(filename))
-    reads_total, reads_mapped = parse_sam_file(opener(filename), sequences, coverages, insertions, refname, args.maxdel)
+    reads_total, reads_mapped = parse_sam_file(opener(filename), sequences, coverages, insertions, refname, maxdel)
     print(f"A total of {reads_total} reads were processed, out of which, {reads_mapped} reads were mapped.\n")
     sequences = reformat_sequences(sequences, coverages, insertions)
     sequences = filter_empty_references(sequences, coverages, insertions)
     if args.save_mutations: save_mutations_table(sequences, coverages, outfolder, prefix.replace("_tmp",""), min_depth)
-    save_fastas(sequences, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds)
+    save_fastas(sequences, fill, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds)
 
 
 if __name__ == "__main__":

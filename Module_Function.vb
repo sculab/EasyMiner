@@ -135,10 +135,10 @@ Module Module_Function
             MsgBox("Notice: We will use dat (.) as decimal quotation instead of comma (,). We recommand to change your system's number format to English! ")
         End If
     End Sub
-    Public Sub MergeFiles(ByVal firstFilePath As String, ByVal secondFilePath As String)
+    Public Sub MergeFiles(ByVal FilePath As String, ByVal FilePath2add As String)
         Try
-            Using firstFileWriter As New StreamWriter(firstFilePath, True) ' "True" appends to the file
-                Using secondFileReader As New StreamReader(secondFilePath)
+            Using firstFileWriter As New StreamWriter(FilePath, True) ' "True" appends to the file
+                Using secondFileReader As New StreamReader(FilePath2add)
                     Dim line As String = ""
                     While (InlineAssignHelper(line, secondFileReader.ReadLine())) IsNot Nothing
                         firstFileWriter.WriteLine(line)
@@ -268,6 +268,7 @@ Module Module_Function
                 End If
             End Try
         End While
+        Return ""
     End Function
 
     'Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)

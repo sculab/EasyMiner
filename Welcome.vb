@@ -34,19 +34,19 @@ Public Class Welcome
         Select Case exe_mode.ToLower
             Case "basic"
                 form_main.长读条码ToolStripMenuItem.Visible = False
-                form_main.三方工具ToolStripMenuItem.Visible = False
+                form_main.DebugToolStripMenuItem.Visible = False
                 DeleteTemp(Path.Combine(root_path, "temp"))
             Case "advanced", "debug"
                 form_main.长读条码ToolStripMenuItem.Visible = True
-                form_main.三方工具ToolStripMenuItem.Visible = True
+                form_main.DebugToolStripMenuItem.Visible = True
                 form_main.迭代ToolStripMenuItem.Visible = True
             Case "hiv"
                 form_main.长读条码ToolStripMenuItem.Visible = True
-                form_main.三方工具ToolStripMenuItem.Visible = False
+                form_main.DebugToolStripMenuItem.Visible = False
                 DeleteTemp(Path.Combine(root_path, "temp"))
             Case Else
                 form_main.长读条码ToolStripMenuItem.Visible = False
-                form_main.三方工具ToolStripMenuItem.Visible = False
+                form_main.DebugToolStripMenuItem.Visible = False
                 DeleteTemp(Path.Combine(root_path, "temp"))
         End Select
         current_file = total_file

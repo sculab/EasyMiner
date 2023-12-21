@@ -130,15 +130,17 @@ def split_sequences(input_file, output_dir, sequence_length = 2000, step= 1800):
             sequences[current_sequence_name] += line.strip()
 
     num_fragments = (len(sequences[next(iter(sequences))]) - sequence_length) // step + 2
-
+    name_length = len(str(len(sequences[next(iter(sequences))])))
     gene_names = []
     # 分割序列并保存到文件
     
     for i in range(num_fragments):
         start = i * step
         end = start + sequence_length
-        output_file = f"{output_dir}/{start+1}_{end}.fasta"
-        gene_names.append(f"{start+1}_{end}")
+        start_str= str(start+1).zfill(name_length)
+        end_str = str(end).zfill(name_length) if end < len(sequences[next(iter(sequences))]) else len(sequences[next(iter(sequences))])
+        output_file = f"{output_dir}/{start_str}_{end_str}.fasta"
+        gene_names.append(f"{start_str}_{end_str}")
         with open(output_file, 'w') as out_f:
             for sequence_name, sequence_content in sequences.items():
                 sequence_name= sequence_name.replace(" ","_").replace(".","_").replace("-","_")
@@ -162,17 +164,13 @@ class Extract_reference():
         self.marker_max_length = configuration_information["max_marker_length"]
         # 标记最小长度
         self.marker_min_length = configuration_information["min_marker_length"]
-        self.gap_length = configuration_information["gap_length"]
         self.thread_number = configuration_information["thread_number"]
-        self.usevar = configuration_information["usevar"]
-        self.split_only = configuration_information["split_only"]
         self.intron_only = configuration_information["intron_only"]
-        self.do_alignment = configuration_information["do_alignment"]
 
     def add_soft_boundary(self, start, end, start_all, end_all):
         soft_boundary = self.soft_boundary
-        gene_min_length = self.gene_min_length
-        gene_max_length = self.gene_max_length
+        # gene_min_length = self.gene_min_length
+        # gene_max_length = self.gene_max_length
         # 允许软边界超界限
         # if (end - start < gene_min_length) and (end - start > gene_max_length):
         #     return (start, end)
@@ -218,7 +216,7 @@ class Extract_reference():
             consensus_sequence += consensus_base
         return self.remove_terminal_gap(consensus_sequence)
 
-    def write_fasta_file(self, record, files_count, current_file, do_aln = True):
+    def write_fasta_file(self, record, current_file):
         temp_file_count = {}
         for seq in record:
             seq_name_parts = seq.id.lower().split("#")
@@ -228,8 +226,7 @@ class Extract_reference():
             else:
                 temp_file_count[seq_name_key] = 1
 
-        if len(record) >= 2 or self.split_only:
-            sequence_lengths = [len(seq.seq) for seq in record if len(seq.seq) > 0]
+        if len(record) >= 2:
             record = [seq for seq in record if len(seq.seq) > 0]
             if record == []: return
             absolute_path = os.path.abspath(current_file)
@@ -243,8 +240,6 @@ class Extract_reference():
                 os.makedirs(os.path.join(data_path,"org_seq"))
             # 保存两行模式的fasta文件
             SeqIO.write(record, seq_file, "fasta-2line")
-            # 保存比对之后的序列
-            aln_file = os.path.join(data_path,"alignment",file_name_with_ext)
     
     def extract_reference_from_gb_parallel(self):
         out_dir = self.out_dir
@@ -306,20 +301,12 @@ class Extract_reference():
         executor2 = ProcessPoolExecutor(max_workers=thread_number)
         if thread_number > 1:
             for key, value in my_records_ultimate.items():
-                path = os.path.join(out_dir, key + ".fasta")
-                if self.split_only:
-                    task_pool2.append(executor2.submit(self.write_fasta_file, value, files_count, os.path.join(out_dir, key + ".Fasta"), self.do_alignment))
-                else:
-                    task_pool2.append(executor2.submit(self.write_fasta_file, value, files_count, os.path.join(out_dir, key + ".Fasta"), True))
+                task_pool2.append(executor2.submit(self.write_fasta_file, value, os.path.join(out_dir, key + ".Fasta")))
             for i in task_pool2:
                 results2.append(i.result())
         else:
             for key, value in my_records_ultimate.items():
-                path = os.path.join(out_dir, key + ".fasta")
-                if self.split_only:
-                    results2.append(self.write_fasta_file(value, files_count, os.path.join(out_dir, key + ".Fasta"), self.do_alignment))
-                else:
-                    results2.append(self.write_fasta_file(value, files_count, os.path.join(out_dir, key + ".Fasta"), True))
+                results2.append(self.write_fasta_file(value, os.path.join(out_dir, key + ".Fasta")))
 
     def extract_reference_from_fasta(self):
         out_dir = self.out_dir
@@ -343,21 +330,21 @@ class Extract_reference():
                 
         my_records_ultimate = defaultdict(list)
 
-        gene_names = split_sequences(input_file, os.path.join(out_dir, "alignment"), self.gene_max_length, self.gene_max_length-self.gene_min_length)
+        gene_names = split_sequences(input_file, os.path.join(out_dir, "org_seq"), self.gene_max_length, self.gene_max_length-self.gene_min_length)
         for gene_name in gene_names:
-            tmp_path = os.path.join(out_dir, "alignment",gene_name + ".fasta")
+            tmp_path = os.path.join(out_dir, "org_seq",gene_name + ".fasta")
             my_records_ultimate[gene_name] = list(SeqIO.parse(tmp_path, 'fasta'))
         task_pool2 = []
         results2 = []
         executor2 = ProcessPoolExecutor(max_workers=thread_number)
         if thread_number > 1:
             for key, value in my_records_ultimate.items():
-                task_pool2.append(executor2.submit(self.write_fasta_file, value, files_count,  os.path.join(out_dir, key + ".Fasta"), False))
+                task_pool2.append(executor2.submit(self.write_fasta_file, value,  os.path.join(out_dir, key + ".Fasta")))
             for i in task_pool2:
                 results2.append(i.result())
         else:
             for key, value in my_records_ultimate.items():
-                results2.append(self.write_fasta_file(value, files_count, os.path.join(out_dir, key + ".Fasta"), False))
+                results2.append(self.write_fasta_file(value, os.path.join(out_dir, key + ".Fasta")))
 
     def extract_reference_from_gb(self, file_path):
         gene_min_length = self.gene_min_length
@@ -479,7 +466,7 @@ if __name__ == '__main__':
     pars = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter, description=''' build ref YY ''')
     pars.add_argument('-input', metavar='<str>', type=str,
-                      help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp.gb")
+                      help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\database\cp_fasta\KU\KU559\KU559924.fasta")
     pars.add_argument('-soft_boundary', metavar='<int>', type=str,
                       help='''soft boundary''', required=False, default="200,200")
     pars.add_argument('-max_marker_length', metavar='<int>', type=int,
@@ -490,16 +477,12 @@ if __name__ == '__main__':
                       help='''max length''', required=False, default=5000)
     pars.add_argument('-min_seq_length', metavar='<int>', type=int,
                       help='''min length''', required=False, default=200)
-    pars.add_argument('-gap_length', metavar='<int>', type=int,
-                      help='''min length''', required=False, default=100)
     pars.add_argument('-t', metavar='<int>', type=int,
                       help='''thread number''', required=False, default=1)
-    pars.add_argument('-usevar', type=str2bool, nargs='?', const=True, help='''Designing primers using consensus region only''', default = True)
-    pars.add_argument('-split_only', type=str2bool, nargs='?', const=True, help='''是否仅仅分隔序列''', default = False)
-    pars.add_argument('-do_aln', type=str2bool, nargs='?', const=True, help='''是否排序''', default = False)
-    pars.add_argument('-intron_only', type=str2bool, nargs='?', const=True, help='''是否只包含intron''', default = False)
+    pars.add_argument('-intron_only', type=str2bool, nargs='?', const=True, 
+                      help='''is exclude extron''', default = False)
     pars.add_argument('-out_dir', metavar='<str>', type=str,
-                      help='''output folder.''', required=False, default='./build_primer_test/out_test')
+                      help='''output folder.''', required=False, default=r'E:\testing2\r1')
 
     args = pars.parse_args()
     print("Do not close this window manually, please!")
@@ -510,18 +493,14 @@ if __name__ == '__main__':
     min_seq_length = args.min_seq_length
     max_marker_length = args.max_marker_length
     min_marker_length = args.min_marker_length
-    gap_length = args.gap_length
     thread_number = args.t
-    split_only = args.split_only
-    usevar = args.usevar
-    do_alignment = args.do_aln
     intron_only = args.intron_only
 
     configuration_information = {"out": out,  "input": input_data, "soft_boundary": soft_boundary,
                                  "max_marker_length": max_marker_length, "min_marker_length": min_marker_length,
-                                 "max_seq_length": max_seq_length, "min_seq_length": min_seq_length, "gap_length": gap_length,
-                                 "thread_number": thread_number, "usevar":usevar,
-                                 "split_only": split_only, "intron_only": intron_only, "do_alignment": do_alignment}
+                                 "max_seq_length": max_seq_length, "min_seq_length": min_seq_length,
+                                 "thread_number": thread_number, 
+                                 "intron_only": intron_only}
     
     if os.path.isdir(input_data):
         target1 = Extract_reference(configuration_information)

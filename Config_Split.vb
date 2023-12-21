@@ -46,8 +46,6 @@ Public Class Config_Split
         SI_split_genes.Arguments = "-input out_gb"
         SI_split_genes.Arguments += " -min_seq_length " + NumericUpDown2.Value.ToString + " -max_seq_length " + NumericUpDown3.Value.ToString
         SI_split_genes.Arguments += " -soft_boundary " + NumericUpDown4.Value.ToString + "," + NumericUpDown1.Value.ToString
-        SI_split_genes.Arguments += " -split_only True"
-        SI_split_genes.Arguments += " -do_aln False"
         If CheckBox1.Checked Then
             SI_split_genes.Arguments += " -intron_only True"
         Else
