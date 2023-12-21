@@ -67,10 +67,10 @@ def split_gb(input_data, out_dir, clean = True):
         my_id += 1
 
 if __name__ == "__main__":
-    pars = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=''' MakeData YY ''')
+    pars = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=''' 将包含多个序列的gb格式的文件拆分成多个独立的gb文件 ''')
     pars.add_argument('-input', metavar='<str>', type=str, help='''input file.''', required=False, default='chloroplast.gb')
     pars.add_argument('-outdir', metavar='<str>', type=str, help='''output folder''', required=False, default='out_gb')
-    pars.add_argument('-clean', type=str2bool, nargs='?', const=True, help='''do clean''', default = True)
+    pars.add_argument('-clean', type=str2bool, nargs='?', const=True, help='''在分割前清除输出文件夹中的所有内容''', default = True)
     pars.add_argument('-outcsv', metavar='<str>', type=str, help='''output csv''', required=False, default='gb_info.csv')
     args = pars.parse_args()
     print("Do not close this window manually, please!")

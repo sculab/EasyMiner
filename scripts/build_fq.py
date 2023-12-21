@@ -4,7 +4,7 @@ import argparse
 import gzip
 from Bio import SeqIO
 pars = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter, description=''' Filter by YY 20230314''')
+    formatter_class=argparse.RawDescriptionHelpFormatter, description=''' 从大型的fq文件中拆分出指定数量的reads ''')
 
 def Judge_Type(path):
     """

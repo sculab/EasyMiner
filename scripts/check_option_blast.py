@@ -5,7 +5,7 @@ import subprocess
 import shutil
 
 def main():
-    parser = argparse.ArgumentParser(description="基于Blast筛选最佳序列")
+    parser = argparse.ArgumentParser(description="基于Blast筛选Novoplasty产生的几个option中哪个是最佳序列")
     parser.add_argument("-i", "--input", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\6_Bupleurum_hamiltonii_HQ_R\NOVOPlasty", help="选项文件夹的路径")
     parser.add_argument("-r", "--ref", required=False, default=r"Bupleurum_scorzonerifolium#MT534601.fasta", help="参考序列的路径")
     parser.add_argument("-o", "--output", required=False, default=r"best.fasta", help="结果文件的路径")

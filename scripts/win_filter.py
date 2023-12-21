@@ -6,7 +6,7 @@ from collections import defaultdict, OrderedDict
 import gzip
 from Bio import SeqIO
 pars = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter, description=''' Filter by YY 20230314''')
+    formatter_class=argparse.RawDescriptionHelpFormatter, description=''' Filter and Assembler by YY 20230314''')
 
 
 def STR2BOOL(v):  # 在参数中使用逻辑值

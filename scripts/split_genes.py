@@ -160,20 +160,11 @@ class Extract_reference():
         self.gene_max_length = configuration_information["max_seq_length"]
         # 基因最小长度
         self.gene_min_length = configuration_information["min_seq_length"]
-        # 标记最大长度
-        self.marker_max_length = configuration_information["max_marker_length"]
-        # 标记最小长度
-        self.marker_min_length = configuration_information["min_marker_length"]
         self.thread_number = configuration_information["thread_number"]
         self.intron_only = configuration_information["intron_only"]
 
     def add_soft_boundary(self, start, end, start_all, end_all):
         soft_boundary = self.soft_boundary
-        # gene_min_length = self.gene_min_length
-        # gene_max_length = self.gene_max_length
-        # 允许软边界超界限
-        # if (end - start < gene_min_length) and (end - start > gene_max_length):
-        #     return (start, end)
         soft_start = start - int(soft_boundary.split(",")[0])
         soft_end = end + int(soft_boundary.split(",")[1])
         if soft_start <= start_all:  # Out of Left Boundary
@@ -464,19 +455,15 @@ if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
     pars = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter, description=''' build ref YY ''')
+        formatter_class=argparse.RawDescriptionHelpFormatter, description=''' 把gb格式或者fas格式的参考序列进行拆分，gb格式参考序列按照基因名字拆分，fas格式的参考序列按照切片拆分 ''')
     pars.add_argument('-input', metavar='<str>', type=str,
                       help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\database\cp_fasta\KU\KU559\KU559924.fasta")
     pars.add_argument('-soft_boundary', metavar='<int>', type=str,
-                      help='''soft boundary''', required=False, default="200,200")
-    pars.add_argument('-max_marker_length', metavar='<int>', type=int,
-                      help='''max  marker length''', required=False, default=2000)
-    pars.add_argument('-min_marker_length', metavar='<int>', type=int,
-                      help='''min marker length''', required=False, default=200)
+                      help='''拆分gb格式时cds两端的扩展。 default=[200,200]''', required=False, default="200,200")
     pars.add_argument('-max_seq_length', metavar='<int>', type=int,
-                      help='''max length''', required=False, default=5000)
+                      help='''拆分gb格式时允许的最大片段长度/拆分fas格式时的切片长度。 default=[5000]''', required=False, default=5000)
     pars.add_argument('-min_seq_length', metavar='<int>', type=int,
-                      help='''min length''', required=False, default=200)
+                      help='''拆分gb格式时允许的最小片段长度/拆分fas格式时的重叠长度。 default=[200]''', required=False, default=200)
     pars.add_argument('-t', metavar='<int>', type=int,
                       help='''thread number''', required=False, default=1)
     pars.add_argument('-intron_only', type=str2bool, nargs='?', const=True, 
@@ -491,13 +478,10 @@ if __name__ == '__main__':
     soft_boundary = args.soft_boundary
     max_seq_length = args.max_seq_length
     min_seq_length = args.min_seq_length
-    max_marker_length = args.max_marker_length
-    min_marker_length = args.min_marker_length
     thread_number = args.t
     intron_only = args.intron_only
 
     configuration_information = {"out": out,  "input": input_data, "soft_boundary": soft_boundary,
-                                 "max_marker_length": max_marker_length, "min_marker_length": min_marker_length,
                                  "max_seq_length": max_seq_length, "min_seq_length": min_seq_length,
                                  "thread_number": thread_number, 
                                  "intron_only": intron_only}

@@ -122,10 +122,10 @@ def adjust_sequence_for_gaps(input_path, output_path):
         print(f"发生错误：{e}")
 
 def main():
-    parser = argparse.ArgumentParser(description="调整FASTA文件中的序列，根据第一条序列的gap来调整第二条序列。")
-    parser.add_argument("-i1", "--input1", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\Bupleurum_scorzonerifolium#MT534601.fasta", help="输入FASTA文件的路径")
-    parser.add_argument("-i2", "--input2", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\Circularized_assembly_1_Project1.fasta", help="输入FASTA文件的路径")
-    parser.add_argument("-gb", "--genbank", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\ref_gb.gb", help="GB文件的路径")
+    parser = argparse.ArgumentParser(description="根据参考序列的fasta和gb来注释目标序列。")
+    parser.add_argument("-i1", "--input1", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\Bupleurum_scorzonerifolium#MT534601.fasta", help="输入参考序列FASTA文件的路径")
+    parser.add_argument("-i2", "--input2", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\Circularized_assembly_1_Project1.fasta", help="输入目标序列FASTA文件的路径")
+    parser.add_argument("-gb", "--genbank", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\ref_gb.gb", help="输入参考序列GB文件的路径")
     parser.add_argument("-o", "--output", required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\4_Bupleurum_commelynoideum_HQ_R\NOVOPlasty\output", help="结果文件的路径")
 
     args = parser.parse_args()

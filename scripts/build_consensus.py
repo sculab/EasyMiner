@@ -11,8 +11,8 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import gaussian_kde
-# Dictionary to translate IUPAC ambiguities, lowercase letters are used when "-" or "N" were present for a position,
-# however, software like Genious for example are case insensitive and will imply ignore capitalization
+
+
 amb = {"-": "-", "A": "A", "C": "C", "G": "G", "N": "N", "T": "T",
         "-A": "a", "-C": "c", "-G": "g", "-N": "n", "-T": "t",
         "AC": "M", "AG": "R", "AN": "a", "AT": "W", "CG": "S",
@@ -41,7 +41,7 @@ def parse_cigar(cigarstring, seq, pos_ref):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter, description='''基于SAM文件构建一致性序列''')
     parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\1_RAPiD_Genomics_F088_UFL_394803_P005_WC12_i5_515_i7_132_S988_L002_R_001\muticopy\g6660_mft.sam",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
     parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75",
@@ -59,7 +59,7 @@ def parse_args():
     parser.add_argument("-d", "--maxdel", action="store", dest="maxdel", default=150,
                         help="Ignore deletions longer than this value, default=150")
     parser.add_argument("-s", "--save_mutations", action="store", dest="save_mutations", default=1,
-                        help="保存碱基的比例")
+                        help="保存每个位点碱基比例")
     return parser.parse_args()
 
 def process_sam_header(mapfile):

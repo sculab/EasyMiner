@@ -78,8 +78,8 @@ def cut_seq(result_file, consensus_seq, remove_gap = True):
 
 
 if __name__ == '__main__':
-    pars = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=''' CUTSEQ YY ''')
-    pars.add_argument('-i', metavar='<str>', type=str, help='''input files.''', required=False,
+    pars = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=''' 基于一致性序列对序列的前端和后端进行清理 ''')
+    pars.add_argument('-i', metavar='<str>', type=str, help='''input files. 需要排序后的文件。''', required=False,
                     default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\aligned\4471_trim.fasta")
     pars.add_argument('-o', metavar='<str>', type=str,
                     help='''out dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results")
@@ -88,12 +88,6 @@ if __name__ == '__main__':
     data_path = args.o
     if not os.path.isdir(os.path.join(data_path,"trimed")): os.makedirs(os.path.join(data_path,"trimed"))
     alignment_records = list(SeqIO.parse(aln_file, 'fasta'))
-
-    # # 生成一致序列
-    # consensus_seq = generate_consensus(alignment_records)
-    # # 将一致序列保存到文件
-    # result_file = os.path.join(data_path,"results",os.path.basename(aln_file))
-    # result_name, result_seq = cut_seq(result_file, consensus_seq)
 
     result_name, result_seq = generate_cut(alignment_records)
 

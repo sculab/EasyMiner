@@ -220,15 +220,15 @@ def process_query_file(input_file, subject_file, word_size, out_folder, con_thr,
 
 
 def main():
-    parser = argparse.ArgumentParser(description="构建合并后的序列")
-    parser.add_argument("-i", "--input", required=False, default=r"E:\测试数据\HIV\combined\Barcode_adapter_BA1.fasta", help="选项文件夹的路径")
+    parser = argparse.ArgumentParser(description="基于参考序列对二代或者三代的测序数据构建一致性序列，并且检测多拷贝序列。")
+    parser.add_argument("-i", "--input", required=False, default=r"E:\测试数据\HIV\combined\Barcode_adapter_BA1.fasta", help="测序数据路径，文件或者文件夹")
     parser.add_argument("-r", "--ref", required=False, default=r"E:\测试数据\HIVTEST\barcode.fasta", help="参考序列的路径")
     parser.add_argument("-o", "--output", required=False, default=r"E:\测试数据\HIV", help="结果文件夹的路径")
-    parser.add_argument('-w', "--word_size", required=False, default = "7", help='''word size''')
+    parser.add_argument('-w', "--word_size", required=False, default = "7", help='''执行Blast时的word size''')
     parser.add_argument("-c", "--con_thr", required=False, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75", help="List of consensus thresold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.25")
-    parser.add_argument("-l", "--level", required=False, type=int, default=4, help='level of mix 1~4')
+    parser.add_argument("-l", "--level", required=False, type=int, default=4, help='对多拷贝的敏感度 1~4 分别对应0.6,0.65,0.7,0.75级别的consensus，越高简并碱基越多')
     parser.add_argument('-p', "--processes", required=False, type=int, default=16, help='Number of processes')
-    parser.add_argument('-m', "--mode", required=False, type=int, default=0, help='0: build barcode 1: build option only')
+    parser.add_argument('-m', "--mode", required=False, type=int, default=0, help='0: 完整构建三代序列 1: 对二代序列检测多拷贝')
     args = parser.parse_args()
     subject_file = args.ref 
     con_thr = args.con_thr
@@ -251,16 +251,14 @@ def main():
         SeqIO.write(processed_sequences, output_fasta, "fasta")
     subject_file = "blast_ref.fasta"
 
-    
-
     if os.path.isdir(args.input):
         query_files = [os.path.join(args.input, filename) for filename in os.listdir(args.input) if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") and filename != "unknown.fasta"  and filename != "mismatch.fasta"]
         num_processes = int(args.processes)
-        # with Pool(processes=num_processes) as pool:
-        #     pool.starmap(process_query_file, [(query_file, subject_file, word_size, out_folder, con_thr, level) for query_file in query_files])
-
-        [process_query_file(query_file, subject_file, word_size, out_folder, con_thr, level) for query_file in query_files]
-
+        if num_processes > 1:
+            with Pool(processes=num_processes) as pool:
+                pool.starmap(process_query_file, [(query_file, subject_file, word_size, out_folder, con_thr, level) for query_file in query_files])
+        else:
+            [process_query_file(query_file, subject_file, word_size, out_folder, con_thr, level) for query_file in query_files]
         # 合并文件
         combined_file = os.path.join(out_folder, "combined.fasta")
         if os.path.exists(combined_file): os.remove(combined_file)
