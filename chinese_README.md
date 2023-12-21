@@ -29,19 +29,23 @@ https://github.com/sculab/EasyMiner
 # 示例数据
 
 
-**Demo of Part1**:提取cds所需测序数据，选用拟南芥(*Arabidopsis thaliana*)二代测序数据进行提取，使用近源物种琴叶拟南芥(*Arabidopsis lyrata*)的基因作为参考序列。[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
+**Demo1**:Part1演示中，提取指定基因所需测序数据，选用拟南芥(*Arabidopsis thaliana*)二代测序数据进行提取，使用近源物种琴叶拟南芥(*Arabidopsis lyrata*)的基因作为参考序列。
+[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
 
-**Demo of Part2**:组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
+**Demo of Part2**:Part2演示中，组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。
+[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
 
 
 
-**Demo3**:动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。 [DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+**Demo3**:动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。
+[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
 
 
 
-**Demo4**:提取被子植物353基因集所需数据，选用拟南芥二代测序数据。demo of 353 Genes  [DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+**Demo4**:提取被子植物353基因集所需数据，选用拟南芥二代测序数据。
+[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
 
 
 
@@ -191,7 +195,7 @@ https://github.com/sculab/EasyMiner
 
 · 选用的参考序列不够近源（手动查找更为近源的序列）
 · 测序数据的深度太浅（可以尝试把过滤K值调低）
-· 尝试迭代重新分析
+· 如果拼接结果不理想，可以尝试[分析>迭代]重新分析
 
 *降低kmer得到的结果可能精确度不够，对于假阳性等错误序列，需要自己手动筛选分辨
 *过滤K值最小为17，且应设置为单数。
@@ -220,7 +224,7 @@ https://github.com/sculab/EasyMiner
 **6.** **PPD没有结果？**
 
 
-PPD仅针对353数据应用，请保证选择了三个及以上的物种类群进行批量提取。
+请保证选择了三个及以上的物种类群进行批量提取。
 保证无中文目录文件夹。
 
 
@@ -230,16 +234,9 @@ PPD仅针对353数据应用，请保证选择了三个及以上的物种类群�
 建议将测序文件的完整读长长度用于线粒体基因组组装。您可以在[分析>过滤]处取消勾选[读取/文件(M)]，以分析完整读取长度数据。
 
 
-**8.** **批量植物线粒体组装无法选择叶绿体序列进行参考？**
 
 
-批量植物线粒体拼接自动对应先前拼接的植物叶绿体基因组文件夹进行提取，注意选择之前拼接植物叶绿体基因组的批量结果目录。
 
-
-**8.** **批量拼接时间比单个拼接时间要长？**
-
-
-批量拼接时对所有序列先进行过滤后进行组装，因此得到单个结果的时间会有所延长。您可以通过适当增加进程数量（右侧）来提高运行速度。
 
 
 # 联系方式

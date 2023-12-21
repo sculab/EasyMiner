@@ -1,22 +1,24 @@
 
 # Overview
-[Here](chinese_README.md) to view the chinese version manual.
+For the Chinese version of the manual, click [Here](chinese_README.md).
 
  ![](images/main_page.jpg)
 
 
-EasyMiner is an enhanced version of our previous developments [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner), running on Windows. EasyMiner features a user-friendly Windows graphical interface for efficient and accurate extraction of molecular markers on personal computers, without the need for a server. By using specially designed stitching algorithms, EasyMiner can quickly and accurately extract molecular markers from second-generation sequencing based on reference genes from closely related species, while also providing functions for cell organelle genome assembly, gene sequence decomposition in genbank files, and  the identification of paralogs.
+EasyMiner, building upon our previous projects Easy353 and GeneMiner, operates on Windows and offers an enhanced user experience. It is designed with a user-friendly Windows graphical interface, enabling efficient and precise extraction of molecular markers on personal computers without relying on server resources.
+EasyMiner efficiently and precisely extracts molecular markers from second-generation sequencing data, leveraging reference genes from closely related species. Additionally, it offers functionalities for plastid genome assembly, gene sequence decomposition in GenBank files, and the identification of paralogs.
+
 
 # Dependencies
 
-
+The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper software functionality.
 [.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
 
 
 # Download and install
 
 
-EasyMiner, developed in vb.net and python3, is exclusively available for 64-bit Windows systems.
+EasyMiner, developed in vb.net and python3, is exclusively for 64-bit Windows systems.
 
 Download the latest version from [here](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
 
@@ -24,15 +26,20 @@ Alternatively, download from [SourceForge](https://sourceforge.net/projects/scue
 
 # DEMO
 
-**Demo of Part1**:[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
+**Demo1**:demo of Part1
+[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
-**Demo of Part2**:[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
+**Demo2**:demo of Part2
+[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
 
-**Demo3**:demo of Animal Mitochondrial Genome  [DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+
+**Demo3**:demo of Animal Mitochondrial Genome  
+[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
 
 
-**Demo4**:demo of 353 Genes  [DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+**Demo4**:demo of 353 Genes  
+[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
 
 
 # More Details
@@ -41,14 +48,14 @@ For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf
 
 # Command Line (cmd)
 
-For users who want to use command line version, Please see our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
+For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
 
 ---
 # Usage
 
 # Part1:How to get specific gene?
 
-This section demonstrates extracting specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
+This section demonstrates how to extract specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
 
 ### Data Preparation:
@@ -70,15 +77,22 @@ Click **[File>Load Sequencing Files]** to select sequencing data file.
 
 
 ![](images/chinese_ex_import.jpg)
-**Note**:  For paired sequence files, simultaneously select two (even-numbered) data files for loading. Single files will be treated as single-end sequencing data.
+**Note**:  For paired sequencing files, select two (even-numbered) data files simultaneously. Single files will be treated as single-end sequencing data.
+
 
 Click **[File>Load Reference]** to select  fasta format reference sequence files. Multiple files can be chosen at once.
+
+
 ![](images/refs.jpg)
+
+
 Reference sequences in gb format can also be imported.Confirm to report the file as a gene list.
+
+
 Optionally, expand the left or right intronic regions [Extend Left][Extend Right].
 ![](images/gb.jpg)
 
-The imported files display information such as the reference sequence ID, gene name, number of sequences, and average sequence length.
+The imported files display details such as reference sequence ID, gene name, number of sequences, and average sequence length.
 ![](images/chinese_ref_xiangxi.jpg)
 
 
@@ -93,7 +107,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 
 
 
-**Note:** Do not manually close the command line window; please wait patiently for it to close automatically. 
+**Note:** Do not manually close the command line window; it will close automatically once the process is complete.
 
 
 ### View Results:
@@ -106,10 +120,10 @@ Click **"Open"**  to view the results.
 
 ---
 # Part2 :How to get plastid genome?
-This example covers mining chloroplast and mitochondrial genomes from second-generation sequencing data of Arabidopsis thaliana.
+This example demonstrates the process of mining chloroplast and mitochondrial genomes from second-generation sequencing data of *Arabidopsis thaliana*.
 
 
-**Note:** Plant Chloroplast Genome assembly is required before Plant Mitochondrial Genome assembly.
+**Note:** Assembly of the Plant Chloroplast Genome is required before the Plant Mitochondrial Genome assembly.
 
 
 ## Step1 Plant Chlororplast Genome
@@ -118,14 +132,14 @@ This example covers mining chloroplast and mitochondrial genomes from second-gen
 ### Data Preparation:
 
 
-**Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
+**Sequencing Data**: Second-generation sequencing data files in .gz or .fq format.
 
 
 
 **Load Data**:
 
 
-Click **[File>Load Sequencing Files]** to select sequencing data file.
+Click **[File>Load Sequencing Files]** to select sequencing data files.
 
 ![](images/load_seq.jpg)
 
@@ -163,7 +177,7 @@ You can extract specific genes from the genome by loading and exporting the gb f
 ## Step2 Plant Mitochondrial Genome
 
 
-Follow the same process as the Plant Chloroplast Genome assembly. However, **import the results of the previous Plant Chloroplast Genome** assembly first.
+Follow the same process as the Plant Chloroplast Genome assembly. However, initially **import the results of the previous Plant Chloroplast Genome** assembly.
 
 ![](images/mito.jpg)
 
@@ -175,7 +189,7 @@ Follow the same process as the Plant Chloroplast Genome assembly. However, **imp
 **1.** **Does sequencing data require the removal of junctions and low-quality reads?**
 
 
-It is recommended to use the HQ version of the data provided by the sequencing company. Utilizing low-quality data may lead to suboptimal extraction outcomes. In the absence of HQ data, it is recommended to remove junctions and low-quality reads to improve results.
+It's recommended to use the high-quality (HQ) version of the data provided by the sequencing company. Using low-quality data may result in less optimal extraction outcomes. If HQ data is not available, removing junctions and low-quality reads is advisable to enhance results.
 
 
 
@@ -183,18 +197,18 @@ It is recommended to use the HQ version of the data provided by the sequencing c
 **2.** **Causes and solutions for the absence of assemble result.**
 
 
-*The selected reference sequence may not be sufficiently related to the source. (Manually find a more closely related sequence).
+*The selected reference sequence may not be sufficiently related. (Find a more closely related sequence manually).
 
-*The depth of the sequencing data might be inadequate. (Consider reducing the filter K value or extending the [Reads/File(M)]).
+*The sequencing data might not be deep enough. (Consider reducing the filter K value or extending the [Reads/File(M)]).
 
-*Undertake a re-analysis using [Analysis > Iteration] for potentially longer sequence results.
+*If the assembly results are not ideal, re-analyze using [Analysis > Iteration].
 
-*Reduce the Kmer value during assembly.
+*Consider reducing the Kmer value during assembly.
 
-**Note:** Be aware that results obtained with a lowered Kmer value may lack accuracy. Manual discernment of false positive sequences is advised.
+**Note:**  Lowering the Kmer value might affect accuracy. Manual discernment of false positive sequences is recommended.
 
 
-**Note:** It is recommended to set the Kmer value to be greater than 17, ensuring that the chosen value is an odd number.
+**Note:**  It's advisable to set the Kmer value to be greater than 17 and ensure it's an odd number.
 
 
 
@@ -202,7 +216,7 @@ It is recommended to use the HQ version of the data provided by the sequencing c
 **3.** **What is the memory requirement of the software?**
 
 
-The software has minimal memory requirements. Adjust the [Threads] setting to match your computer's memory capacity.
+The software requires minimal memory. Adjust the [Threads] setting according to your computer's memory capacity.
 
 
 
@@ -210,9 +224,9 @@ The software has minimal memory requirements. Adjust the [Threads] setting to ma
 **4.** **How to obtain the intron sequence data?**
 
 
-Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then import this file using [File > Load Reference]. Confirm to report the file as a gene list. Next, determine the intron region length using [Extend Left] and [Extend Right].
+Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then import it using [File > Load Reference]. Confirm to report the file as a gene list. Determine the intron region length using [Extend Left] and [Extend Right].
 
-**Note:** If the imported reference cds includes an internal vacant intron region, the software's analysis result will encompass this vacant intron.
+**Note:** If the imported reference CDS includes an internal vacant intron region, the software's analysis will include this vacant intron.
 
 
 
@@ -220,10 +234,10 @@ Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then impo
 **5.** **No result for  [Merge & Trim]?**
 
 
-[Batch > Merge & Trim] requires the existence of: sequencing data, reference sequence,  catalogue folder where results exist. 
+[Batch > Merge & Trim] requires: sequencing data, reference sequences, and a catalog folder where results exist.
 
 **Note:** The ID number in the result folder(3) should match the imported sequencing file ID(2).  
-*Make sure there is no Chinese catalog folder.
+*Ensure there is no Chinese catalog folder.
 
 ![](images/trim_details.jpg)
 
@@ -233,8 +247,7 @@ Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then impo
 **6.** **No results for PPD?**
 
 
-PPD application is limited to 353 data. Ensure the selection of three or more species for batch extraction.
-*Make sure there is no Chinese catalog folder.
+Ensure the selection of three or more species for batch extraction. Ensure there is no Chinese catalog folder.
 
 
 
@@ -242,8 +255,7 @@ PPD application is limited to 353 data. Ensure the selection of three or more sp
 **7.** **No results for Mitochondrial Genome?**
 
 
-For mitochondrial genome assembly, utilizing the full read length of the sequencing file is recommended.
-You can untick **[Reads/File(M)]** checkbox at **[Analysis>Filter]** to analyse the full read length data.
+For mitochondrial genome assembly, it's recommended to utilize the full read length of the sequencing file. Uncheck the [Reads/File(M)] checkbox at [Analysis > Filter] to analyze the full read length data.
 
 
 
