@@ -5,45 +5,38 @@ For the Chinese version of the manual, click [Here](chinese_README.md).
  ![](images/main_page.jpg)
 
 
-EasyMiner, building upon our previous projects Easy353 and GeneMiner, operates on Windows and offers an enhanced user experience. It is designed with a user-friendly Windows graphical interface, enabling efficient and precise extraction of molecular markers on personal computers without relying on server resources.
-EasyMiner efficiently and precisely extracts molecular markers from second-generation sequencing data, leveraging reference genes from closely related species. Additionally, it offers functionalities for plastid genome assembly, gene sequence decomposition in GenBank files, and the identification of paralogs.
+EasyMiner, advancing from its precursors Easy353 and GeneMiner, operates on Windows platforms, enhancing the user experience significantly. It is meticulously crafted with an intuitive Windows graphical interface, facilitating the efficient and precise extraction of molecular markers directly on personal computers, independent of server infrastructure. EasyMiner adeptly processes second-generation sequencing data, utilizing reference genes from genetically akin species. It further extends its capabilities to include plastid genome assembly, decomposition of gene sequences in GenBank files, and the adept identification of paralogs, thereby embodying a comprehensive tool for molecular marker analysis.
 
 
-# Dependencies
-
+# Install
 The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper software functionality.
 [.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
 
 
-# Download and install
+You could download from [SourceForge](https://sourceforge.net/projects/scueasyminer/) or our [site](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
 
 
-EasyMiner, developed in vb.net and python3, is exclusively for 64-bit Windows systems.
-
-Download the latest version from [here](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
-
-Alternatively, download from [SourceForge](https://sourceforge.net/projects/scueasyminer/).
-
-# DEMO
-
-**Demo1**:demo of Part1
-[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
-**Demo2**:demo of Part2
-[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
+# Demo
+
+[DEMO1-Part1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
-**Demo3**:demo of Animal Mitochondrial Genome  
-[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+
+[DEMO2-Part2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
 
 
-**Demo4**:demo of 353 Genes  
-[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+  
+[DEMO3-For Animal Mitochondrial Genome](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+
+
+
+[DEMO4-For 353 Genes](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
 
 
 # More Details
-For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf)
+For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf).
 
 
 # Command Line (cmd)
@@ -53,12 +46,12 @@ For users interested in the command line version, please refer to our [Easy353](
 ---
 # Usage
 
-# Part1:How to get specific gene?
+# Part1:How to get specific gene
 
 This section demonstrates how to extract specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
 
-### Data Preparation:
+### Data Preparation
 
 
 **1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
@@ -67,7 +60,7 @@ This section demonstrates how to extract specific genes from second-generation s
 **2) Reference Sequence**: Reference gene sequences from closely related species in fasta or genbank format.
  
 
-**Load Data**: 
+**Load Data**
  
 
 Click **[File>Load Sequencing Files]** to select sequencing data file.
@@ -96,7 +89,7 @@ The imported files display details such as reference sequence ID, gene name, num
 ![](images/chinese_ref_xiangxi.jpg)
 
 
-### Running Programme:
+### Running Programme
 
 
 Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
@@ -110,7 +103,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 **Note:** Do not manually close the command line window; it will close automatically once the process is complete.
 
 
-### View Results:
+### View Results
 
 
 Click **"Open"**  to view the results.
@@ -119,7 +112,7 @@ Click **"Open"**  to view the results.
 ![](images/find_results.jpg)
 
 ---
-# Part2 :How to get plastid genome?
+# Part2 :How to get plastid genome
 This example demonstrates the process of mining chloroplast and mitochondrial genomes from second-generation sequencing data of *Arabidopsis thaliana*.
 
 
@@ -129,14 +122,14 @@ This example demonstrates the process of mining chloroplast and mitochondrial ge
 ## Step1 Plant Chlororplast Genome
 
 
-### Data Preparation:
+### Data Preparation
 
 
 **Sequencing Data**: Second-generation sequencing data files in .gz or .fq format.
 
 
 
-**Load Data**:
+**Load Data**
 
 
 Click **[File>Load Sequencing Files]** to select sequencing data files.
@@ -145,7 +138,7 @@ Click **[File>Load Sequencing Files]** to select sequencing data files.
 
 
 
-### Running Programme:
+### Running Programme
 
 
 Click[**Analyse>Plant_Chloroplast_Genome**]to download the reference genome of closely related species.
@@ -161,7 +154,7 @@ Click **OK** and proceed with the default parameters for assembly.
 
 
 
-### View Results:
+### View Results
 
 
 Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. 
@@ -174,7 +167,7 @@ You can extract specific genes from the genome by loading and exporting the gb f
 ---
 
 
-## Step2 Plant Mitochondrial Genome
+## Step2 Plant mitochondrial genome
 
 
 Follow the same process as the Plant Chloroplast Genome assembly. However, initially **import the results of the previous Plant Chloroplast Genome** assembly.
