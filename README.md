@@ -36,7 +36,7 @@ You could download from [SourceForge](https://sourceforge.net/projects/scueasymi
 
 
 # More Details
-For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf).
+For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.md).
 
 
 # Command Line (cmd)
@@ -44,9 +44,9 @@ For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf
 For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
 
 ---
-# Usage
+# Tutorials
 
-# Part1:How to get specific gene
+# Part 1 :How to get specific gene
 
 This section demonstrates how to extract specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
@@ -112,14 +112,14 @@ Click **"Open"**  to view the results.
 ![](images/find_results.jpg)
 
 ---
-# Part2 :How to get plastid genome
+# Part 2 :How to Get Plastid Genome
 This example demonstrates the process of mining chloroplast and mitochondrial genomes from second-generation sequencing data of *Arabidopsis thaliana*.
 
 
 **Note:** Assembly of the Plant Chloroplast Genome is required before the Plant Mitochondrial Genome assembly.
 
 
-## Step1 Plant Chlororplast Genome
+## Step 1 :Plant Chlororplast Genome
 
 
 ### Data Preparation
@@ -167,7 +167,7 @@ You can extract specific genes from the genome by loading and exporting the gb f
 ---
 
 
-## Step2 Plant mitochondrial genome
+## Step 2 :Plant Mitochondrial Genome
 
 
 Follow the same process as the Plant Chloroplast Genome assembly. However, initially **import the results of the previous Plant Chloroplast Genome** assembly.

@@ -29,29 +29,29 @@ https://github.com/sculab/EasyMiner
 # 示例数据
 
 
-**Demo1**:Part1演示中，提取指定基因所需测序数据，选用拟南芥(*Arabidopsis thaliana*)二代测序数据进行提取，使用近源物种琴叶拟南芥(*Arabidopsis lyrata*)的基因作为参考序列。
-[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
+[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1):Part1演示中，提取指定基因所需测序数据，选用拟南芥(*Arabidopsis thaliana*)二代测序数据进行提取，使用近源物种琴叶拟南芥(*Arabidopsis lyrata*)的基因作为参考序列。
 
 
 
-**Demo of Part2**:Part2演示中，组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。
-[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
+
+[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2):Part2演示中，组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。
 
 
 
-**Demo3**:动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。
-[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+
+[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3):动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。
 
 
 
-**Demo4**:提取被子植物353基因集所需数据，选用拟南芥二代测序数据。
-[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+
+[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4):提取被子植物353基因集所需数据，选用拟南芥二代测序数据。
+
 
 
 
 # 详细
 
-有关软件的详细说明。请见： [here](manual/ZH_CN/readmeall.pdf)
+有关软件的详细说明。请见： [here](manual/ZH_CN/readmeall.md)
 
 
 ---
