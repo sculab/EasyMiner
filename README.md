@@ -94,7 +94,7 @@ The imported files display details such as reference sequence ID, gene name, num
 
 Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 
-![](images/analyse_ex.jpg)
+![](images/analyse_eng.jpg)
 
 ![](images/basic_option.jpg)
 
@@ -102,6 +102,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 
 **Note:** Do not manually close the command line window; it will close automatically once the process is complete.
 
+**Note:**[Analysis>**Trim With Reference**]If the reference sequence originates from a transcriptome and the sequencing data is of shallow depth, this trimming process is recommended. 
 
 ### View Results
 
@@ -109,7 +110,7 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 Click **"Open"**  to view the results.
 
 
-![](images/find_results.jpg)
+![](images/right_eng.jpg)
 
 ---
 # Part 2 :How to Get Plastid Genome
@@ -159,7 +160,7 @@ Click **OK** and proceed with the default parameters for assembly.
 
 Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. 
 
-![](images/find_results.jpg)
+![](images/right_eng.jpg)
 
 Specific genes can be extracted from the genome by loading and exporting the gb file:
 You can extract specific genes from the genome by loading and exporting the gb file: **[File>Load_reference]**.**[File>Export_reference]**
@@ -167,7 +168,7 @@ You can extract specific genes from the genome by loading and exporting the gb f
 ---
 
 
-## Step 2 :Plant Mitochondrial Genome
+## Step 2: Plant Mitochondrial Genome
 
 
 Follow the same process as the Plant Chloroplast Genome assembly. However, initially **import the results of the previous Plant Chloroplast Genome** assembly.

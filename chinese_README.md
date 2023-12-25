@@ -1,6 +1,6 @@
 # 安装和需求
 
-![](https://gitee.com/yyy-onetwothree/readme/raw/master/%E4%B8%BB%E9%A1%B5%E9%9D%A2.png)
+![](images/main_page_chin.jpg)
 
 EasyMiner是基于.net平台开发的，仅提供x64版本，需要在计算机上安装有.NET 6.0 Desktop Runtime x64。如果不满足需求，软件会在第一次运行时提醒您下载。您也可以从此处获取.NET 6.0 Desktop Runtime x64的安装包: 
 
@@ -57,7 +57,7 @@ https://github.com/sculab/EasyMiner
 ---
 # 使用方法
 
-## 如何完成基因序列提取
+## Part 1：如何完成基因序列提取
 
 该实例演示了利用来自琴叶拟南芥(*Arabidopsis lyrata*)的基因序列，从拟南芥(*Arabidopsis thaliana*)的二代测序文件中获取对应的基因。
 
@@ -95,23 +95,25 @@ https://github.com/sculab/EasyMiner
 
 ### 运行程序
 
-![](images/analyse_ex_chinese.jpg)
+![](images/analyse_chinese.jpg)
 
 点击[分析>过滤&拼接] 使用默认参数运行程序，等待程序运行结束。
 
 **注意: 切勿手动关闭弹出的命令行窗口，请耐心等待窗口自动关闭。**
 
+**注意**：[分析>**基于参考切齐**]可以根据参考序列比对上的部分进行切齐。如果参考序列是来自转录组，使用的测序数据是浅层，建议进行。切齐后会自动替代之前的结果序列，如果想重新得到完整序列结果需要进行[重新拼接]。
+
  
 
 ### 查看结果
 
-![](images/right_page.jpg)
+![](images/right.jpg)
 
 点击“打开目录”按钮，查看结果文件。拼接后的文件以fasta格式保存于results目录中。
 
 ---
 
-## 如何完成基因组拼接
+## Part 2：如何完成基因组拼接
 
 该实例演示了利用拟南芥(*Arabidopsis thaliana*)的二代测序文件，组装叶绿体和线粒体基因组。
 
