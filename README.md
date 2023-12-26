@@ -6,7 +6,6 @@ For the Chinese version of the manual, click [Here](chinese_README.md).
 
 
 EasyMiner, building upon our previous projects Easy353 and GeneMiner, operates on Windows and offers an enhanced user experience. It is designed with a user-friendly Windows graphical interface, enabling efficient and precise extraction of molecular markers on personal computers without relying on server resources.
-
 EasyMiner efficiently and precisely extracts molecular markers from second-generation sequencing data, leveraging reference genes from closely related species. Additionally, it offers functionalities for plastid genome assembly, gene sequence decomposition in GenBank files, and the identification of paralogs.
 
 # Cite
@@ -18,41 +17,35 @@ For general use:
 For obtaining Angiosperms353 genes:
 - Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
 
-# Dependencies
-
+# Install
 The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper software functionality.
 [.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
 
 
-# Download and install
+You could download from [SourceForge](https://sourceforge.net/projects/scueasyminer/) or our [site](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
 
 
-EasyMiner, developed in vb.net and python3, is exclusively for 64-bit Windows systems.
-
-Download the latest version from [here](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
-
-Alternatively, download from [SourceForge](https://sourceforge.net/projects/scueasyminer/).
-
-# DEMO
-
-**Demo1**:demo of Part1
-[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
-**Demo2**:demo of Part2
-[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
+# Demo
+
+[DEMO1-Part1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
 
 
-**Demo3**:demo of Animal Mitochondrial Genome  
-[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+
+[DEMO2-Part2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
 
 
-**Demo4**:demo of 353 Genes  
-[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+  
+[DEMO3-For Animal Mitochondrial Genome](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+
+
+
+[DEMO4-For 353 Genes](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
 
 
 # More Details
-For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf)
+For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.md).
 
 
 # Command Line (cmd)
@@ -60,14 +53,14 @@ For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.pdf
 For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
 
 ---
-# Usage
+# Tutorials
 
-# Part1:How to get specific gene?
+# Part 1 :How to get specific gene
 
 This section demonstrates how to extract specific genes from second-generation sequencing files of Arabidopsis thaliana, using Arabidopsis lyrata gene sequences as a reference.
 
 
-### Data Preparation:
+### Data Preparation
 
 
 **1) Sequencing Data**: Second-generation sequencing data files, in .gz or .fq format.
@@ -76,7 +69,7 @@ This section demonstrates how to extract specific genes from second-generation s
 **2) Reference Sequence**: Reference gene sequences from closely related species in fasta or genbank format.
  
 
-**Load Data**: 
+**Load Data**
  
 
 Click **[File>Load Sequencing Files]** to select sequencing data file.
@@ -105,12 +98,12 @@ The imported files display details such as reference sequence ID, gene name, num
 ![](images/chinese_ref_xiangxi.jpg)
 
 
-### Running Programme:
+### Running Programme
 
 
 Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 
-![](images/analyse_ex.jpg)
+![](images/analyse_eng.jpg)
 
 ![](images/basic_option.jpg)
 
@@ -118,34 +111,35 @@ Click **[Analyse>Filter&Assemble]**  to run the program with default parameters.
 
 **Note:** Do not manually close the command line window; it will close automatically once the process is complete.
 
+**Note:**[Analysis>**Trim With Reference**]If the reference sequence originates from a transcriptome and the sequencing data is of shallow depth, this trimming process is recommended. 
 
-### View Results:
+### View Results
 
 
 Click **"Open"**  to view the results.
 
 
-![](images/find_results.jpg)
+![](images/right_eng.jpg)
 
 ---
-# Part2 :How to get plastid genome?
+# Part 2 :How to Get Plastid Genome
 This example demonstrates the process of mining chloroplast and mitochondrial genomes from second-generation sequencing data of *Arabidopsis thaliana*.
 
 
 **Note:** Assembly of the Plant Chloroplast Genome is required before the Plant Mitochondrial Genome assembly.
 
 
-## Step1 Plant Chlororplast Genome
+## Step 1 :Plant Chlororplast Genome
 
 
-### Data Preparation:
+### Data Preparation
 
 
 **Sequencing Data**: Second-generation sequencing data files in .gz or .fq format.
 
 
 
-**Load Data**:
+**Load Data**
 
 
 Click **[File>Load Sequencing Files]** to select sequencing data files.
@@ -154,7 +148,7 @@ Click **[File>Load Sequencing Files]** to select sequencing data files.
 
 
 
-### Running Programme:
+### Running Programme
 
 
 Click[**Analyse>Plant_Chloroplast_Genome**]to download the reference genome of closely related species.
@@ -170,12 +164,12 @@ Click **OK** and proceed with the default parameters for assembly.
 
 
 
-### View Results:
+### View Results
 
 
 Click **"Open"** to view the results. Assembled files are stored in the **Organelle** directory in both gb and fasta formats. 
 
-![](images/find_results.jpg)
+![](images/right_eng.jpg)
 
 Specific genes can be extracted from the genome by loading and exporting the gb file:
 You can extract specific genes from the genome by loading and exporting the gb file: **[File>Load_reference]**.**[File>Export_reference]**
@@ -183,7 +177,7 @@ You can extract specific genes from the genome by loading and exporting the gb f
 ---
 
 
-## Step2 Plant Mitochondrial Genome
+## Step 2: Plant Mitochondrial Genome
 
 
 Follow the same process as the Plant Chloroplast Genome assembly. However, initially **import the results of the previous Plant Chloroplast Genome** assembly.
