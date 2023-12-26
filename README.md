@@ -4,8 +4,9 @@ For the Chinese version of the manual, click [Here](chinese_README.md).
 
  ![](images/main_page.jpg)
 
-
 EasyMiner, building upon our previous projects Easy353 and GeneMiner, operates on Windows and offers an enhanced user experience. It is designed with a user-friendly Windows graphical interface, enabling efficient and precise extraction of molecular markers on personal computers without relying on server resources.
+
+
 EasyMiner efficiently and precisely extracts molecular markers from second-generation sequencing data, leveraging reference genes from closely related species. Additionally, it offers functionalities for plastid genome assembly, gene sequence decomposition in GenBank files, and the identification of paralogs.
 
 # Cite
@@ -16,6 +17,7 @@ For general use:
 
 For obtaining Angiosperms353 genes:
 - Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
+
 
 # Install
 The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper software functionality.
