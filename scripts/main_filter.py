@@ -17,23 +17,23 @@ def STR2BOOL(v):  # 在参数中使用逻辑值
     else:
         raise argparse.ArgumentTypeError('Unsupported value encountered.')
 
-pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\org_seq")
+pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp_refs")
 pars.add_argument('-q1', metavar='<str>', type=str, help='''input fq/gz -1 files.''', required=False,
-                    default=[r"E:\测试数据\Arabidopsis_HQ_R1.fq.gz"], nargs="+")
+                    default=[r"E:\SRR26767001_1.fastq.gz"], nargs="+")
 pars.add_argument('-q2', metavar='<str>', type=str, help='''input fq/gz -2 files.''', required=False,
-                    default=[r"E:\测试数据\Arabidopsis_HQ_R1.fq.gz"], nargs="+")
+                    default=[r"E:\SRR26767001_2.fastq.gz"], nargs="+")
 pars.add_argument('-kf', metavar='<int>', type=int,
                     help='''kmer of filter''', default=31)
 pars.add_argument('-s', metavar='<int>', type=int, help='''length of the sliding window on the reads''', default=4)
 pars.add_argument('-m_reads', metavar='<int>', type=int, help='''Maximum number of reads used''', default=1e9)
 pars.add_argument('-o', metavar='<str>', type=str,
-                    help='''out dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results")
+                    help='''out dir.''', required=False, default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results")
 pars.add_argument('-lkd', metavar='<str>', type=str,
                     help='''load kmer dict''', required=False, default='')
 pars.add_argument('-gr', type=STR2BOOL, nargs='?', const=True,
                     help='''get reverse (fast speed) or not (low memory)''', default=True)
 pars.add_argument('-m', metavar='<int>', type=int,
-                    help='''mode of filter''', default=0)
+                    help='''mode of filter 0: 正常模式 1: 质体模式 2: 只生成字典''', default=0)
 
 # 预定义一些常用的掩码
 MASK_11_30 = ((1 << 20) - 1) << 10
@@ -191,6 +191,8 @@ def Make_Kmer_Dict_v6(_kmer_dict, file_list, kmer_size, get_reverse=False, get_p
     for i in range(len(file_list)):
         if os.path.isfile(file_list[i]) == False:
             continue  # 如果是个文件夹则跳过
+        print(os.path.splitext(os.path.basename(file_list[i]))[0])  
+        # 输出 'myfile'
         infile = open(file_list[i], 'r', encoding='utf-8', errors='ignore')
         # 1-10位为位置千分比，11-30为深度，31-35为预留符号位，36及以后为文件
         file_id = 1 << (i+35)  # 设置档期文件的符号位
@@ -325,65 +327,76 @@ def Reads_Filter_v5(_kmer_dict, _ref_reads_count_dict, file_list, kmer_size, set
         file_all_fq_1 = open(os.path.join(out_path, 'filtered', "all_1.fq"), "a")
         file_all_fq_2 = open(os.path.join(out_path, 'filtered', "all_2.fq"), "a")
     # 读取输入文件
-    for _ in infile_1:
-        reads_count += 1
-        # 构建reads列表
-        temp_rec1 = [_, infile_1.readline()] if isfasta else [_, infile_1.readline(),infile_1.readline(),infile_1.readline()] 
-        if paired_reads_file: temp_rec2 = [infile_2.readline(),infile_2.readline(),infile_2.readline(),infile_2.readline()]
-        # 获取文件位置的二进制字符串
-        file_line = Filter_Reads_v1(_kmer_dict, kmer_size, setp_size, 
-                                    Bytes_Str(temp_rec1[1], bytes_type), 
-                                    MASK_BIN, get_reverse, single_ref_file)
-        for x, y in enumerate(file_line):
-            if y == '1':
-                # 构建参考序列reads计数字典
-                if file_name_dict[x] in _ref_reads_count_dict:
-                    _ref_reads_count_dict[file_name_dict[x]] += int(paired_reads_file) + 1
-                else:
-                    _ref_reads_count_dict[file_name_dict[x]] = int(paired_reads_file) + 1
-                # 写入输出文件
-                if mode == 0:
-                    if paired_reads_file:
-                        file_dict[x].writelines([
+    try:
+        reads_length = 0
+        for _ in infile_1:
+            reads_count += 1
+            # 构建reads列表
+            temp_rec1 = [_, infile_1.readline()] if isfasta else [_, infile_1.readline(),infile_1.readline(),infile_1.readline()] 
+            if paired_reads_file: temp_rec2 = [infile_2.readline(),infile_2.readline(),infile_2.readline(),infile_2.readline()]
+            # 获取文件位置的二进制字符串
+            if mode == 1:
+                if reads_length < len(temp_rec1[1].strip()): 
+                    reads_length = len(temp_rec1[1].strip())
+                    continue
+                if reads_length < len(temp_rec2[1].strip()): 
+                    reads_length = len(temp_rec2[1].strip())
+                    continue
+            file_line = Filter_Reads_v1(_kmer_dict, kmer_size, setp_size, 
+                                        Bytes_Str(temp_rec1[1], bytes_type), 
+                                        MASK_BIN, get_reverse, single_ref_file)
+            for x, y in enumerate(file_line):
+                if y == '1':
+                    # 构建参考序列reads计数字典
+                    if file_name_dict[x] in _ref_reads_count_dict:
+                        _ref_reads_count_dict[file_name_dict[x]] += int(paired_reads_file) + 1
+                    else:
+                        _ref_reads_count_dict[file_name_dict[x]] = int(paired_reads_file) + 1
+                    # 写入输出文件
+                    if mode == 0:
+                        if paired_reads_file:
+                            file_dict[x].writelines([
+                                                    Bytes_Str(temp_rec1[0], bytes_type), 
+                                                    Bytes_Str(temp_rec1[1],bytes_type),
+                                                    Bytes_Str(temp_rec1[2],bytes_type),
+                                                    Bytes_Str(temp_rec1[3],bytes_type),
+                                                    Bytes_Str(temp_rec2[0], bytes_type), 
+                                                    Bytes_Str(temp_rec2[1],bytes_type),
+                                                    Bytes_Str(temp_rec2[2],bytes_type),
+                                                    Bytes_Str(temp_rec2[3],bytes_type)
+                                                    ])
+                        else:
+                            if isfasta:
+                                file_dict[x].writelines(['>',
+                                                    Bytes_Str(temp_rec1[0], bytes_type), 
+                                                    Bytes_Str(temp_rec1[1],bytes_type)])
+                            else:
+                                file_dict[x].writelines([
+                                                    Bytes_Str(temp_rec1[0], bytes_type), 
+                                                    Bytes_Str(temp_rec1[1],bytes_type),
+                                                    Bytes_Str(temp_rec1[2],bytes_type),
+                                                    Bytes_Str(temp_rec1[3],bytes_type)])
+            if mode == 1 and file_line != '0':
+                file_all_fq_1.writelines([
                                                 Bytes_Str(temp_rec1[0], bytes_type), 
                                                 Bytes_Str(temp_rec1[1],bytes_type),
                                                 Bytes_Str(temp_rec1[2],bytes_type),
-                                                Bytes_Str(temp_rec1[3],bytes_type),
+                                                Bytes_Str(temp_rec1[3],bytes_type)
+                                                ])
+                file_all_fq_2.writelines([
                                                 Bytes_Str(temp_rec2[0], bytes_type), 
                                                 Bytes_Str(temp_rec2[1],bytes_type),
                                                 Bytes_Str(temp_rec2[2],bytes_type),
                                                 Bytes_Str(temp_rec2[3],bytes_type)
                                                 ])
-                    else:
-                        if isfasta:
-                            file_dict[x].writelines(['>',
-                                                Bytes_Str(temp_rec1[0], bytes_type), 
-                                                Bytes_Str(temp_rec1[1],bytes_type)])
-                        else:
-                            file_dict[x].writelines([
-                                                Bytes_Str(temp_rec1[0], bytes_type), 
-                                                Bytes_Str(temp_rec1[1],bytes_type),
-                                                Bytes_Str(temp_rec1[2],bytes_type),
-                                                Bytes_Str(temp_rec1[3],bytes_type)])
-        if mode == 1 and file_line != '0':
-            file_all_fq_1.writelines([
-                                            Bytes_Str(temp_rec1[0], bytes_type), 
-                                            Bytes_Str(temp_rec1[1],bytes_type),
-                                            Bytes_Str(temp_rec1[2],bytes_type),
-                                            Bytes_Str(temp_rec1[3],bytes_type)
-                                            ])
-            file_all_fq_2.writelines([
-                                            Bytes_Str(temp_rec2[0], bytes_type), 
-                                            Bytes_Str(temp_rec2[1],bytes_type),
-                                            Bytes_Str(temp_rec2[2],bytes_type),
-                                            Bytes_Str(temp_rec2[3],bytes_type)
-                                            ])
-        # 每m reads输出估算速度
-        if reads_count & 0b11111111111111111111 == 0:
-            t2 = time.time()
-            t1, t2 = t2, t2 - t1
-            Write_Print(os.path.join(out_path,  "log.txt"), 'handled\t',reads_count >> 20, 'm reads,',round(t2,2),'s/m reads'," "*4)
-            if (reads_count >> 20) >= max_reads: break
+            # 每m reads输出估算速度
+            if reads_count & 0b11111111111111111111 == 0:
+                t2 = time.time()
+                t1, t2 = t2, t2 - t1
+                Write_Print(os.path.join(out_path,  "log.txt"), 'handled\t',reads_count >> 20, 'm reads,',round(t2,2),'s/m reads'," "*4)
+                if (reads_count >> 20) >= max_reads: break
+    except Exception as e:
+        Write_Print(os.path.join(args.o,  "log.txt"), "error:" , e)
     # 关闭输出和输入文件
     if mode == 0: 
         for v in file_dict.values(): v.close()
@@ -445,7 +458,7 @@ if __name__ == '__main__':
         # 初始化输出文件夹
         if not os.path.isdir(args.o):
             os.mkdir(args.o)
-        if not os.path.isdir(os.path.join(args.o, 'filtered')):
+        if not os.path.isdir(os.path.join(args.o, 'filtered')) and args.m != 2:
             os.mkdir(os.path.join(args.o, 'filtered'))
         Write_Print(os.path.join(args.o,  "log.txt"), "Getting information from references ...")
         # 初始化参考序列信息
@@ -472,6 +485,8 @@ if __name__ == '__main__':
                 Write_Dict(kmer_dict, os.path.join(args.o, args.lkd))
         else:
             Make_Kmer_Dict_v6(kmer_dict, ref_path_list, args.kf, args.gr, False)
+        if args.m == 2:
+            sys.exit(0)
         t1 = time.time()
         Write_Print(os.path.join(args.o,  "log.txt"), '\nSetp1 cost:', t1 - t0, " "*32)  # 建立kmer字典的时间
         # 判断输入测序文件的类型
@@ -496,13 +511,14 @@ if __name__ == '__main__':
             Reads_Filter_v5(kmer_dict, ref_reads_count_dict, ref_path_list,
                             args.kf, args.s, args.q1[i], args.q2[i], args.o,
                             not args.gr, args.m_reads, args.m)
-        Write_Dict(ref_reads_count_dict, os.path.join(
-            args.o, "ref_reads_count_dict.txt"), False, True)
-        t2 = time.time()
-        Write_Print(os.path.join(args.o,  "log.txt"), 'Setp2 cost:', t2 - t1, " "*32)  # 过滤所用的时间
-        Write_Print(os.path.join(args.o,  "log.txt"), 'Total cost:', t2 - t0, " "*32)  # 全部过程所用的时间
     except Exception as e:
-        Write_Print(os.path.join(args.o,  "log.txt"), e)
+        Write_Print(os.path.join(args.o,  "log.txt"), "error:" , e)
+    
+    Write_Dict(ref_reads_count_dict, os.path.join(
+        args.o, "ref_reads_count_dict.txt"), False, True)
+    t2 = time.time()
+    Write_Print(os.path.join(args.o,  "log.txt"), 'Setp2 cost:', t2 - t1, " "*32)  # 过滤所用的时间
+    Write_Print(os.path.join(args.o,  "log.txt"), 'Total cost:', t2 - t0, " "*32)  # 全部过程所用的时间
 
 
 

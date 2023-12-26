@@ -238,22 +238,32 @@ Public Class Config_CP
         DeleteDir(ref_dir)
         My.Computer.FileSystem.CreateDirectory(ref_dir)
         out_dir = form_main.TextBox1.Text.Replace("\", "/")
-
+        Dim my_list As New List(Of String)
         Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + database_type + ".tsv")
             While Not reader.EndOfStream
                 Dim line_list() As String = reader.ReadLine().Split(vbTab)
                 If line_list.Length > 4 Then
                     If ListBox3.Items.Contains(line_list(3).Split(" ")(0)) Then
-                        Dim my_gb_file As String = get_genome_data(database_type, "fasta", line_list(1)).Result
-                        If my_gb_file <> "" Then
-                            File.Copy(my_gb_file, root_path + "temp\org_seq\" + line_list(3).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + line_list(1) + ".fasta", True)
-                            safe_copy(my_gb_file, ref_dir + line_list(3).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + line_list(1) + ".fasta", True)
-                        End If
+                        my_list.Add(line_list(3) + vbTab + line_list(1))
+
                     End If
                 End If
             End While
         End Using
+        If my_list.Count = 0 Then
+            MsgBox("Could not find reference!")
+            Exit Sub
+        End If
+        For i As Integer = 1 To my_list.Count
+            PB_value = i / my_list.Count * 100
+            Dim my_gb_file As String = get_genome_data(database_type, "fasta", my_list(i - 1).Split(vbTab)(1)).Result
+            If my_gb_file <> "" Then
+                File.Copy(my_gb_file, root_path + "temp\org_seq\" + my_list(i - 1).Split(vbTab)(0).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + my_list(i - 1).Split(vbTab)(1) + ".fasta", True)
+                safe_copy(my_gb_file, ref_dir + my_list(i - 1).Split(vbTab)(0).Replace(" ", "_").Replace(".", "").Replace("'", "") + "#" + my_list(i - 1).Split(vbTab)(1) + ".fasta", True)
+            End If
+        Next
         Dim length_range() As Integer = refresh_file()
+        PB_value = 0
         If cpg_down_mode = 4 Or cpg_down_mode = 5 Or cpg_down_mode = 9 Then
             cpg_assemble_mode = -1
             form_config_plasty.TextBox1.Text = (CInt(length_range(0) * 0.8 / 1000) * 1000).ToString + "-" + (CInt(length_range(1) * 1.2 / 1000) * 1000).ToString
@@ -300,7 +310,7 @@ Public Class Config_CP
         If File.Exists(count_file) Then
             File.Delete(count_file)
         End If
-        SI_filter.FileName = currentDirectory + "analysis\win_filter.exe" ' 替换为实际的命令行程序路径
+        SI_filter.FileName = currentDirectory + "analysis\main_filter.exe" ' 替换为实际的命令行程序路径
         SI_filter.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
         SI_filter.CreateNoWindow = False
         SI_filter.Arguments = "-r " + """" + ref_dir + """"
@@ -409,7 +419,6 @@ Public Class Config_CP
 
     Private Sub Config_CP_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged
         If Me.Visible Then
-
             make_genus_dict()
         End If
     End Sub

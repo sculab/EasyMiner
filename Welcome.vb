@@ -2,12 +2,16 @@
 Imports System.Threading
 Imports System.Text.RegularExpressions
 Imports System.Timers
+Imports Microsoft.VisualBasic.Devices
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class Welcome
     Dim total_file As Integer = 2
     Dim current_file As Single = 0
     Private Sub Welcome_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         System.Threading.Thread.CurrentThread.CurrentCulture = ci
+        Dim computerInfo As New ComputerInfo()
+        totalPhysicalMemory = computerInfo.TotalPhysicalMemory / (1024.0 * 1024.0 * 1024.0)
         Timer1.Enabled = True
         format_path()
         load_main()
@@ -24,6 +28,7 @@ Public Class Welcome
         language = settings.GetValueOrDefault("language", "EN")
         exe_mode = settings.GetValueOrDefault("mode", "basic")
         database_url = settings.GetValueOrDefault("database_url", "http://life-bioinfo.tpddns.cn:8445/database/")
+        filter_thread = CInt(settings.GetValueOrDefault("filter_thread", "2"))
 
         If language = "CH" Then
             to_ch()

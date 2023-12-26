@@ -26,7 +26,7 @@ Public Class Config_barcode
             SI_split_barcode.FileName = Path.Combine(currentDirectory, "analysis", "split_barcode.exe")
             SI_split_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
             SI_split_barcode.CreateNoWindow = False
-            SI_split_barcode.Arguments = "-i " + """" + TextBox1.Text + """" + " -r " + """" + ".\temp_refs\barcode.fasta" + """" + " -o " + """" + form_main.TextBox1.Text + """" + " -p " + max_thread.ToString + " -w " + (NumericUpDown2.Value + 11).ToString
+            SI_split_barcode.Arguments = "-i " + """" + TextBox1.Text + """" + " -r " + """" + ".\temp_refs\barcode.fasta" + """" + " -o " + """" + form_main.TextBox1.Text + """" + " -p " + current_thread.ToString + " -w " + (NumericUpDown2.Value + 11).ToString
             Dim process_split_barcode As Process = Process.Start(SI_split_barcode)
             process_split_barcode.WaitForExit()
             process_split_barcode.Close()
@@ -36,7 +36,7 @@ Public Class Config_barcode
         SI_build_barcode.FileName = Path.Combine(currentDirectory, "analysis", "build_barcode.exe")
         SI_build_barcode.WorkingDirectory = Path.Combine(currentDirectory, "temp")
         SI_build_barcode.CreateNoWindow = False
-        SI_build_barcode.Arguments = "-i " + """" + Path.Combine(form_main.TextBox1.Text, "clean_data") + """" + " -r " + """" + ".\temp_refs\barcode_refs.fasta" + """" + " -o " + """" + form_main.TextBox1.Text + """" + " -p " + max_thread.ToString + " -m 0 -l " + NumericUpDown1.Value.ToString
+        SI_build_barcode.Arguments = "-i " + """" + Path.Combine(form_main.TextBox1.Text, "clean_data") + """" + " -r " + """" + ".\temp_refs\barcode_refs.fasta" + """" + " -o " + """" + form_main.TextBox1.Text + """" + " -p " + current_thread.ToString + " -m 0 -l " + NumericUpDown1.Value.ToString
         Dim process_build_barcode As Process = Process.Start(SI_build_barcode)
         process_build_barcode.WaitForExit()
         process_build_barcode.Close()

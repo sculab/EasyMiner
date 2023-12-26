@@ -40,8 +40,7 @@ def parse_cigar(cigarstring, seq, pos_ref):
     return seqout, insert
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter, description='''基于SAM文件构建一致性序列''')
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''基于SAM文件构建一致性序列''')
     parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\1_RAPiD_Genomics_F088_UFL_394803_P005_WC12_i5_515_i7_132_S988_L002_R_001\muticopy\g6660_mft.sam",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
     parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75",
@@ -58,7 +57,7 @@ def parse_args():
                         help="Character for padding regions not covered in the reference, default= - (gap)")
     parser.add_argument("-d", "--maxdel", action="store", dest="maxdel", default=150,
                         help="Ignore deletions longer than this value, default=150")
-    parser.add_argument("-s", "--save_mutations", action="store", dest="save_mutations", default=1,
+    parser.add_argument("-s", "--save_mutations", action="store", type=int, dest="save_mutations", default=1,
                         help="保存每个位点碱基比例")
     return parser.parse_args()
 

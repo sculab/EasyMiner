@@ -1,96 +1,86 @@
-import warnings
-warnings.filterwarnings("ignore")
 import os
+import re
 import argparse
-from Bio import pairwise2
-from Bio.Seq import Seq
-from Bio import SeqIO
+import subprocess
+import shutil
 
-def generate_cut(seq_record, gap_limit = 16):
-    # 除最后一条序列以外的序列列表
-    sequences = [str(record.seq) for record in seq_record[:-1]]
-    # 最后一条序列
-    result_name = seq_record[-1].id
-    last_seq = str(seq_record[-1].seq)
-    # 生成一致序列
-    result_seq = ""
-    gap_count = 0
-    for i in range(len(sequences[0])):
-        bases = [seq[i] for seq in sequences]
-        passed = False
-        if len(bases) == 1: passed = bases.count('-') == 0
-        elif len(bases) == 2: passed = bases.count('-') <= 1
-        else: passed = bases.count('-') <= len(bases) * 0.4 #(len(bases) - 2)
-        if not passed:
-            gap_count += 1
+def main():
+    parser = argparse.ArgumentParser(description="基于Blast筛选Novoplasty产生的几个option中哪个是最佳序列")
+    parser.add_argument("-i", "--input", required=False, default=r"..\temp\my_target.fasta", help="选项文件夹的路径")
+    parser.add_argument("-r", "--ref", required=False, default=r"..\temp\my_ref.fasta", help="参考序列的路径")
+    parser.add_argument("-o", "--output", required=False, default=r"..\temp\trimed.fasta", help="结果文件的路径")
+    parser.add_argument("-b", "--output_blast", required=False, default=r"..\temp", help="结果文件的路径")
+
+    args = parser.parse_args()
+    subject_file = args.ref
+    query_file = args.input
+    output_file = args.output
+    output_db = args.output_blast + r"\blast_db"  # 指定数据库名称
+    output_blast = args.output_blast + r"\blast_output.txt"
+
+    if os.path.exists(output_db + ".nhr"): os.remove(output_db + ".nhr")
+    if os.path.exists(output_db + ".nhr"): os.remove(output_db + ".nin")
+    if os.path.exists(output_db + ".nhr"): os.remove(output_db + ".nsq")
+    if os.path.exists(output_blast): os.remove(output_blast)
+
+    makeblastdb_cmd = [r"..\analysis\makeblastdb.exe", "-in", subject_file, "-dbtype", "nucl", "-out", output_db]
+    print(" ".join(makeblastdb_cmd))
+    subprocess.run(makeblastdb_cmd, check=True)
+    blastn_cmd = [r"..\analysis\blastn.exe", "-query", query_file, "-db", output_db, "-out", output_blast, "-outfmt", "6", "-evalue", "10"]
+    subprocess.run(blastn_cmd, check=True)
+    if os.path.exists(output_blast):
+        fragments = merge_fragments(get_fragments(output_blast))
+        with open(query_file, 'r') as file:
+            header = next(file)
+            sequence = file.read().replace('\n', '')
+        if len(fragments) >= 1:
+            combined_sequence = extract_and_combine_fragments(sequence, fragments)
+            with open(output_file, 'w') as file:
+                file.write(header )
+                file.write(combined_sequence + '\n')
         else:
-            gap_count = 0
-        if gap_count < gap_limit:
-            result_seq += last_seq[i]
-        elif gap_count == gap_limit:
-            result_seq = result_seq[:-(gap_limit-1)]
+            if os.path.exists(output_file):
+                shutil.remove(output_file)
 
-    return result_name, result_seq
 
-def generate_consensus(seq_record, UseN = False):
-    # 将记录中的序列拆分成一个列表
-    sequences = [str(record.seq) for record in seq_record]
-    # 生成一致序列
-    consensus_sequence = ''
-    for i in range(len(sequences[0])):
-        bases = [seq[i] for seq in sequences]
-        consensus_base = max(set(bases), key=bases.count)
-        if UseN:
-            if len(set(bases)) > 1: consensus_base = "N"
-            if "-" in bases: consensus_base = "" # 不写入gap
-        if consensus_base == '-': consensus_base = ""
-        consensus_sequence += consensus_base
-    return consensus_sequence
+def extract_and_combine_fragments(sequence, fragments):
+    """
+    Extract and combine fragments from a sequence based on given fragment positions.
+    """
+    combined_sequence = ''
+    for start, end in fragments:
+        # Extract the fragment (end is inclusive, hence end + 1)
+        fragment = sequence[start-1:end]
+        combined_sequence += fragment
+    return combined_sequence
 
-def cut_seq(result_file, consensus_seq, remove_gap = True):
-    result_name = ""
-    result_seq = ""
-    with open(result_file, "r") as rf:
-        for record in SeqIO.parse(rf, "fasta"):
-            result_seq = record.seq
-            result_name = record.id
-            break  # 仅获取第一个序列
-    # 执行比对
-    alignments = pairwise2.align.localms(result_seq, consensus_seq, 1, -1, -3, -2) #.globalxx(result_seq, consensus_seq, one_alignment_only=True, gap_char="-")
-    if alignments:
-        alignment = alignments[0]
-        aligned_result_seq = alignment[0]
-        aligned_consensus_seq = alignment[1]
-        
-        if remove_gap:
-            result_seq = ""
-            for x, i in enumerate(aligned_consensus_seq):
-                if i != "-":
-                    result_seq += aligned_result_seq[x]
+def merge_fragments(fragments):
+    # Sort fragments by their starting positions
+    fragments.sort(key=lambda x: x[0])
+    merged_fragments = []
+    current_fragment = fragments[0]
+    for fragment in fragments[1:]:
+        # If there is an overlap or the fragments are adjacent, merge them
+        if fragment[0] <= current_fragment[1]:
+            current_fragment[1] = max(current_fragment[1], fragment[1])
         else:
-            # 寻找前导和尾随的gap，然后切齐序列
-            leading_gap = len(aligned_consensus_seq) - len(aligned_consensus_seq.lstrip("-"))
-            trailing_gap = len(aligned_consensus_seq.rstrip("-"))
-            result_seq = aligned_result_seq[leading_gap:trailing_gap]
-        
+            # Add the current merged fragment to the list
+            merged_fragments.append(current_fragment)
+            current_fragment = fragment
+    # Add the last merged fragment to the list
+    merged_fragments.append(current_fragment)
+    return merged_fragments
+ 
 
-    return result_name, result_seq
+def get_fragments(blast_output_file):
+    fragments = []
+    with open(blast_output_file, "r") as blast_output:
+        lines = blast_output.readlines()
+        for line in lines:
+            parts = line.split("\t")
+            if int(parts[6]) < int(parts[7]):
+                fragments.append([int(parts[6]), int(parts[7])])
+    return fragments
 
-
-if __name__ == '__main__':
-    pars = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=''' 基于一致性序列对序列的前端和后端进行清理 ''')
-    pars.add_argument('-i', metavar='<str>', type=str, help='''input files. 需要排序后的文件。''', required=False,
-                    default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\aligned\4471_trim.fasta")
-    pars.add_argument('-o', metavar='<str>', type=str,
-                    help='''out dir.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results")
-    args = pars.parse_args()
-    aln_file = args.i
-    data_path = args.o
-    if not os.path.isdir(os.path.join(data_path,"trimed")): os.makedirs(os.path.join(data_path,"trimed"))
-    alignment_records = list(SeqIO.parse(aln_file, 'fasta'))
-
-    result_name, result_seq = generate_cut(alignment_records)
-
-    with open(os.path.join(data_path,"trimed",os.path.basename(aln_file)), 'w') as output_handle:
-        output_handle.write(">" + result_name + "\n")
-        output_handle.write(result_seq.replace("-","") + "\n")
+if __name__ == "__main__":
+    main()

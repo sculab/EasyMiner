@@ -6,7 +6,7 @@ from concurrent.futures import ProcessPoolExecutor
 from overlap import calculate_overlap_wrapper
 import numpy as np
 from Bio import SeqIO
-from win_filter import * 
+from main_filter import * 
 import multiprocessing
 
 # pars.add_argument('-ta', metavar='<int>', type=int, help='''thread of assemble''', required=False, default= 1)
@@ -245,12 +245,6 @@ def Quartile(x):
     lHalf, rHalf, q2 = Median(x)
     return Median(lHalf)[2], q2, Median(rHalf)[2], max(x) + 1
 
-def Forward_Bin(seq_int, mask):
-    """
-    正向的迭代器
-    """ 
-    for x in (0,1,2,3): yield ((seq_int & mask) << 2) + x
-
 def Get_Weight(_pos, new_pos, weight = 4):
     """
     距离和权重的关系模型，默认权重值为16，最高权重值为256，最低为0
@@ -261,6 +255,12 @@ def Get_Weight(_pos, new_pos, weight = 4):
     """ 
     return int.bit_length((1024 - abs(_pos - new_pos)) >> 2) if (_pos and new_pos) else weight
 
+def Forward_Bin(seq_int, mask):
+    """
+    正向的迭代器
+    """ 
+    for x in (0,1,2,3): yield ((seq_int & mask) << 2) + x
+    
 def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024):
     """
     带权重的DBG贪婪拼接
@@ -276,7 +276,7 @@ def Get_Forward_Contig_v6(_dict, seed, kmer_size, iteration = 1024):
     _pos, node_distance, best_kmc_sum  = 0, 0, 0
     MASK = (1 << ((kmer_size << 1) - 2)) - 1
     while True and iteration:
-        node = [[i, _dict[i][1], _dict[i][0] + _dict[i][3], ACGT_DICT[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
+        node = [[i, _dict[i][1], _dict[i][0] + _dict[i][3], {0: 'A', 1: 'C', 2: 'G', 3: 'T'}[i & 3]] for i in Forward_Bin(temp_list[-1], MASK) if i in _dict]
         node.sort(key = itemgetter(2), reverse=True)
         while node and node[0][0] in temp_list: node.pop(0) 
         if not node: 
@@ -443,7 +443,7 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
             ref_list = Get_Ref_List([ref_path_dict[key]])
             # 获取reads和参考序列的最大重叠长度
             keys_with_slice_len = {key for key in reads_dict.keys() if len(key) == slice_len}
-            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = 1, max_overlap_limit = min((args.k_max + 2),slice_len-1))
+            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = args.s, max_overlap_limit = min((args.k_max + 2),slice_len-1))
             if not current_ka:
                 failed_count += 1
                 if os.path.isfile(contig_best_path): os.remove(contig_best_path)
@@ -569,7 +569,7 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
 if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
-    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=31)
+    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=0)
     pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=63)
     pars.add_argument('-k_min', metavar='<int>', type=int, help='''max kmer of assemble''',  default=21)
     pars.add_argument('-limit_count', metavar='<int>', type=int, help='''limit of kmer count''', required=False, default=2)
@@ -577,43 +577,48 @@ if __name__ == '__main__':
     pars.add_argument('-sb', '--soft_boundary', metavar='<int>', type=int, help='''soft boundary，default = [0], -1时为切片长度的一半''', required=False, default=0)
     pars.add_argument('-p', '--processes', metavar='<int>', type=int, help='Number of processes for multiprocessing', default= max(multiprocessing.cpu_count()-1,2))
     args = pars.parse_args()
-    # try:
-    # 初始化文件夹
-    if not os.path.isdir(os.path.join(args.o, 'results')):
-        os.mkdir(os.path.join(args.o, 'results'))
-    if not os.path.isdir(os.path.join(args.o, 'contigs_all')):
-        os.mkdir(os.path.join(args.o, 'contigs_all'))
-    print("Do not close this window manually, please!")
+    try:
+        # 初始化文件夹
+        if not os.path.isdir(os.path.join(args.o, 'results')):
+            os.mkdir(os.path.join(args.o, 'results'))
+        if not os.path.isdir(os.path.join(args.o, 'contigs_all')):
+            os.mkdir(os.path.join(args.o, 'contigs_all'))
+        print("Do not close this window manually, please!")
+        # 载入参考序列信息
+        if not Get_Ref_Info(args.r, ref_path_list, ref_path_dict, ref_length_dict):
+            Write_Print(os.path.join(args.o,  "log.txt"), 'Invaild reference!')
+            sys.exit(0)
+        t0 = time.time()
+    except Exception as e:
+        Write_Print(os.path.join(args.o,  "log.txt"), "error:" , e)
 
-
-    # 载入参考序列信息
-    if not Get_Ref_Info(args.r, ref_path_list, ref_path_dict, ref_length_dict):
-        Write_Print(os.path.join(args.o,  "log.txt"), 'Invaild reference!')
-        sys.exit(0)
-    t0 = time.time()
-
-    Write_Print(os.path.join(args.o,  "log.txt"), '======================== Assemble =========================')
-    # 定义默认权重值
-    failed_count  = 0
-    result_dict = {}
-
-    pool = multiprocessing.Pool(args.processes)
-    results = []
-
-    for loop_count, (key, _) in enumerate(ref_length_dict.items(), start=1):
-        results.append(pool.apply_async(process_key_value, (args, key, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count)))
-    pool.close()
-    pool.join()
-
-    # for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
-    #     results.append(process_key_value(args, key, value, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count))
-    
-    for result in results:
-        failed_count_update, key_update, result_dict_entry = result if type(result) == tuple else result.get()
-        if result_dict_entry.get("status") != "skipped":
-            failed_count += failed_count_update
-            result_dict[key_update] = [result_dict_entry["status"], result_dict_entry["value"]]
-
-    Write_Dict(result_dict, os.path.join(args.o, "result_dict.txt"), False, True)
-    t1 = time.time()
-    Write_Print(os.path.join(args.o,  "log.txt"), '\nTime cost:', t1 - t0, " "*32,'\n') # 拼接所用的时间
+    try:
+        Write_Print(os.path.join(args.o,  "log.txt"), '======================== Assemble =========================')
+        # 定义默认权重值
+        failed_count  = 0
+        result_dict = {}
+        results = []
+        if args.processes > 1:
+            pool = multiprocessing.Pool(args.processes)
+            for loop_count, (key, _) in enumerate(ref_length_dict.items(), start=1):
+                results.append(pool.apply_async(process_key_value, (args, key, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count)))
+            pool.close()
+            pool.join()
+        else:
+            for loop_count, (key, value) in enumerate(ref_length_dict.items(), start=1):
+                results.append(process_key_value(args, key, failed_count, result_dict, ref_path_dict, args.iteration, args.soft_boundary, loop_count))
+        
+        for result in results:
+            failed_count_update, key_update, result_dict_entry = result if type(result) == tuple else result.get()
+            if result_dict_entry.get("status") != "skipped":
+                failed_count += failed_count_update
+                result_dict[key_update] = [result_dict_entry["status"], result_dict_entry["value"]]
+    except Exception as e:
+        Write_Print(os.path.join(args.o,  "log.txt"), "error:" , e)
+        
+    try:
+        Write_Dict(result_dict, os.path.join(args.o, "result_dict.txt"), False, True)
+        t1 = time.time()
+        Write_Print(os.path.join(args.o,  "log.txt"), '\nTime cost:', t1 - t0, " "*32,'\n') # 拼接所用的时间
+    except Exception as e:
+        Write_Print(os.path.join(args.o,  "log.txt"), "error:" , e)

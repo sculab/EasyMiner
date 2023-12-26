@@ -120,7 +120,7 @@ Partial Class Config_Plasty
         ' NumericUpDown2
         ' 
         NumericUpDown2.Location = New Point(102, 129)
-        NumericUpDown2.Maximum = New Decimal(New Integer() {99, 0, 0, 0})
+        NumericUpDown2.Maximum = New Decimal(New Integer() {128, 0, 0, 0})
         NumericUpDown2.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         NumericUpDown2.Name = "NumericUpDown2"
         NumericUpDown2.Size = New Size(54, 23)
