@@ -23,7 +23,7 @@ def filter_files(args, key, ref_reads_count_dict, ref_length_dict, ref_path_dict
                 Make_Kmer_Dict_v6(used_dict, [ref_path_dict[key]], args.kf + add_k, args.gr, False)
                 Reads_Filter_v5(used_dict, ref_reads_count_dict,[large_files_path], args.kf + add_k, args.s, large_files_path, large_files_path, args.o, args.gr)
                 # 安全的文件替代
-                Write_Log(os.path.join(args.o, 'log.csv'), 'filter', key, ref_reads_count_dict[key], ref_length_dict[key], round(ref_reads_count_dict[key]/ref_length_dict[key]*reads_length, 2), args.kf + add_k)
+                # Write_Log(os.path.join(args.o, 'log.csv'), 'filter', key, ref_reads_count_dict[key], ref_length_dict[key], round(ref_reads_count_dict[key]/ref_length_dict[key]*reads_length, 2), args.kf + add_k)
                 # k大于64或者达成任意条件
                 if ref_reads_count_dict[key]/ref_length_dict[key]*reads_length < args.max_depth or os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 < args.max_size or args.kf + add_k > 64:
                     if os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= args.max_size:
@@ -41,7 +41,7 @@ def filter_files(args, key, ref_reads_count_dict, ref_length_dict, ref_path_dict
                                         big_infile.readline()
                                     line_count += 1
                         ref_reads_count_dict[key] = int(ref_reads_count_dict[key]/get_mark)
-                        Write_Log(os.path.join(args.o, 'log.csv'), 'filter', key, ref_reads_count_dict[key], ref_length_dict[key], round(ref_reads_count_dict[key]/ref_length_dict[key]*reads_length, 2), 'cutoff')
+                        # Write_Log(os.path.join(args.o, 'log.csv'), 'filter', key, ref_reads_count_dict[key], ref_length_dict[key], round(ref_reads_count_dict[key]/ref_length_dict[key]*reads_length, 2), 'cutoff')
                         Write_Print(os.path.join(args.o,  "log.txt"),"re-filter:", os.path.splitext(os.path.basename(ref_path_dict[key]))[0] ,'with cutoff')
                     break
                 # 太深的文件大幅提高k

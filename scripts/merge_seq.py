@@ -41,7 +41,8 @@ def merge_sequences(input_folder, output_file, exts, missingchar):
             for i in range(len(first_value)):
                 start_pos = end_pos + 1
                 end_pos += len(first_value[i])
-                partition_file.write(f'charset part{i+1}= {start_pos} - {end_pos};\n')
+                if end_pos-start_pos>=0:
+                    partition_file.write(f'charset part{i+1}= {start_pos} - {end_pos};\n')
             partition_file.write('end;')
             
 

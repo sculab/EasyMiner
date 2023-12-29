@@ -9,6 +9,8 @@ Imports System.Text.RegularExpressions
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.Devices
+Imports System.DirectoryServices
+Imports System.Windows.Forms.VisualStyles
 
 
 Public Class Main_Form
@@ -287,24 +289,32 @@ Public Class Main_Form
         End Try
 
     End Sub
-
+    Dim init_output_folder As Boolean = False
     Private Sub Main_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CheckForIllegalCrossThreadCalls = False
         currentDirectory = Application.StartupPath
         initialize_data()
         If TargetOS = "macos" Then
             TextBox1.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "EasyMiner")
-            My.Computer.FileSystem.CreateDirectory(TextBox1.Text)
+            Directory.CreateDirectory(TextBox1.Text)
         Else
             TextBox1.Text = currentDirectory + "results"
         End If
+
 
         NumericUpDown10.Maximum = Math.Max(System.Environment.ProcessorCount - 2, 1)
         NumericUpDown10.Value = Math.Max(NumericUpDown10.Maximum / 2, 1)
         AddHandler form_config_basic.ConfirmClicked, AddressOf Basic_ConfirmClickedHandler
         AddHandler form_config_basic.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_trim.ConfirmClicked, AddressOf Trim_ConfirmClickedHandler
+        AddHandler form_config_trim.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_tree.ConfirmClicked, AddressOf Tree_ConfirmClickedHandler
+        AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
 
+        init_output_folder = True
     End Sub
+
+
     Private Sub SubCancel()
     End Sub
     Private Sub Main_Form_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
@@ -355,6 +365,16 @@ Public Class Main_Form
         Select Case timer_id
             Case 0
                 ProgressBar1.Value = PB_value
+                If init_output_folder Then
+                    Timer1.Enabled = False
+                    Dim result As DialogResult = MessageBox.Show("Current output directory:" + vbCrLf + TextBox1.Text + vbCrLf + "Change required?", "Setting", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                    ' 根据用户的选择执行相应的操作
+                    If result = DialogResult.Yes Then
+                        Button1_Click(sender, e)
+                    End If
+                    init_output_folder = False
+                    Timer1.Enabled = True
+                End If
             Case 1
                 ProgressBar1.Value = PB_value
                 If ProgressBar1.Value = 100 Then
@@ -485,7 +505,7 @@ Public Class Main_Form
                                                                      Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
                                                                      Dim my_out_dir As String = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
                                                                      DeleteDir(my_out_dir + "\NOVOPlasty")
-                                                                     My.Computer.FileSystem.CreateDirectory(my_out_dir + "\NOVOPlasty")
+                                                                     Directory.CreateDirectory(my_out_dir + "\NOVOPlasty")
                                                                      If database_type = "mito_plant" Then
                                                                          If File.Exists(my_out_dir + "\Organelle\Gennome_cp.fasta") = False Then
                                                                              File.AppendAllText(TextBox1.Text + "\log.txt", "The chloroplast genome was not found in the " + folder_name & Environment.NewLine)
@@ -614,7 +634,7 @@ Public Class Main_Form
                                                                                  End If
 
                                                                                  do_PGA(my_out_dir + "\NOVOPlasty\ref_gb.gb", assemble_file, my_out_dir + "\NOVOPlasty")
-                                                                                 My.Computer.FileSystem.CreateDirectory(my_out_dir + "\Organelle\")
+                                                                                 Directory.CreateDirectory(my_out_dir + "\Organelle\")
                                                                                  If File.Exists(my_out_dir + "\Organelle\warning.log") Then
                                                                                      File.Delete(my_out_dir + "\Organelle\warning.log")
                                                                                  End If
@@ -804,7 +824,7 @@ Public Class Main_Form
         q1 = ""
         q2 = ""
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
 
 
         For i As Integer = 1 To refsView.Count
@@ -864,11 +884,11 @@ Public Class Main_Form
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             out_dir = (TextBox1.Text + "/iteration").Replace("\", "/")
 
-            My.Computer.FileSystem.CreateDirectory(out_dir)
+            Directory.CreateDirectory(out_dir)
             q1 = ""
             q2 = ""
             'DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
 
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -878,7 +898,7 @@ Public Class Main_Form
                         If File.Exists(TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
                             refs_count += 1
                             '叠加参考序列
-                            MergeFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                            CombineFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\iteration\contigs_all\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                         End If
                     End If
                 End If
@@ -931,7 +951,7 @@ Public Class Main_Form
         q1 = ""
         q2 = ""
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
 
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -985,7 +1005,7 @@ Public Class Main_Form
             Dim result As DialogResult = MessageBox.Show("Clear the output directory? If you are optimizing for previous results, please select 'NO'!", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If result = DialogResult.Yes Then
                 DeleteDir(TextBox1.Text)
-                My.Computer.FileSystem.CreateDirectory(TextBox1.Text)
+                Directory.CreateDirectory(TextBox1.Text)
             End If
         End If
 
@@ -996,7 +1016,7 @@ Public Class Main_Form
         q1 = ""
         q2 = ""
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         If File.Exists(out_dir + "\kmer_dict_k" + k1.ToString + ".dict") Then
             File.Delete(out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
         End If
@@ -1062,7 +1082,7 @@ Public Class Main_Form
             refs_type = "gb"
         Else
             DeleteDir(root_path + "temp\org_seq")
-            My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+            Directory.CreateDirectory(root_path + "temp\org_seq")
             For Each FileName As String In file_names
                 PB_value = 100 * count / file_names.Length
                 safe_copy(FileName, root_path + "temp\org_seq\" + System.IO.Path.GetFileNameWithoutExtension(FileName).Replace(" ", "_").Replace(".", "_").Replace("-", "_") + ".fasta")
@@ -1101,7 +1121,7 @@ Public Class Main_Form
                         refs_type = "gb"
                     Else
                         DeleteDir(root_path + "temp\org_seq")
-                        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+                        Directory.CreateDirectory(root_path + "temp\org_seq")
                         safe_copy(current_file, root_path + "temp\org_seq\" + System.IO.Path.GetFileNameWithoutExtension(current_file).Replace(" ", "_").Replace(".", "_").Replace("-", "_") + ".fasta", True)
                         refs_type = "fasta"
                         refresh_file()
@@ -1109,7 +1129,7 @@ Public Class Main_Form
                     End If
                 Else
                     DeleteDir(root_path + "temp\org_seq")
-                    My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+                    Directory.CreateDirectory(root_path + "temp\org_seq")
 
                     Dim SI_split_file As New ProcessStartInfo()
                     SI_split_file.FileName = currentDirectory + "analysis\split_file.exe" ' 替换为实际的命令行程序路径
@@ -1186,11 +1206,12 @@ Public Class Main_Form
 
     End Sub
     Private Sub menu_auto_assemble()
+        Directory.CreateDirectory(TextBox1.Text)
         If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 Then
             Dim result As DialogResult = MessageBox.Show("Clear the output directory?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If result = DialogResult.Yes Then
                 DeleteDir(TextBox1.Text)
-                My.Computer.FileSystem.CreateDirectory(TextBox1.Text)
+                Directory.CreateDirectory(TextBox1.Text)
             End If
         End If
         Dim refs_count As Integer = 0
@@ -1200,7 +1221,7 @@ Public Class Main_Form
         q1 = ""
         q2 = ""
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         If File.Exists(out_dir + "\kmer_dict_k" + k1.ToString + ".dict") Then
             File.Delete(out_dir + "\kmer_dict_k" + k1.ToString + ".dict")
         End If
@@ -1333,12 +1354,14 @@ Public Class Main_Form
                                                                      Try
                                                                          Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                          Dim out_path As String = TextBox1.Text + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                         do_muscle_align(in_path, out_path)
+                                                                         If align_app = "muscle" Then
+                                                                             do_muscle_align(in_path, out_path)
+                                                                         Else
+                                                                             do_mafft_align(in_path, out_path)
+                                                                         End If
                                                                      Catch ex As Exception
                                                                          File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do muscle for " & DataGridView1.Rows(i - 1).Cells(2).ToString & Environment.NewLine)
                                                                      End Try
-
-
                                                                  End If
                                                              End Sub)
         PB_value = -1
@@ -1378,11 +1401,11 @@ Public Class Main_Form
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         out_dir = (TextBox1.Text + "/iteration").Replace("\", "/")
         DeleteDir(out_dir)
-        My.Computer.FileSystem.CreateDirectory(out_dir)
+        Directory.CreateDirectory(out_dir)
         q1 = ""
         q2 = ""
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
 
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -1423,7 +1446,7 @@ Public Class Main_Form
             q1 = ""
             q2 = ""
             DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
 
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -1509,7 +1532,7 @@ Public Class Main_Form
             If Directory.GetFileSystemEntries(out_dir + "\results").Length > 0 Then
                 For i As Integer = 1 To refsView.Count
                     If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" And File.Exists(out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                        MergeFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                        CombineFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                     End If
                 Next
             End If
@@ -1536,7 +1559,11 @@ Public Class Main_Form
                                                                          Try
                                                                              Dim in_path As String = ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                              Dim out_path As String = out_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-                                                                             do_muscle_align(in_path, out_path)
+                                                                             If align_app = "muscle" Then
+                                                                                 do_muscle_align(in_path, out_path)
+                                                                             Else
+                                                                                 do_mafft_align(in_path, out_path)
+                                                                             End If
 
                                                                              Dim SI_trimed As New ProcessStartInfo()
                                                                              SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
@@ -1572,6 +1599,7 @@ Public Class Main_Form
     End Sub
 
     Private Sub 过滤拼接ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 过滤拼接ToolStripMenuItem.Click
+        Directory.CreateDirectory(TextBox1.Text)
         If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 And DebugToolStripMenuItem.Checked = False Then
             Dim result As DialogResult = MessageBox.Show("The result folder is not empty. Are you sure to proceed?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If result = DialogResult.No Then
@@ -1600,7 +1628,7 @@ Public Class Main_Form
         Dim refs_count As Integer = 0
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
 
         timer_id = 4
         PB_value = 0
@@ -1637,7 +1665,7 @@ Public Class Main_Form
                                                                      Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
 
                                                                      Dim my_out_dir As String = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                                                                     My.Computer.FileSystem.CreateDirectory(my_out_dir)
+                                                                     Directory.CreateDirectory(my_out_dir)
                                                                      Dim my_q1 As String = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
                                                                      Dim my_q2 As String = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
                                                                      If My.Computer.FileSystem.DirectoryExists(Path.Combine(my_out_dir, "results")) Then
@@ -1658,7 +1686,7 @@ Public Class Main_Form
                                                                              End If
                                                                          End While
                                                                      End Using
-                                                                     MergeFiles(TextBox1.Text + "\log.txt", my_out_dir + "\log.txt")
+                                                                     CombineFiles(TextBox1.Text + "\log.txt", my_out_dir + "\log.txt")
                                                                  End If
                                                              End Sub)
         PB_value = -1
@@ -1704,10 +1732,10 @@ Public Class Main_Form
     Public Sub pre_align()
         Dim tmp_aligns As String = (currentDirectory + "temp\temp_aligns\").Replace("\", "/")
         DeleteDir(tmp_aligns)
-        My.Computer.FileSystem.CreateDirectory(tmp_aligns)
+        Directory.CreateDirectory(tmp_aligns)
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         '拷贝到临时文件夹
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -1726,7 +1754,11 @@ Public Class Main_Form
                                                                  Try
                                                                      Dim in_path As String = ref_dir + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
                                                                      Dim out_path As String = tmp_aligns + DataGridView1.Rows(i).Cells(2).Value.ToString + ".fasta"
-                                                                     do_muscle_align(in_path, out_path)
+                                                                     If align_app = "muscle" Then
+                                                                         do_muscle_align(in_path, out_path)
+                                                                     Else
+                                                                         do_mafft_align(in_path, out_path)
+                                                                     End If
 
                                                                  Catch ex As Exception
                                                                      File.AppendAllText(TextBox1.Text + "\log.txt", "Could not do muscle for " & DataGridView1.Rows(i).Cells(2).ToString & Environment.NewLine)
@@ -1747,12 +1779,12 @@ Public Class Main_Form
 
         Dim combine_res_dir As String = TextBox1.Text + "\combined_results\"
         Dim combine_trimed_dir As String = TextBox1.Text + "\combined_trimed\"
-        My.Computer.FileSystem.CreateDirectory(combine_res_dir)
-
+        DeleteDir(combine_res_dir)
+        DeleteDir(combine_trimed_dir)
+        Directory.CreateDirectory(combine_res_dir)
         If do_align Then
-            My.Computer.FileSystem.CreateDirectory(combine_res_dir + "\aligned\")
-            My.Computer.FileSystem.CreateDirectory(combine_trimed_dir)
-
+            Directory.CreateDirectory(combine_res_dir + "\aligned\")
+            Directory.CreateDirectory(combine_trimed_dir)
         End If
 
         Dim count As Integer = 0
@@ -1791,14 +1823,11 @@ Public Class Main_Form
                                                                      Next
                                                                      sw_res.Close()
                                                                      If do_align Then
-                                                                         If TargetOS = "macos" Then
-
+                                                                         If align_app = "muscle" Then
+                                                                             do_muscle_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                                                                          Else
-
+                                                                             do_mafft_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                                                                          End If
-                                                                         do_muscle_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
-                                                                         'do_mafft_align(combine_res_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", combine_res_dir + "\aligned\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
-
                                                                          Dim SI_trimed As New ProcessStartInfo()
                                                                          SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
                                                                          SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
@@ -1815,14 +1844,14 @@ Public Class Main_Form
                                                              End Sub)
         PB_value = -1
         combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "-")
-        combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combine_trimed.fasta", "-")
+        combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "-")
         MsgBox("Analysis completed!")
     End Sub
 
     Public Sub combine_file_horizontal(ByVal From_dir As String, ByVal exts As String, ByVal new_name As String, ByVal missingchar As String)
         If Not (From_dir Is Nothing) Then
             Dim startInfo As New ProcessStartInfo()
-            startInfo.FileName = currentDirectory + "analysis\merge_seq.exe" ' 替换为实际的命令行程序路径
+            startInfo.FileName = currentDirectory + "analysis\Combine_seq.exe" ' 替换为实际的命令行程序路径
             startInfo.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
             startInfo.CreateNoWindow = True
             startInfo.Arguments = "-input " + """" + From_dir + """"
@@ -1906,7 +1935,7 @@ Public Class Main_Form
             '    Dim result As DialogResult = MessageBox.Show("Clear the output directory?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             '    If result = DialogResult.Yes Then
             '        DeleteDir(TextBox1.Text)
-            '        My.Computer.FileSystem.CreateDirectory(TextBox1.Text)
+            '        Directory.CreateDirectory(TextBox1.Text)
             '    End If
             'End If
 
@@ -1914,7 +1943,7 @@ Public Class Main_Form
             Dim seqs_count As Integer = 0
 
             'DeleteDir(currentDirectory + "temp\seeds")
-            'My.Computer.FileSystem.CreateDirectory(currentDirectory + "temp\seeds")
+            'Directory.CreateDirectory(currentDirectory + "temp\seeds")
 
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -2108,7 +2137,7 @@ Public Class Main_Form
     Public Sub do_consensus(ByVal con_level As Single)
         If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
             Dim consensus_dir As String = Path.Combine(out_dir, "consensus")
-            My.Computer.FileSystem.CreateDirectory(consensus_dir)
+            Directory.CreateDirectory(consensus_dir)
             Dim count As Integer = 0
             Dim parallelOptions As New ParallelOptions()
             parallelOptions.MaxDegreeOfParallelism = current_thread
@@ -2190,7 +2219,7 @@ Public Class Main_Form
                 out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
 
                 Dim consensus_dir As String = Path.Combine(out_dir, "consensus")
-                My.Computer.FileSystem.CreateDirectory(consensus_dir)
+                Directory.CreateDirectory(consensus_dir)
                 Dim count As Integer = 0
                 Dim parallelOptions As New ParallelOptions()
                 parallelOptions.MaxDegreeOfParallelism = current_thread
@@ -2242,7 +2271,7 @@ Public Class Main_Form
 
 
         Dim supercontigs_dir As String = TextBox1.Text + "\supercontigs\"
-        My.Computer.FileSystem.CreateDirectory(supercontigs_dir)
+        Directory.CreateDirectory(supercontigs_dir)
         Dim sw_namelist As New StreamWriter(Path.Combine(TextBox1.Text, "namelist.txt"), False, utf8WithoutBom)
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
@@ -2276,7 +2305,7 @@ Public Class Main_Form
         sw_namelist.Close()
 
         Dim combine_consensus_dir As String = TextBox1.Text + "\consensus\"
-        My.Computer.FileSystem.CreateDirectory(combine_consensus_dir)
+        Directory.CreateDirectory(combine_consensus_dir)
         For i As Integer = 1 To refsView.Count
             PB_value = i / refsView.Count * 100
             Dim sw_res As New StreamWriter(Path.Combine(combine_consensus_dir, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"), False, utf8WithoutBom)
@@ -2387,6 +2416,11 @@ Public Class Main_Form
         SI_PPD.Arguments += " -o " + """" + Path.Combine(out_path, "PPD") + """"
         SI_PPD.Arguments += " -th " + current_thread.ToString
 
+        If align_app = "muscle" Then
+            SI_PPD.Arguments += " -aln muscle"
+        Else
+            SI_PPD.Arguments += " -aln mafft"
+        End If
         Dim process_PPD As Process = Process.Start(SI_PPD)
         process_PPD.WaitForExit()
         process_PPD.Close()
@@ -2488,10 +2522,10 @@ Public Class Main_Form
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             out_dir = TextBox1.Text
             DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    MergeFiles(Path.Combine(ref_dir, "barcode.fasta"), Path.Combine(currentDirectory, "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
+                    CombineFiles(Path.Combine(ref_dir, "barcode.fasta"), Path.Combine(currentDirectory, "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
                 End If
             Next
             Dim my_input As String = InputBox("Input accuracy level: 1-8", "Input", 4)
@@ -2541,8 +2575,8 @@ Public Class Main_Form
     End Sub
     Public Sub do_combine_barcode()
         For batch_i As Integer = 1 To seqsView.Count
-            My.Computer.FileSystem.CreateDirectory(Path.Combine(out_dir, "clean_data"))
-            My.Computer.FileSystem.CreateDirectory(Path.Combine(out_dir, "raw_data"))
+            Directory.CreateDirectory(Path.Combine(out_dir, "clean_data"))
+            Directory.CreateDirectory(Path.Combine(out_dir, "raw_data"))
             PB_value = batch_i / seqsView.Count * 100
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
 
@@ -2550,9 +2584,9 @@ Public Class Main_Form
                 Dim fileList() As String = Directory.GetFileSystemEntries(infolder)  ' 遍历所有的文件和目录  
                 For Each FileName As String In fileList
                     If FileName.EndsWith("_clean.fasta") Then
-                        MergeFiles(Path.Combine(out_dir, "clean_data", Path.GetFileName(FileName)), FileName)
+                        CombineFiles(Path.Combine(out_dir, "clean_data", Path.GetFileName(FileName)), FileName)
                     Else
-                        MergeFiles(Path.Combine(out_dir, "raw_data", Path.GetFileName(FileName)), FileName)
+                        CombineFiles(Path.Combine(out_dir, "raw_data", Path.GetFileName(FileName)), FileName)
                     End If
                 Next
 
@@ -2569,10 +2603,10 @@ Public Class Main_Form
             out_dir = TextBox1.Text
             DataGridView2.EndEdit()
             DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    MergeFiles(Path.Combine(ref_dir, "barcode_refs.fasta"), Path.Combine(currentDirectory, "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
+                    CombineFiles(Path.Combine(ref_dir, "barcode_refs.fasta"), Path.Combine(currentDirectory, "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
                 End If
             Next
             Dim level As Integer
@@ -2677,67 +2711,7 @@ Public Class Main_Form
             End Using
         End If
     End Sub
-    Private Sub Plasty_ConfirmClickedHandler()
 
-    End Sub
-
-    Private MenuClicked As String
-    Private Sub Basic_ConfirmClickedHandler()
-        Select Case MenuClicked
-            Case "filter"
-                menu_filter()
-            Case "refilter"
-                menu_refilter()
-            Case "assemble"
-                menu_assemble()
-            Case "batch_auto_assemble"
-                menu_batch_auto_assemble()
-            Case "auto_assemble"
-                menu_auto_assemble()
-            Case "iteration"
-                menu_iteration()
-            Case "muti_iteration"
-                menu_muti_iteration()
-            Case "plant_cp"
-                form_config_plasty.NumericUpDown1.Value = 31
-                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
-                RichTextBox1.AppendText("Cite PGA:" + vbCrLf + "Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50" + vbCrLf)
-                menu_plant_cp()
-            Case "plant_mito"
-                form_config_plasty.NumericUpDown1.Value = 63
-                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
-                menu_plant_mito()
-            Case "animal_mito"
-                form_config_plasty.NumericUpDown1.Value = 31
-                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
-                menu_animal_mito()
-            Case "batch_plant_cp"
-                form_config_plasty.NumericUpDown1.Value = 31
-                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
-                RichTextBox1.AppendText("Cite PGA:" + vbCrLf + "Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50" + vbCrLf)
-                menu_batch_plant_cp()
-            Case "batch_plant_mito"
-                form_config_plasty.NumericUpDown1.Value = 63
-                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
-                menu_batch_plant_mito()
-            Case "batch_animal_mito"
-                form_config_plasty.NumericUpDown1.Value = 31
-                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
-                menu_batch_animal_mito()
-            Case "batch_re_assemble"
-                menu_batch_re_assemble()
-            Case "null"
-            Case Else
-        End Select
-        Select Case form_config_basic.ComboBox1.SelectedIndex
-            Case 0
-                sb = -1
-            Case 1
-                sb = 0
-            Case 2
-                sb = 10000
-        End Select
-    End Sub
 
     Private Sub 多拷贝检测ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 多拷贝检测ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
@@ -2758,7 +2732,7 @@ Public Class Main_Form
         If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
             Dim paralogs_dir As String = Path.Combine(out_dir, "muticopy")
             DeleteDir(paralogs_dir)
-            My.Computer.FileSystem.CreateDirectory(paralogs_dir)
+            Directory.CreateDirectory(paralogs_dir)
             Dim count As Integer = 0
             Dim parallelOptions As New ParallelOptions()
             parallelOptions.MaxDegreeOfParallelism = current_thread
@@ -2822,7 +2796,7 @@ Public Class Main_Form
                 out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
 
                 Dim paralogs_dir As String = Path.Combine(out_dir, "muticopy")
-                My.Computer.FileSystem.CreateDirectory(paralogs_dir)
+                Directory.CreateDirectory(paralogs_dir)
                 Dim count As Integer = 0
                 Dim parallelOptions As New ParallelOptions()
                 parallelOptions.MaxDegreeOfParallelism = current_thread
@@ -2887,16 +2861,153 @@ Public Class Main_Form
     End Sub
 
     Private Sub 统计结果ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 统计结果ToolStripMenuItem.Click
-        Dim SI_build_summary As New ProcessStartInfo()
-        SI_build_summary.FileName = Path.Combine(currentDirectory, "analysis", "build_summary.exe")
-        SI_build_summary.WorkingDirectory = Path.Combine(currentDirectory, "temp")
-        SI_build_summary.CreateNoWindow = True
-        SI_build_summary.Arguments = "-b " + """" + TextBox1.Text + """"
-        Dim process_build_summary As Process = Process.Start(SI_build_summary)
-        process_build_summary.WaitForExit()
-        process_build_summary.Close()
-        MsgBox("Please check the 'summary.csv' in the output folder.")
+        'Dim SI_build_summary As New ProcessStartInfo()
+        'SI_build_summary.FileName = Path.Combine(currentDirectory, "analysis", "build_summary.exe")
+        'SI_build_summary.WorkingDirectory = Path.Combine(currentDirectory, "temp")
+        'SI_build_summary.CreateNoWindow = True
+        'SI_build_summary.Arguments = "-b " + """" + TextBox1.Text + """"
+        'Dim process_build_summary As Process = Process.Start(SI_build_summary)
+        'process_build_summary.WaitForExit()
+        'process_build_summary.Close()
+        Dim th1 As New Thread(AddressOf build_summary)
+        th1.Start()
     End Sub
+    Public Sub build_summary()
+        Dim count As Integer = 0
+        PB_value = 0
+        Dim ref_len_dict As New Dictionary(Of String, Integer)
+        For i As Integer = 1 To refsView.Count
+            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                '统计参考序列中值
+                Dim ref_file As String = Path.Combine(currentDirectory + "temp", "org_seq", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                If File.Exists(ref_file) Then
+                    ref_len_dict.Add(DataGridView1.Rows(i - 1).Cells(2).Value.ToString, CInt(CalculateMedianSequenceLength(ref_file)))
+                End If
+            End If
+        Next
+        Try
+            Using writer As StreamWriter = New StreamWriter(TextBox1.Text + "\summary.csv", False, System.Text.Encoding.UTF8)
+                Dim header As New List(Of String) From {
+                "Sample Name", "Gene Name", "Reference Median Length", "Reads Count", "Result Availability", "Length of Result Sequence", "Multicopy Presence"
+             }
+                writer.WriteLine(String.Join(",", header))
+
+                For batch_i As Integer = 1 To seqsView.Count
+                    count += 1
+                    PB_value = count / seqsView.Count * 100
+                    If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                        Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                        Dim my_out_dir As String = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                        For i As Integer = 1 To refsView.Count
+                            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                Dim result_list As New List(Of String)
+                                '0原始数据1参考序列2参考序列中值3reads数量4是否有结果5结果长度6是否存在多拷贝
+                                result_list.Add(folder_name)
+                                result_list.Add(DataGridView1.Rows(i - 1).Cells(2).Value.ToString)
+                                result_list.Add(ref_len_dict(DataGridView1.Rows(i - 1).Cells(2).Value.ToString))
+                                '统计reads
+                                If File.Exists(Path.Combine(my_out_dir, "filtered", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fq")) Then
+                                    result_list.Add(CInt(CountLinesInFile(Path.Combine(my_out_dir, "filtered", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fq")) / 4).ToString)
+                                Else
+                                    result_list.Add("0")
+                                End If
+                                '统计序列长度（中值）
+                                If File.Exists(Path.Combine(my_out_dir, "results", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")) Then
+                                    Dim tmp_len As Integer = CalculateMedianSequenceLength(Path.Combine(my_out_dir, "results", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
+                                    If tmp_len = 0 Then
+                                        result_list.Add("0")
+                                        File.Delete(Path.Combine(my_out_dir, "results", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"))
+                                    Else
+                                        result_list.Add("1")
+                                    End If
+                                    result_list.Add(tmp_len.ToString)
+                                Else
+                                    result_list.Add("0")
+                                    result_list.Add("0")
+                                End If
+
+                                If Directory.Exists(Path.Combine(my_out_dir, "muticopy")) Then
+                                    If File.Exists(Path.Combine(my_out_dir, "muticopy", DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")) Then
+                                        result_list.Add("1")
+                                    Else
+                                        result_list.Add("0")
+                                    End If
+                                Else
+                                    result_list.Add("N/A")
+                                End If
+                                writer.WriteLine(String.Join(",", result_list))
+                            End If
+
+                        Next
+                    End If
+                Next
+            End Using
+            PB_value = 0
+            MsgBox("Please check the 'summary.csv' in the output folder.")
+        Catch ex As Exception
+            MsgBox(ex.ToString)
+            PB_value = 0
+
+        End Try
+
+
+    End Sub
+    ' 计算FASTA文件中序列长度的中值
+    Function CalculateMedianSequenceLength(filePath As String) As Double
+        Dim sequenceLengths As New List(Of Integer)
+        Dim currentSequenceLength As Integer = 0
+        Dim inSequence As Boolean = False
+
+        Using reader As StreamReader = New StreamReader(filePath)
+            Dim line As String
+
+            While (reader.Peek() >= 0)
+                line = reader.ReadLine()
+
+                If line.StartsWith(">") Then
+                    If inSequence Then
+                        sequenceLengths.Add(currentSequenceLength)
+                        currentSequenceLength = 0
+                    End If
+                    inSequence = True
+                ElseIf inSequence Then
+                    currentSequenceLength += line.Length
+                End If
+            End While
+
+            ' 添加最后一个序列的长度
+            If inSequence Then
+                sequenceLengths.Add(currentSequenceLength)
+            End If
+        End Using
+
+        ' 计算中值
+        If sequenceLengths.Count = 0 Then
+            Return 0
+        Else
+            sequenceLengths.Sort()
+            Dim middleIndex As Integer = sequenceLengths.Count \ 2
+
+            If sequenceLengths.Count Mod 2 = 0 Then
+                ' 偶数个元素
+                Return (sequenceLengths(middleIndex - 1) + sequenceLengths(middleIndex)) / 2.0
+            Else
+                ' 奇数个元素
+                Return sequenceLengths(middleIndex)
+            End If
+        End If
+    End Function
+    Function CountLinesInFile(filePath As String) As Integer
+        Dim lineCount As Integer = 0
+        Using reader As StreamReader = New StreamReader(filePath)
+            While reader.ReadLine() IsNot Nothing
+                lineCount += 1
+            End While
+        End Using
+        Return lineCount
+    End Function
+
+
 
     Private Sub 用迭代覆盖ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 用迭代覆盖ToolStripMenuItem.Click
         If TextBox1.Text <> "" Then
@@ -2957,7 +3068,7 @@ Public Class Main_Form
         Dim refs_count As Integer = 0
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
 
         timer_id = 4
         PB_value = 0
@@ -2971,7 +3082,7 @@ Public Class Main_Form
             Dim th1 As New Thread(AddressOf batch_re_assemble)
             th1.Start()
         Else
-            MsgBox("Please select at least one reference and one sequencing data!")
+            MsgBox("Please select at least one reference And one sequencing data!")
         End If
     End Sub
     Public Sub batch_re_assemble()
@@ -2984,7 +3095,7 @@ Public Class Main_Form
                 out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
                 q1 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
                 q2 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
-                My.Computer.FileSystem.CreateDirectory(out_dir)
+                Directory.CreateDirectory(out_dir)
                 If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
                     DeleteDir(Path.Combine(out_dir, "results"))
                 End If
@@ -3075,7 +3186,7 @@ Public Class Main_Form
         Dim process_orthofinder As Process = Process.Start(SI_orthofinder)
         process_orthofinder.WaitForExit()
         process_orthofinder.Close()
-        Dim result As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        Dim result As DialogResult = MessageBox.Show("Analysis has been completed. Would you Like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
         ' 根据用户的选择执行相应的操作
         If result = DialogResult.Yes Then
             Process.Start("explorer.exe", """" + genome_dir + """")
@@ -3086,14 +3197,14 @@ Public Class Main_Form
         Dim refs_count As Integer = 0
         Dim genome_dir As String = (TextBox1.Text + "\OrthoFinder")
         DeleteDir(genome_dir)
-        My.Computer.FileSystem.CreateDirectory(genome_dir)
+        Directory.CreateDirectory(genome_dir)
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                 refs_count += 1
                 safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", genome_dir + "\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
             End If
         Next
-        RichTextBox1.Text = "Cite OrthoFinder 2.5.5:" + vbCrLf + "Emms, D.M. and Kelly, S. (2019) OrthoFinder: phylogenetic orthology inference for comparative genomics. Genome Biology 20:238" + vbCrLf
+        RichTextBox1.Text = "Cite OrthoFinder 2.5.5: " + vbCrLf + "Emms, D.M. and Kelly, S. (2019) OrthoFinder: phylogenetic orthology inference for comparative genomics. Genome Biology 20:238" + vbCrLf
 
         If refs_count >= 1 Then
             Dim th1 As New Thread(AddressOf do_orthofinder)
@@ -3131,7 +3242,7 @@ Public Class Main_Form
 
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                     safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
@@ -3201,6 +3312,7 @@ Public Class Main_Form
         If resultdialog = DialogResult.OK Then
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             DeleteDir(ref_dir)
+            Directory.CreateDirectory(ref_dir)
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                     safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
@@ -3222,6 +3334,8 @@ Public Class Main_Form
         If resultdialog = DialogResult.OK Then
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             DeleteDir(ref_dir)
+            Directory.CreateDirectory(ref_dir)
+
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                     safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
@@ -3238,7 +3352,7 @@ Public Class Main_Form
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             out_dir = TextBox1.Text
             DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
 
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -3251,7 +3365,7 @@ Public Class Main_Form
                     If Directory.GetFileSystemEntries(TextBox1.Text + "\results").Length > 0 Then
                         For i As Integer = 1 To refsView.Count
                             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" And File.Exists(TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta") Then
-                                MergeFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                                CombineFiles(ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", TextBox1.Text + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
                             End If
                         Next
                     End If
@@ -3274,7 +3388,7 @@ Public Class Main_Form
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
             out_dir = TextBox1.Text
             DeleteDir(ref_dir)
-            My.Computer.FileSystem.CreateDirectory(ref_dir)
+            Directory.CreateDirectory(ref_dir)
 
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -3302,11 +3416,10 @@ Public Class Main_Form
     End Sub
 
     Private Sub 对齐参考ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 对齐参考ToolStripMenuItem.Click
+
         If TextBox1.Text <> "" Then
-            timer_id = 4
-            PB_value = 0
-            Dim th1 As New Thread(AddressOf menu_align_blast)
-            th1.Start()
+            MenuClicked = "trim_with_ref"
+            form_config_trim.Show()
         Else
             MsgBox("Please select an output folder!")
         End If
@@ -3316,7 +3429,7 @@ Public Class Main_Form
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         out_dir = TextBox1.Text
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
 
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -3346,15 +3459,13 @@ Public Class Main_Form
     End Sub
 
     Private Sub 对齐参考ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 对齐参考ToolStripMenuItem1.Click
-        timer_id = 4
-        PB_value = 0
-        Dim th1 As New Thread(AddressOf menu_batch_align_blast)
-        th1.Start()
+        MenuClicked = "batch_trim_with_ref"
+        form_config_trim.Show()
     End Sub
     Public Sub menu_batch_align_blast()
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         For i As Integer = 1 To refsView.Count
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                 safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
@@ -3375,7 +3486,6 @@ Public Class Main_Form
                                                                              Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
                                                                              Dim result_path As String = temp_out_dir + "\results\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
                                                                              Dim ref_path As String = (currentDirectory + "temp\temp_refs\").Replace("\", "/") + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta"
-
                                                                              do_trim_blast(ref_path, result_path)
                                                                          End If
                                                                      Next
@@ -3387,6 +3497,251 @@ Public Class Main_Form
     End Sub
 
     Private Sub MenuStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles MenuStrip1.ItemClicked
+
+    End Sub
+
+    Private Sub 参考数量ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 参考数量ToolStripMenuItem.Click
+        Dim sel_count As Integer = 0
+        Dim my_input As String = InputBox("Count of reference", "Count", "1")
+
+        For i As Integer = 1 To refsView.Count
+            If DataGridView1.Rows(i - 1).Cells(3).Value.ToString <> my_input Then
+                DataGridView1.Rows(i - 1).Cells(0).Value = False
+            Else
+                sel_count += 1
+                DataGridView1.Rows(i - 1).Cells(0).Value = True
+            End If
+        Next
+        MsgBox(sel_count.ToString + " were selected!")
+        DataGridView1.RefreshEdit()
+    End Sub
+
+    Private Sub 构建系统发育树ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 构建系统发育树ToolStripMenuItem.Click
+        MenuClicked = "build_tree"
+        form_config_tree.GroupBox2.Enabled = True
+        form_config_tree.Show()
+    End Sub
+    Private Sub Tree_ConfirmClickedHandler()
+        Select Case MenuClicked
+            Case "build_tree"
+                If form_config_tree.RadioButton1.Checked Then
+                    Dim fasta_file As String
+                    If form_config_tree.RadioButton3.Checked Then
+                        fasta_file = Path.Combine(TextBox1.Text, "combined_results.fasta")
+                    Else
+                        fasta_file = Path.Combine(TextBox1.Text, "combined_trimed.fasta")
+                    End If
+                    Dim th1 As New Thread(AddressOf MakeConcatenationTree)
+                    th1.Start(fasta_file)
+                Else
+                    Dim fasta_folder As String
+                    If form_config_tree.RadioButton3.Checked Then
+                        fasta_folder = Path.Combine(TextBox1.Text, "combined_results", "aligned")
+                    Else
+                        fasta_folder = Path.Combine(TextBox1.Text, "combined_trimed")
+                    End If
+                    Dim th1 As New Thread(AddressOf Make_Coalescent_Tree)
+                    th1.Start(fasta_folder)
+                End If
+            Case "build_tree_refs"
+                ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+                DeleteDir(ref_dir)
+                Directory.CreateDirectory(ref_dir)
+                For i As Integer = 1 To refsView.Count
+                    If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                        safe_copy(currentDirectory + "temp\org_seq\" + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", ref_dir + DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta", True)
+                    End If
+                Next
+                If form_config_tree.RadioButton1.Checked Then
+                    combine_file_horizontal(ref_dir, ".fasta", Path.Combine(TextBox1.Text, "combined_refs.fasta"), "-")
+                    MsgBox("Analysis complete!")
+                    Dim th1 As New Thread(AddressOf MakeConcatenationTree)
+                    th1.Start(Path.Combine(TextBox1.Text, "combined_refs.fasta"))
+                Else
+                    Dim th1 As New Thread(AddressOf Make_Coalescent_Tree)
+                    th1.Start(ref_dir)
+                End If
+        End Select
+    End Sub
+    Public Sub MakeConcatenationTree(ByVal fasta_file As String)
+
+        If File.Exists(fasta_file) Then
+            Dim random_folder As String = GenerateRandomString(8)
+            safe_copy(fasta_file, Path.Combine(currentDirectory, "temp", random_folder + ".fasta"))
+            Dim my_args() As String = {"0", "..\temp\" + random_folder + ".fasta",
+                "..\temp\" + random_folder + "_coa.tree",
+                "..\temp\" + random_folder,
+                form_config_tree.NumericUpDown1.Value.ToString,
+                current_thread.ToString()
+                }
+            do_build_tree(my_args)
+
+            If File.Exists(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree")) Then
+                safe_copy(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"), Path.Combine(TextBox1.Text, "Concatenation.tree"))
+                DeleteDir(Path.Combine(currentDirectory, "temp", random_folder))
+                File.Delete(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"))
+                File.Delete(Path.Combine(currentDirectory, "temp", random_folder + ".fasta"))
+                MsgBox("Analysis Complete! Please check the 'Concatenation.tree' in output folder.")
+            Else
+                MsgBox("Analysis Failed!")
+            End If
+        Else
+            MsgBox("You should Combine the results first!")
+        End If
+    End Sub
+    Public Sub Make_Coalescent_Tree(ByVal fasta_folder As String)
+
+        If Directory.Exists(fasta_folder) Then
+            timer_id = 4
+            Dim count As Integer = 0
+            PB_value = 0
+            Dim parallelOptions As New ParallelOptions()
+            If File.Exists(Path.Combine(fasta_folder, "combined.trees")) Then
+                File.Delete(Path.Combine(fasta_folder, "combined.trees"))
+            End If
+            Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
+                                                                     count += 1
+                                                                     PB_value = count / refsView.Count * 100
+                                                                     If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                         Dim fasta_file As String = Path.Combine(fasta_folder, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".fasta")
+                                                                         Dim tree_file As String = Path.Combine(fasta_folder, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".tree")
+                                                                         If File.Exists(fasta_file) Then
+                                                                             Dim my_args() As String = {"1", """" + fasta_file + """",
+                                                                             """" + tree_file + """",
+                                                                             "no",
+                                                                             "0",
+                                                                             "1"
+                                                                             }
+                                                                             do_build_tree(my_args)
+                                                                         End If
+                                                                     End If
+                                                                 End Sub)
+            PB_value = -1
+            For i As Integer = 1 To refsView.Count
+                If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                    Dim tree_file As String = Path.Combine(fasta_folder, DataGridView1.Rows(i - 1).Cells(2).Value.ToString + ".tree")
+                    If File.Exists(tree_file) Then
+                        Dim fileContent As String = File.ReadAllText(tree_file)
+                        Dim commaCount As Integer = fileContent.Count(Function(c) c = ",")
+                        ' 检查逗号数量是否大于等于3物种数量大于等于4
+                        If commaCount >= 3 Then
+                            CombineFiles(Path.Combine(fasta_folder, "combined.trees"), tree_file)
+                        End If
+                    End If
+                End If
+            Next
+            Dim SI_astral As New ProcessStartInfo()
+            SI_astral.FileName = currentDirectory + "analysis\astral.exe" ' 替换为实际的命令行程序路径
+            SI_astral.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+            SI_astral.CreateNoWindow = True
+            SI_astral.Arguments = "-i " + """" + Path.Combine(fasta_folder, "combined.trees") + """"
+            SI_astral.Arguments += " -o " + """" + Path.Combine(TextBox1.Text, "Coalescent.tree") + """"
+            Dim process_filter As Process = Process.Start(SI_astral)
+            process_filter.WaitForExit()
+            process_filter.Close()
+            MsgBox("Analysis Complete! Please check the 'Coalescent.tree' in output folder.")
+        Else
+            MsgBox("You should Combine the results first!")
+        End If
+    End Sub
+    Public Sub do_build_tree(ByVal args() As String)
+        Dim SI_build_tree As New ProcessStartInfo()
+        SI_build_tree.FileName = currentDirectory + "analysis\build_tree.exe" ' 替换为实际的命令行程序路径
+        SI_build_tree.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+        If args(0) = "1" Then
+            SI_build_tree.CreateNoWindow = True
+        Else
+            SI_build_tree.CreateNoWindow = False
+        End If
+        SI_build_tree.Arguments = "-input " + args(1)
+        SI_build_tree.Arguments += " -output " + args(2)
+        SI_build_tree.Arguments += " -bootstrap_output_dir " + args(3)
+        SI_build_tree.Arguments += " -num_bootstraps " + args(4)
+        SI_build_tree.Arguments += " -num_processes " + args(5)
+        Dim process_filter As Process = Process.Start(SI_build_tree)
+        process_filter.WaitForExit()
+        process_filter.Close()
+    End Sub
+    Private Sub Trim_ConfirmClickedHandler()
+        Select Case MenuClicked
+            Case "batch_trim_with_ref"
+                timer_id = 4
+                PB_value = 0
+                Dim th1 As New Thread(AddressOf menu_batch_align_blast)
+                th1.Start()
+            Case "trim_with_ref"
+                timer_id = 4
+                PB_value = 0
+                Dim th1 As New Thread(AddressOf menu_align_blast)
+                th1.Start()
+            Case Else
+        End Select
+    End Sub
+    Private Sub Basic_ConfirmClickedHandler()
+        Select Case MenuClicked
+            Case "filter"
+                menu_filter()
+            Case "refilter"
+                menu_refilter()
+            Case "assemble"
+                menu_assemble()
+            Case "batch_auto_assemble"
+                menu_batch_auto_assemble()
+            Case "auto_assemble"
+                menu_auto_assemble()
+            Case "iteration"
+                menu_iteration()
+            Case "muti_iteration"
+                menu_muti_iteration()
+            Case "plant_cp"
+                form_config_plasty.NumericUpDown1.Value = 31
+                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
+                RichTextBox1.AppendText("Cite PGA:" + vbCrLf + "Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50" + vbCrLf)
+                menu_plant_cp()
+            Case "plant_mito"
+                form_config_plasty.NumericUpDown1.Value = 63
+                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
+                menu_plant_mito()
+            Case "animal_mito"
+                form_config_plasty.NumericUpDown1.Value = 31
+                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
+                menu_animal_mito()
+            Case "batch_plant_cp"
+                form_config_plasty.NumericUpDown1.Value = 31
+                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
+                RichTextBox1.AppendText("Cite PGA:" + vbCrLf + "Qu X-J, Moore MJ, Li D-Z, Yi T-S. 2019. PGA: a software package for rapid, accurate, and flexible batch annotation of plastomes. Plant Methods 15:50" + vbCrLf)
+                menu_batch_plant_cp()
+            Case "batch_plant_mito"
+                form_config_plasty.NumericUpDown1.Value = 63
+                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
+                menu_batch_plant_mito()
+            Case "batch_animal_mito"
+                form_config_plasty.NumericUpDown1.Value = 31
+                RichTextBox1.Text = "Cite NOVOPlasty 4.3.4:" + vbCrLf + "Dierckxsens N., Mardulyn P. and Smits G. (2016) NOVOPlasty: De novo assembly of organelle genomes from whole genome data. Nucleic Acids Research, doi: 10.1093/nar/gkw955" + vbCrLf
+                menu_batch_animal_mito()
+            Case "batch_re_assemble"
+                menu_batch_re_assemble()
+            Case "null"
+            Case Else
+        End Select
+        Select Case form_config_basic.ComboBox1.SelectedIndex
+            Case 0
+                sb = -1
+            Case 1
+                sb = 0
+            Case 2
+                sb = 10000
+        End Select
+    End Sub
+
+    Private Sub 参考序列建树ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 参考序列建树ToolStripMenuItem.Click
+        MenuClicked = "build_tree_refs"
+        form_config_tree.GroupBox2.Enabled = False
+        form_config_tree.Show()
+    End Sub
+
+    Private Sub Main_Form_VisibleChanged(sender As Object, e As EventArgs) Handles Me.VisibleChanged
+
 
     End Sub
 End Class

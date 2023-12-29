@@ -401,7 +401,6 @@ def Get_Contig_v6(_reads_dict, slice_len, _dict, seed, kmer_size, iteration = 10
 
 def process_key_value(args, key, failed_count, result_dict, ref_path_dict, iteration, soft_boundary, loop_count):
     limit = args.limit_count
-    depth = 0
     contig_best_path = os.path.join(args.o, "results", key + ".fasta")
     contig_all_path = os.path.join(args.o, "contigs_all", key + ".fasta")
     if os.path.isfile(contig_best_path) == False:
@@ -468,6 +467,12 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
             filtered_dict = {k: v for k, v in filtered_dict.items() if v[0] > limit or v[3] > 0}
         # 纠正深度上限, 获取参考序列的深度修正权重
         # filtered_dict[0排除了上限的过滤深度，1位置，2方向，3修正参考序列深度]
+        if len(filtered_dict) < 3:
+            if os.path.isfile(contig_best_path): os.remove(contig_best_path)
+            if os.path.isfile(contig_all_path): os.remove(contig_all_path)
+            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough reads from filter.')
+            result_dict[key] = {"status":"insufficient reads", "value": 0}
+            return failed_count, key, result_dict[key]
         temp_quar = Quartile([v[0] for v in filtered_dict.values()])
         depth_upper = int((temp_quar[2] - temp_quar[0]) * 1.5 + temp_quar[2])
         for k, v in list(filtered_dict.items()): 
@@ -485,7 +490,7 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
             failed_count += 1
             if os.path.isfile(contig_best_path): os.remove(contig_best_path)
             if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough reads from filter. Estimate depth:', depth ,' '*16)
+            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough reads from filter.')
             result_dict[key] = {"status":"insufficient reads", "value": 0}
             return failed_count, key, result_dict[key]
         # 处理ref_dict，标记不在filtered_dict中的kmer
@@ -502,7 +507,7 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
             failed_count += 1
             if os.path.isfile(contig_best_path): os.remove(contig_best_path)
             if os.path.isfile(contig_all_path): os.remove(contig_all_path)
-            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough seeds. Estimate depth:', depth ," "*16)
+            Write_Print(os.path.join(args.o,  "log.txt"), 'Could not get enough seeds.')
             result_dict[key] = {"status":"no seed", "value": 0}
             return failed_count, key, result_dict[key]
         # 获取seed集合，用来加速集合操作
@@ -569,13 +574,13 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
 if __name__ == '__main__':
     if sys.platform.startswith('win'):
         multiprocessing.freeze_support()
-    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=0)
-    pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=63)
+    pars.add_argument('-ka', metavar='<int>', type=int, help='''kmer of assemble''',  default=39)
+    pars.add_argument('-k_max', metavar='<int>', type=int, help='''max kmer of assemble''',  default=39)
     pars.add_argument('-k_min', metavar='<int>', type=int, help='''max kmer of assemble''',  default=21)
     pars.add_argument('-limit_count', metavar='<int>', type=int, help='''limit of kmer count''', required=False, default=2)
     pars.add_argument('-iteration', metavar='<int>', type=int, help='''iteration''', required=False, default=8192)
     pars.add_argument('-sb', '--soft_boundary', metavar='<int>', type=int, help='''soft boundary，default = [0], -1时为切片长度的一半''', required=False, default=0)
-    pars.add_argument('-p', '--processes', metavar='<int>', type=int, help='Number of processes for multiprocessing', default= max(multiprocessing.cpu_count()-1,2))
+    pars.add_argument('-p', '--processes', metavar='<int>', type=int, help='Number of processes for multiprocessing', default= 1)#max(multiprocessing.cpu_count()-1,2))
     args = pars.parse_args()
     try:
         # 初始化文件夹

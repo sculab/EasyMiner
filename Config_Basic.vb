@@ -31,7 +31,7 @@
     End Sub
 
     Private Sub Config_Basic_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ComboBox1.SelectedIndex = 1
+        ComboBox1.SelectedIndex = 0
     End Sub
 
     Private Sub CheckBox4_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox4.CheckedChanged

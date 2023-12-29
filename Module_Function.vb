@@ -91,6 +91,11 @@ Module Module_Function
     End Function
     Public Sub safe_copy(ByVal source As String, ByVal target As String, Optional ByVal overwrite As Boolean = True)
         If File.Exists(source) Then
+            Dim directoryPath As String = Path.GetDirectoryName(target)
+            If Not Directory.Exists(directoryPath) Then
+                ' 如果目录不存在，则创建目录树
+                Directory.CreateDirectory(directoryPath)
+            End If
             File.Copy(source, target, overwrite)
             Dim myFileInfo As FileInfo = New FileInfo(target)
             myFileInfo.IsReadOnly = False
@@ -127,8 +132,15 @@ Module Module_Function
         If Dec_Sym <> "." Then
             MsgBox("Notice: We will use dat (.) as decimal quotation instead of comma (,). We recommand to change your system's number format to English! ")
         End If
+        Dim driveInfo As New DriveInfo(Path.GetPathRoot(root_path))
+
+        ' 判断是否为可移动类型
+        If driveInfo.DriveType = DriveType.Removable Then
+            MsgBox("请勿在可移动磁盘上运行程序！" + Chr(13) + "Please do not run the program on a removable disk!")
+            End
+        End If
     End Sub
-    Public Sub MergeFiles(ByVal FilePath As String, ByVal FilePath2add As String)
+    Public Sub CombineFiles(ByVal FilePath As String, ByVal FilePath2add As String)
         Try
             Using firstFileWriter As New StreamWriter(FilePath, True) ' "True" appends to the file
                 Using secondFileReader As New StreamReader(FilePath2add)
@@ -139,7 +151,7 @@ Module Module_Function
                 End Using
                 'firstFileWriter.Write(vbCrLf)
             End Using
-            Console.WriteLine("Files merged successfully.")
+            Console.WriteLine("Files Combined Successfully.")
         Catch ex As Exception
             Console.WriteLine("An error occurred: " & ex.Message)
         End Try
@@ -241,18 +253,21 @@ Module Module_Function
             Try
                 If Not File.Exists(file_path) Then
                     Dim source_file As String = database_url & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
-                    My.Computer.FileSystem.CreateDirectory(data_folder)
+                    Directory.CreateDirectory(data_folder)
 
                     Dim response = Await httpClient.GetAsync(source_file)
                     response.EnsureSuccessStatusCode()
 
                     Dim content = Await response.Content.ReadAsByteArrayAsync()
                     File.WriteAllBytes(file_path, content)
+                    form_main.RichTextBox1.AppendText("Get: " + gb_id + vbCrLf)
+                Else
+                    form_main.RichTextBox1.AppendText("Get: " + gb_id + vbCrLf)
                 End If
                 Return file_path
             Catch ex As Exception
                 ' 如果发生异常，等待一段时间后重试
-                form_main.RichTextBox1.AppendText("Could not download " + gb_id + vbCrLf)
+                form_main.RichTextBox1.AppendText("Failed: " + gb_id + vbCrLf)
                 retryCount += 1
                 If retryCount <= maxRetries Then
                     Thread.Sleep(TimeSpan.FromSeconds(1)) ' 等待5秒后重试
@@ -292,9 +307,9 @@ Module Module_Function
     End Function
     Public Sub do_PGA(ByVal gb_file As String, ByVal taregt_file As String, ByVal output_dir As String)
         Dim random_folder As String = GenerateRandomString(8)
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "target"))
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "reference"))
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "result"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "target"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "reference"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "result"))
         safe_copy(gb_file, Path.Combine(currentDirectory, "temp", random_folder, "reference", "my_ref.gb"))
         safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "target", "my_target.fasta"))
 
@@ -316,7 +331,7 @@ Module Module_Function
 
     Public Sub do_trim_blast(ByVal ref_file As String, ByVal taregt_file As String)
         Dim random_folder As String = GenerateRandomString(8)
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder))
         safe_copy(ref_file, Path.Combine(currentDirectory, "temp", random_folder, "my_ref.fasta"))
         safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "my_target.fasta"))
         Dim output_file As String = Path.Combine(currentDirectory, "temp", random_folder, "my_trimed.fasta")
@@ -325,7 +340,9 @@ Module Module_Function
         SI_build_trimed.FileName = currentDirectory + "analysis\build_trimed.exe" ' 替换为实际的命令行程序路径
         SI_build_trimed.WorkingDirectory = currentDirectory + "analysis" ' 替换为实际的运行文件夹路径
         SI_build_trimed.CreateNoWindow = True
-        SI_build_trimed.Arguments = "-r ..\temp\" + random_folder + "\my_ref.fasta -i ..\temp\" + random_folder + "\my_target.fasta -o  ..\temp\" + random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder
+        SI_build_trimed.Arguments = "-r ..\temp\" + random_folder + "\my_ref.fasta -i ..\temp\" + random_folder + "\my_target.fasta -o  ..\temp\"
+        SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m " + CInt(form_config_trim.CheckBox1.Checked).ToString
+        SI_build_trimed.Arguments += " -pec " + form_config_trim.NumericUpDown1.Value.ToString
         Dim process_build_trimed As Process = New Process()
         process_build_trimed.StartInfo = SI_build_trimed
         process_build_trimed.Start()

@@ -18,8 +18,8 @@ Public Class Welcome
         form_main.Show()
     End Sub
     Public Sub load_main()
-        My.Computer.FileSystem.CreateDirectory(root_path + "results")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp")
+        Directory.CreateDirectory(root_path + "results")
+        Directory.CreateDirectory(root_path + "temp")
 
         settings = ReadSettings(root_path + "analysis\" + "setting.ini")
 
@@ -29,6 +29,7 @@ Public Class Welcome
         exe_mode = settings.GetValueOrDefault("mode", "basic")
         database_url = settings.GetValueOrDefault("database_url", "http://life-bioinfo.tpddns.cn:8445/database/")
         filter_thread = CInt(settings.GetValueOrDefault("filter_thread", "2"))
+        align_app = settings.GetValueOrDefault("align_app", "muscle")
 
         If language = "CH" Then
             to_ch()

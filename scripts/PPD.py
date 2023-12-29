@@ -230,7 +230,7 @@ def run_muscle(cmd):
     Write_Print("../temp/PPD.log",cmd)
     os.system(cmd + " 2>nul")
 
-def muscle_alignment(seq_directory, threads=1):
+def muscle_alignment(seq_directory, threads=1, align = "muscle"):
     ### input files are from s3
     genes_result_s3 = seq_directory.replace("s1_Gene/", "s3_add_ref_Gene/")
 
@@ -247,7 +247,10 @@ def muscle_alignment(seq_directory, threads=1):
             fname = os.path.join(genes_result_s3, file).replace("\\","/").replace("//","/")
             output_name = os.path.join(genes_result_s4, file).replace("\\","/").replace("//","/")
             if file != ".DS_Store":
-                cmd = r"..\analysis\muscle_warpper.exe -i" + " " + '"' + fname + '"' + " -o " + '"' + output_name + '"'
+                if align == "muscle":
+                    cmd = r"..\analysis\muscle_warpper.exe -i" + " " + '"' + fname + '"' + " -o " + '"' + output_name + '"'
+                else:
+                    cmd = r"..\analysis\mafft-win\mafft.bat --adjustdirection --auto --thread " + str(threads) + " " + '"' + fname + '"' + " > " + '"' + output_name + '"'
                 commands.append(cmd)
         # Use multiprocessing to execute the commands in parallel
         with Pool(processes=threads) as pool:
@@ -930,7 +933,7 @@ def main():
     parser.add_argument("-th", "--thread", dest='threads_num', type=int, default=8,
                         help='the number of CPUs you are using. Default is 1.')
     
-    parser.add_argument("-aln", "--alignment", dest='alignment app', type=str, default="mucscle",
+    parser.add_argument("-aln", "--alignment", dest='alignment app', type=str, default="muscle",
                         help='the app to aligment. Default is 1.')
 
     args = parser.parse_args()
@@ -987,8 +990,7 @@ def main():
         ### s4
         output_directory_s4 = output_directory + "/" + args.seq_type + "/" + "s4_alignments/"
         if os.path.isdir(output_directory_s4) == False:
-
-            muscle_alignment(seq_result_path, threads = args.threads_num)
+            muscle_alignment(seq_result_path, threads = args.threads_num, align=args.aligment)
             Write_Print("../temp/PPD.log",args.threads_num)
             Write_Print("../temp/PPD.log","s4 finished and ready for s5")
 

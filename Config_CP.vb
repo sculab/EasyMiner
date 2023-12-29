@@ -124,7 +124,7 @@ Public Class Config_CP
     End Sub
     Public Sub get_gb(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+        Directory.CreateDirectory(root_path + "temp\org_seq")
         Dim sw As New StreamWriter(root_path + "temp\temp.gb")
         Dim info_list As String = currentDirectory + "\analysis\info_list_" + database_type + ".tsv"
         Dim total_line As String = GetLineCount(info_list)
@@ -156,10 +156,10 @@ Public Class Config_CP
     End Sub
     Public Sub get_fasta(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+        Directory.CreateDirectory(root_path + "temp\org_seq")
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         out_dir = form_main.TextBox1.Text.Replace("\", "/")
         Dim info_list As String = currentDirectory + "\analysis\info_list_" + database_type + ".tsv"
         Dim total_line As String = GetLineCount(info_list)
@@ -186,12 +186,12 @@ Public Class Config_CP
     End Sub
     Public Sub get_AGS353(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+        Directory.CreateDirectory(root_path + "temp\org_seq")
         DeleteDir(root_path + "temp\AGS353")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp\AGS353")
+        Directory.CreateDirectory(root_path + "temp\AGS353")
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         out_dir = form_main.TextBox1.Text.Replace("\", "/")
         Dim info_list As String = currentDirectory + "\analysis\info_list_" + database_type + ".tsv"
         Dim total_line As String = GetLineCount(info_list)
@@ -233,10 +233,10 @@ Public Class Config_CP
     End Sub
     Public Sub assemble_genome(ByVal database_type As String)
         DeleteDir(root_path + "temp\org_seq")
-        My.Computer.FileSystem.CreateDirectory(root_path + "temp\org_seq")
+        Directory.CreateDirectory(root_path + "temp\org_seq")
         ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
         DeleteDir(ref_dir)
-        My.Computer.FileSystem.CreateDirectory(ref_dir)
+        Directory.CreateDirectory(ref_dir)
         out_dir = form_main.TextBox1.Text.Replace("\", "/")
         Dim my_list As New List(Of String)
         Using reader As New StreamReader(currentDirectory + "\analysis\info_list_" + database_type + ".tsv")

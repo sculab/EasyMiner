@@ -18,7 +18,7 @@ Public Class Config_barcode
     End Sub
     Public Sub run_barcode()
         PB_value = 33
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", "temp_refs"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", "temp_refs"))
         clean_fasta_file(TextBox2.Text, Path.Combine(currentDirectory, "temp", "temp_refs", "barcode.fasta"))
         clean_fasta_file(TextBox3.Text, Path.Combine(currentDirectory, "temp", "temp_refs", "barcode_refs.fasta"))
         If CheckBox1.Checked = False Then

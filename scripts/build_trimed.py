@@ -1,5 +1,6 @@
 import os
-import re
+from Bio import SeqIO
+import statistics
 import argparse
 import subprocess
 import shutil
@@ -10,6 +11,8 @@ def main():
     parser.add_argument("-r", "--ref", required=False, default=r"..\temp\my_ref.fasta", help="参考序列的路径")
     parser.add_argument("-o", "--output", required=False, default=r"..\temp\trimed.fasta", help="结果文件的路径")
     parser.add_argument("-b", "--output_blast", required=False, default=r"..\temp", help="结果文件的路径")
+    parser.add_argument("-m", "--mode", metavar='<int>', type=int, required=False, default=1, help="0:使用匹配上的所有片段，只使用最长匹配片段")
+    parser.add_argument("-pec", "--pec", metavar='<int>', type=int, required=False, default=0, help="只保留大于某个值的片段")
 
     args = parser.parse_args()
     subject_file = args.ref
@@ -23,21 +26,34 @@ def main():
     if os.path.exists(output_db + ".nhr"): os.remove(output_db + ".nsq")
     if os.path.exists(output_blast): os.remove(output_blast)
 
+    # 用于存储所有序列的长度
+    sequence_lengths = []
+    # 逐个读取FASTA文件中的序列并获取其长度
+    for record in SeqIO.parse(subject_file, "fasta"):
+        sequence_lengths.append(len(record.seq))
+    # 计算序列长度的中值
+    median_length = statistics.median(sequence_lengths)
+
     makeblastdb_cmd = [r"..\analysis\makeblastdb.exe", "-in", subject_file, "-dbtype", "nucl", "-out", output_db]
     print(" ".join(makeblastdb_cmd))
     subprocess.run(makeblastdb_cmd, check=True)
     blastn_cmd = [r"..\analysis\blastn.exe", "-query", query_file, "-db", output_db, "-out", output_blast, "-outfmt", "6", "-evalue", "10"]
     subprocess.run(blastn_cmd, check=True)
     if os.path.exists(output_blast):
-        fragments = merge_fragments(get_fragments(output_blast))
+        fragments = merge_fragments(get_fragments(output_blast)) if args.mode == 0 else get_fragments(output_blast)
         with open(query_file, 'r') as file:
             header = next(file)
             sequence = file.read().replace('\n', '')
         if len(fragments) >= 1:
+            if args.mode: fragments = [fragments[0]]
             combined_sequence = extract_and_combine_fragments(sequence, fragments)
-            with open(output_file, 'w') as file:
-                file.write(header )
-                file.write(combined_sequence + '\n')
+            if len(combined_sequence) / median_length * 100 > args.pec:
+                with open(output_file, 'w') as file:
+                    file.write(header )
+                    file.write(combined_sequence + '\n')
+            else:
+                if os.path.exists(output_file):
+                    shutil.remove(output_file)
         else:
             if os.path.exists(output_file):
                 shutil.remove(output_file)
@@ -80,7 +96,12 @@ def get_fragments(blast_output_file):
             parts = line.split("\t")
             if int(parts[6]) < int(parts[7]):
                 fragments.append([int(parts[6]), int(parts[7])])
-    return fragments
+    # 自定义排序键函数，计算两个值的差的绝对值
+    def sort_key(fragment):
+        return abs(fragment[0] - fragment[1])
+    # 使用sorted函数进行排序，key参数指定排序的键函数
+    sorted_fragments = sorted(fragments, key=sort_key, reverse=True)
+    return sorted_fragments
 
 if __name__ == "__main__":
     main()

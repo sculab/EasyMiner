@@ -38,7 +38,7 @@ Public Class Config_Plasty
             Exit Sub
         End If
         DeleteDir(currentDirectory + "temp\NOVOPlasty")
-        My.Computer.FileSystem.CreateDirectory(currentDirectory + "temp\NOVOPlasty")
+        Directory.CreateDirectory(currentDirectory + "temp\NOVOPlasty")
         waiting = True
         timer_id = 1
         'If reads_length = 0 Then
@@ -134,7 +134,7 @@ Public Class Config_Plasty
                     If File.Exists(currentDirectory + "temp\output.fasta") Then
                         File.Delete(currentDirectory + "temp\output.fasta")
                     End If
-                    My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
+                    Directory.CreateDirectory(out_dir + "\Organelle\")
                     If cpg_assemble_mode <> 0 Then
                         File.Copy(assemble_file, out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
                         Dim result0 As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)

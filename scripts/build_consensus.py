@@ -298,15 +298,26 @@ def main():
     nchar = args.n
     fill = args.fill
     maxdel = args.maxdel
+    try:
+        sequences, coverages, insertions, refname, reflength = process_sam_header(opener(filename))
+        reads_total, reads_mapped = parse_sam_file(opener(filename), sequences, coverages, insertions, refname, maxdel)
+        print(f"A total of {reads_total} reads were processed, out of which, {reads_mapped} reads were mapped.\n")
+        sequences = reformat_sequences(sequences, coverages, insertions)
+        sequences = filter_empty_references(sequences, coverages, insertions)
+        if args.save_mutations: save_mutations_table(sequences, coverages, outfolder, prefix.replace("_tmp",""), min_depth)
+        save_fastas(sequences, fill, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds)
+    except Exception as e:
+        Write_Print("..\log.txt", "error:" , e)
 
-    sequences, coverages, insertions, refname, reflength = process_sam_header(opener(filename))
-    reads_total, reads_mapped = parse_sam_file(opener(filename), sequences, coverages, insertions, refname, maxdel)
-    print(f"A total of {reads_total} reads were processed, out of which, {reads_mapped} reads were mapped.\n")
-    sequences = reformat_sequences(sequences, coverages, insertions)
-    sequences = filter_empty_references(sequences, coverages, insertions)
-    if args.save_mutations: save_mutations_table(sequences, coverages, outfolder, prefix.replace("_tmp",""), min_depth)
-    save_fastas(sequences, fill, coverages, outfolder, prefix, min_depth, insertions, nchar, thresholds)
-
+def Write_Print(log_path, *log_str, sep = " "):
+    """
+    记录日志并打印
+    """
+    line = sep.join(map(str,log_str)).strip()
+    with open(log_path, 'a') as out:
+        out.write(line)
+        out.write('\n')
+    print(line)
 
 if __name__ == "__main__":
     main()
