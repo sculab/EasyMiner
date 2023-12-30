@@ -122,7 +122,7 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
         if os.path.exists(os.path.join(out_folder, folder_name + "_tmp.fasta")): os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
         if os.path.exists(os.path.join(out_folder, folder_name + ".sam")): os.remove(os.path.join(out_folder, folder_name + ".sam"))
         if os.path.exists(os.path.join(out_folder, folder_name + "_ref.fasta")): os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
-        if os.path.exists(os.path.join(out_folder, folder_name + ".png")): os.remove(os.path.join(out_folder, folder_name + ".pngs"))
+        if os.path.exists(os.path.join(out_folder, folder_name + ".png")): os.remove(os.path.join(out_folder, folder_name + ".png"))
         exit(0)
     os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
     os.remove(os.path.join(out_folder, folder_name + ".sam"))

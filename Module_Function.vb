@@ -91,6 +91,11 @@ Module Module_Function
     End Function
     Public Sub safe_copy(ByVal source As String, ByVal target As String, Optional ByVal overwrite As Boolean = True)
         If File.Exists(source) Then
+            Dim directoryPath As String = Path.GetDirectoryName(target)
+            If Not Directory.Exists(directoryPath) Then
+                ' 如果目录不存在，则创建目录树
+                Directory.CreateDirectory(directoryPath)
+            End If
             File.Copy(source, target, overwrite)
             Dim myFileInfo As FileInfo = New FileInfo(target)
             myFileInfo.IsReadOnly = False
@@ -99,20 +104,13 @@ Module Module_Function
     Public Sub DeleteDir(ByVal aimPath As String)
         If (aimPath(aimPath.Length - 1) <> Path.DirectorySeparatorChar) Then
             aimPath += Path.DirectorySeparatorChar
-        End If  '判断待删除的目录是否存在,不存在则退出.  
-        If (Not Directory.Exists(aimPath)) Then Exit Sub ' 
-        Dim fileList() As String = Directory.GetFileSystemEntries(aimPath)  ' 遍历所有的文件和目录  
-        For Each FileName As String In fileList
-            If (Directory.Exists(FileName)) Then  ' 先当作目录处理如果存在这个目录就递归
-                DeleteDir(aimPath + Path.GetFileName(FileName))
-                Directory.Delete(aimPath + Path.GetFileName(FileName))
-            Else  ' 否则直接Delete文件  
-                Try
-                    File.Delete(aimPath + Path.GetFileName(FileName))
-                Catch ex As Exception
-                End Try
-            End If
-        Next  '删除文件夹
+        End If
+        If (Not Directory.Exists(aimPath)) Then Exit Sub
+        Try
+            Directory.Delete(aimPath, True) ' 第二个参数设置为 True 表示递归删除目录及其内容
+        Catch ex As Exception
+            ' 处理删除失败的情况
+        End Try
     End Sub
     Public Sub format_path()
         Select Case TargetOS
@@ -134,8 +132,15 @@ Module Module_Function
         If Dec_Sym <> "." Then
             MsgBox("Notice: We will use dat (.) as decimal quotation instead of comma (,). We recommand to change your system's number format to English! ")
         End If
+        Dim driveInfo As New DriveInfo(Path.GetPathRoot(root_path))
+
+        ' 判断是否为可移动类型
+        If driveInfo.DriveType = DriveType.Removable Then
+            MsgBox("请勿在可移动磁盘上运行程序！" + Chr(13) + "Please do not run the program on a removable disk!")
+            End
+        End If
     End Sub
-    Public Sub MergeFiles(ByVal FilePath As String, ByVal FilePath2add As String)
+    Public Sub CombineFiles(ByVal FilePath As String, ByVal FilePath2add As String)
         Try
             Using firstFileWriter As New StreamWriter(FilePath, True) ' "True" appends to the file
                 Using secondFileReader As New StreamReader(FilePath2add)
@@ -146,12 +151,12 @@ Module Module_Function
                 End Using
                 'firstFileWriter.Write(vbCrLf)
             End Using
-            Console.WriteLine("Files merged successfully.")
+            Console.WriteLine("Files Combined Successfully.")
         Catch ex As Exception
             Console.WriteLine("An error occurred: " & ex.Message)
         End Try
     End Sub
-    Private Function InlineAssignHelper(Of T)(ByRef target As T, ByVal value As T) As T
+    Public Function InlineAssignHelper(Of T)(ByRef target As T, ByVal value As T) As T
         target = value
         Return value
     End Function
@@ -248,18 +253,21 @@ Module Module_Function
             Try
                 If Not File.Exists(file_path) Then
                     Dim source_file As String = database_url & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
-                    My.Computer.FileSystem.CreateDirectory(data_folder)
+                    Directory.CreateDirectory(data_folder)
 
                     Dim response = Await httpClient.GetAsync(source_file)
                     response.EnsureSuccessStatusCode()
 
                     Dim content = Await response.Content.ReadAsByteArrayAsync()
                     File.WriteAllBytes(file_path, content)
+                    form_main.RichTextBox1.AppendText("Get: " + gb_id + vbCrLf)
+                Else
+                    form_main.RichTextBox1.AppendText("Get: " + gb_id + vbCrLf)
                 End If
                 Return file_path
             Catch ex As Exception
                 ' 如果发生异常，等待一段时间后重试
-                form_main.RichTextBox1.AppendText("Could not download " + gb_id + vbCrLf)
+                form_main.RichTextBox1.AppendText("Failed: " + gb_id + vbCrLf)
                 retryCount += 1
                 If retryCount <= maxRetries Then
                     Thread.Sleep(TimeSpan.FromSeconds(1)) ' 等待5秒后重试
@@ -299,9 +307,9 @@ Module Module_Function
     End Function
     Public Sub do_PGA(ByVal gb_file As String, ByVal taregt_file As String, ByVal output_dir As String)
         Dim random_folder As String = GenerateRandomString(8)
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "target"))
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "reference"))
-        My.Computer.FileSystem.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "result"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "target"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "reference"))
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder, "result"))
         safe_copy(gb_file, Path.Combine(currentDirectory, "temp", random_folder, "reference", "my_ref.gb"))
         safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "target", "my_target.fasta"))
 
@@ -320,4 +328,103 @@ Module Module_Function
         safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "target", "my_target.fasta"), Path.Combine(output_dir, "output.fasta"))
         Directory.Delete(Path.Combine(currentDirectory, "temp", random_folder), True)
     End Sub
+
+    Public Sub do_trim_blast(ByVal ref_file As String, ByVal taregt_file As String)
+        Dim random_folder As String = GenerateRandomString(8)
+        Directory.CreateDirectory(Path.Combine(currentDirectory, "temp", random_folder))
+        safe_copy(ref_file, Path.Combine(currentDirectory, "temp", random_folder, "my_ref.fasta"))
+        safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "my_target.fasta"))
+        Dim output_file As String = Path.Combine(currentDirectory, "temp", random_folder, "my_trimed.fasta")
+
+        Dim SI_build_trimed As New ProcessStartInfo()
+        SI_build_trimed.FileName = currentDirectory + "analysis\build_trimed.exe" ' 替换为实际的命令行程序路径
+        SI_build_trimed.WorkingDirectory = currentDirectory + "analysis" ' 替换为实际的运行文件夹路径
+        SI_build_trimed.CreateNoWindow = True
+        SI_build_trimed.Arguments = "-r ..\temp\" + random_folder + "\my_ref.fasta -i ..\temp\" + random_folder + "\my_target.fasta -o  ..\temp\"
+        SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m " + CInt(form_config_trim.CheckBox1.Checked).ToString
+        SI_build_trimed.Arguments += " -pec " + form_config_trim.NumericUpDown1.Value.ToString
+        Dim process_build_trimed As Process = New Process()
+        process_build_trimed.StartInfo = SI_build_trimed
+        process_build_trimed.Start()
+        process_build_trimed.WaitForExit()
+        process_build_trimed.Close()
+        If File.Exists(Path.Combine(currentDirectory, "temp", random_folder, "my_trimed.fasta")) Then
+            safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "my_trimed.fasta"), taregt_file)
+        ElseIf File.Exists(taregt_file) Then
+            File.Delete(taregt_file)
+        End If
+        Directory.Delete(Path.Combine(currentDirectory, "temp", random_folder), True)
+    End Sub
+
+    Public Function make_ref_dict(ByVal wd As String, ByVal rd As String, ByVal output_dir As String, ByVal lkd As String) As Double
+        Dim SI_filter As New ProcessStartInfo()
+        SI_filter.FileName = currentDirectory + "analysis\main_filter.exe" ' 替换为实际的命令行程序路径
+        SI_filter.WorkingDirectory = wd
+        SI_filter.CreateNoWindow = False
+        SI_filter.Arguments = "-r " + """" + rd + """"
+        SI_filter.Arguments += " -o " + """" + output_dir + """"
+        SI_filter.Arguments += " -kf " + k1.ToString
+        SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
+        SI_filter.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
+        SI_filter.Arguments += " -lkd " + lkd
+        SI_filter.Arguments += " -m 2"
+        Dim process_filter As Process = Process.Start(SI_filter)
+        ' 用于存储观察到的最大内存使用量
+
+        ' 用于存储观察到的最大内存使用量
+        Dim peakMemoryUsage As Long = 0
+        If TargetOS = "macos" Then
+            process_filter.WaitForExit()
+            peakMemoryUsage = 8
+        Else
+            Dim pc As New PerformanceCounter("Process", "Working Set - Private", process_filter.ProcessName)
+
+            ' 循环检查进程是否仍在运行，并更新峰值内存使用量
+            While Not process_filter.HasExited
+                Try
+                    ' 读取当前的工作集大小，并更新峰值内存使用量
+                    Dim currentMemoryUsage As Long = pc.NextValue()
+                    peakMemoryUsage = Math.Max(peakMemoryUsage, currentMemoryUsage)
+                Catch ex As Exception
+                    ' 在这里处理可能发生的异常
+                    Console.WriteLine("Error: " & ex.Message)
+                End Try
+
+                ' 等待1秒再次检查
+                Threading.Thread.Sleep(500)
+            End While
+            peakMemoryUsage = peakMemoryUsage / 1024 / 1024 / 1024
+        End If
+        process_filter.Close()
+        Return peakMemoryUsage
+    End Function
+
+    Public Function GetReadLength(filePath As String) As Integer
+        Try
+            Using reader As New StreamReader(filePath)
+                Dim line As String
+                Dim maxLength As Integer = 0
+                Dim lineNumber As Integer = 0
+
+                While Not reader.EndOfStream And lineNumber < 400
+                    line = reader.ReadLine()
+                    lineNumber += 1
+
+                    ' Check if the line number modulo 4 equals 2
+                    If lineNumber Mod 4 = 2 Then
+                        ' Update maxLength if this line is longer
+                        maxLength = Math.Max(maxLength, line.Length)
+                    End If
+                End While
+
+                Return maxLength
+            End Using
+        Catch ex As IOException
+            Console.WriteLine("IO错误: " & ex.Message)
+        Catch ex As Exception
+            Console.WriteLine("一般错误: " & ex.Message)
+        End Try
+        Return 0 ' Return 0 if an error occurs or the conditions are not met
+    End Function
+
 End Module

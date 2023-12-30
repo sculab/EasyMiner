@@ -3,10 +3,10 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <StartupObject>EasyMiner.Welcome</StartupObject>
+    <StartupObject>GeneMiner2.My.MyApplication</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
-    <ApplicationIcon>easyminer.ico</ApplicationIcon>
+    <ApplicationIcon>geneminer2.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="easyminer.ico" />
+    <Content Include="geneminer2.ico" />
   </ItemGroup>
 
   <ItemGroup>

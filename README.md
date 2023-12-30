@@ -4,8 +4,19 @@ For the Chinese version of the manual, click [Here](chinese_README.md).
 
  ![](images/main_page.jpg)
 
+GeneMiner2, building upon our previous projects Easy353 and GeneMiner, operates on Windows and offers an enhanced user experience. It is designed with a user-friendly Windows graphical interface, enabling efficient and precise extraction of molecular markers on personal computers without relying on server resources.
 
-EasyMiner, advancing from its precursors Easy353 and GeneMiner, operates on Windows platforms, enhancing the user experience significantly. It is meticulously crafted with an intuitive Windows graphical interface, facilitating the efficient and precise extraction of molecular markers directly on personal computers, independent of server infrastructure. EasyMiner adeptly processes second-generation sequencing data, utilizing reference genes from genetically akin species. It further extends its capabilities to include plastid genome assembly, decomposition of gene sequences in GenBank files, and the adept identification of paralogs, thereby embodying a comprehensive tool for molecular marker analysis.
+
+GeneMiner2 efficiently and precisely extracts molecular markers from second-generation sequencing data, leveraging reference genes from closely related species. Additionally, it offers functionalities for plastid genome assembly, gene sequence decomposition in GenBank files, and the identification of paralogs.
+
+# Cite
+For the present analysis, it would be appropriate to reference our previously published paper:
+
+For general use:
+- Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. DOI: 10.1111/1755-0998.13924
+
+For obtaining Angiosperms353 genes:
+- Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
 
 
 # Install
@@ -13,26 +24,26 @@ The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper so
 [.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
 
 
-You could download from [SourceForge](https://sourceforge.net/projects/scueasyminer/) or our [site](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
+You could download from [SourceForge](https://sourceforge.net/projects/scuGeneMiner2/) or our [site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner2/).
 
 **Note: Avoid installing the software on a portable hard drive.**
 
 
 # Demo
 
-[DEMO1-Part1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1)
+[DEMO1 - A Quick Tutorial For General Use (Part 1)](https://gitee.com/sculab/GeneMiner2/tree/master/DEMO/DEMO1)
 
 
 
-[DEMO2-Part2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2)
+[DEMO2 - For Obtaining Organelle Genes (Genome) (Part 2)](https://gitee.com/sculab/GeneMiner2/tree/master/DEMO/DEMO2)
 
 
   
-[DEMO3-For Animal Mitochondrial Genome](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3)
+[DEMO3 - For Obtaining Single Copy Genes](https://gitee.com/sculab/GeneMiner2/tree/master/DEMO/DEMO3)
 
 
 
-[DEMO4-For 353 Genes](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4)
+[DEMO4 - For Obtaining Angiosperms353 Genes](https://gitee.com/sculab/GeneMiner2/tree/master/DEMO/DEMO4)
 
 
 # More Details
@@ -43,7 +54,7 @@ For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.md)
 
 For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
 
----
+
 # Tutorials
 
 # Part 1 :How to get specific gene
@@ -225,10 +236,10 @@ Firstly, acquire the gb file via [Analyse > Plant Chloroplast Genome], then impo
 
 
 
-**5.** **No result for  [Merge & Trim]?**
+**5.** **No result for  [Combine & Trim]?**
 
 
-[Batch > Merge & Trim] requires: sequencing data, reference sequences, and a catalog folder where results exist.
+[Batch > Combine & Trim] requires: sequencing data, reference sequences, and a catalog folder where results exist.
 
 **Note:** The ID number in the result folder(3) should match the imported sequencing file ID(2).  
 *Ensure there is no Chinese catalog folder.
@@ -255,7 +266,7 @@ For mitochondrial genome assembly, it's recommended to utilize the full read len
 
 
 # Contact
-If you have any questions, suggestions, or comments about EasyMiner, feel free to contact Xinyi_Yu2021@163.com.
+If you have any questions, suggestions, or comments about GeneMiner2, feel free to contact Xinyi_Yu2021@163.com.
 
 
 

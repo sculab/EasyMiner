@@ -136,7 +136,7 @@ Partial Class Config_CP
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 59
-        Button1.Text = "确定"
+        Button1.Text = "下载序列"
         Button1.UseVisualStyleBackColor = True
         ' 
         ' CheckBox1

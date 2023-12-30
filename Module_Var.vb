@@ -2,7 +2,7 @@
 
 Module Module_Var
     Public TargetOS As String = "win64"
-    Public version As String = "1.0b build 20231221"
+    Public version As String = "1.0b build 20231227"
     Public exe_mode As String
     Public database_url As String
     Public settings As Dictionary(Of String, String)
@@ -23,19 +23,24 @@ Module Module_Var
     Public form_config_plasty As New Config_Plasty
     Public form_config_cp As New Config_CP
     Public form_config_split As New Config_Split
+    Public form_config_trim As New Config_Trim
+    Public form_config_tree As New Config_Tree
     Public form_main As New Main_Form
     Public PB_value As Integer = 0
     Public info_text As String = ""
     Public language As String = "CH"
     Public add_data As Boolean = False
-    Public data_type As String = ".fq"
+    Public align_app As String = "muscle"
     Public refs_type As String = "fasta"
+    Public filter_thread As Integer = 2
     Public data_loaded As Boolean = False
     Public reads_length As Integer = 0
-    Public max_thread As Integer = 8
-    Public ref_dir, out_dir, q1, q2, k1, k2, sb As String
+    Public current_thread As Integer = 8
+    Public ref_dir, out_dir, q1, q2, k1, k2, sb, no_window As String
     Public utf8WithoutBom As New UTF8Encoding(False)
     Public cpg_down_mode As Integer = 0
     Public cpg_assemble_mode As Integer = 0
+    Public totalPhysicalMemory As Double
+    Public MenuClicked As String
 
 End Module

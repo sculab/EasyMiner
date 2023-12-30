@@ -23,10 +23,10 @@ Partial Class Main_Form
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim DataGridViewCellStyle5 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As DataGridViewCellStyle = New DataGridViewCellStyle()
         MenuStrip1 = New MenuStrip()
         文件ToolStripMenuItem = New ToolStripMenuItem()
         载入参考序列ToolStripMenuItem = New ToolStripMenuItem()
@@ -50,6 +50,7 @@ Partial Class Main_Form
         进一步过滤ToolStripMenuItem = New ToolStripMenuItem()
         拼接ToolStripMenuItem = New ToolStripMenuItem()
         全自动ToolStripMenuItem = New ToolStripMenuItem()
+        对齐参考ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator14 = New ToolStripSeparator()
         迭代ToolStripMenuItem = New ToolStripMenuItem()
         迭代ToolStripMenuItem1 = New ToolStripMenuItem()
@@ -73,8 +74,11 @@ Partial Class Main_Form
         批量ToolStripMenuItem1 = New ToolStripMenuItem()
         过滤拼接ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripMenuItem4 = New ToolStripMenuItem()
+        对齐参考ToolStripMenuItem1 = New ToolStripMenuItem()
+        ToolStripSeparator16 = New ToolStripSeparator()
         合并结果ToolStripMenuItem = New ToolStripMenuItem()
         合并比对ToolStripMenuItem = New ToolStripMenuItem()
+        构建系统发育树ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator8 = New ToolStripSeparator()
         旁系同源检测ToolStripMenuItem = New ToolStripMenuItem()
         重构序列ToolStripMenuItem = New ToolStripMenuItem()
@@ -87,8 +91,12 @@ Partial Class Main_Form
         统计结果ToolStripMenuItem = New ToolStripMenuItem()
         三方工具ToolStripMenuItem = New ToolStripMenuItem()
         序列比对ToolStripMenuItem1 = New ToolStripMenuItem()
-        切齐比对ToolStripMenuItem1 = New ToolStripMenuItem()
+        比对ToolStripMenuItem = New ToolStripMenuItem()
+        切齐ToolStripMenuItem = New ToolStripMenuItem()
         序列切片ToolStripMenuItem = New ToolStripMenuItem()
+        合并参考序列ToolStripMenuItem = New ToolStripMenuItem()
+        按物种合并ToolStripMenuItem = New ToolStripMenuItem()
+        合并文件ToolStripMenuItem = New ToolStripMenuItem()
         拆分fq文件ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator15 = New ToolStripSeparator()
         EnglishToolStripMenuItem = New ToolStripMenuItem()
@@ -100,6 +108,7 @@ Partial Class Main_Form
         清空ToolStripMenuItem1 = New ToolStripMenuItem()
         ToolStripSeparator12 = New ToolStripSeparator()
         失败的项ToolStripMenuItem = New ToolStripMenuItem()
+        参考数量ToolStripMenuItem = New ToolStripMenuItem()
         DataGridView2 = New DataGridView()
         ContextMenuStrip1 = New ContextMenuStrip(components)
         全选ToolStripMenuItem = New ToolStripMenuItem()
@@ -117,6 +126,7 @@ Partial Class Main_Form
         SplitContainer1 = New SplitContainer()
         ProgressBar1 = New ProgressBar()
         RichTextBox1 = New RichTextBox()
+        参考序列建树ToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         ContextMenuStrip2.SuspendLayout()
@@ -235,7 +245,7 @@ Partial Class Main_Form
         ' 
         ' 分析ToolStripMenuItem
         ' 
-        分析ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem, 拼接ToolStripMenuItem, 全自动ToolStripMenuItem, ToolStripSeparator14, 迭代ToolStripMenuItem, ToolStripSeparator4, 重构ToolStripMenuItem, 多拷贝检测ToolStripMenuItem, ToolStripSeparator9, 植物叶绿体基因组ToolStripMenuItem, 植物线粒体基因组ToolStripMenuItem, 哺乳动物线粒体基因组ToolStripMenuItem1, ToolStripSeparator13, 获取单拷贝基因ToolStripMenuItem})
+        分析ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem, 拼接ToolStripMenuItem, 全自动ToolStripMenuItem, 对齐参考ToolStripMenuItem, ToolStripSeparator14, 迭代ToolStripMenuItem, ToolStripSeparator4, 重构ToolStripMenuItem, 多拷贝检测ToolStripMenuItem, ToolStripSeparator9, 植物叶绿体基因组ToolStripMenuItem, 植物线粒体基因组ToolStripMenuItem, 哺乳动物线粒体基因组ToolStripMenuItem1, ToolStripSeparator13, 获取单拷贝基因ToolStripMenuItem})
         分析ToolStripMenuItem.Name = "分析ToolStripMenuItem"
         分析ToolStripMenuItem.Size = New Size(68, 21)
         分析ToolStripMenuItem.Text = "短读分析"
@@ -270,6 +280,12 @@ Partial Class Main_Form
         全自动ToolStripMenuItem.Name = "全自动ToolStripMenuItem"
         全自动ToolStripMenuItem.Size = New Size(172, 22)
         全自动ToolStripMenuItem.Text = "过滤+拼接"
+        ' 
+        ' 对齐参考ToolStripMenuItem
+        ' 
+        对齐参考ToolStripMenuItem.Name = "对齐参考ToolStripMenuItem"
+        对齐参考ToolStripMenuItem.Size = New Size(172, 22)
+        对齐参考ToolStripMenuItem.Text = "基于参考切齐"
         ' 
         ' ToolStripSeparator14
         ' 
@@ -358,39 +374,40 @@ Partial Class Main_Form
         长读条码ToolStripMenuItem.Name = "长读条码ToolStripMenuItem"
         长读条码ToolStripMenuItem.Size = New Size(68, 21)
         长读条码ToolStripMenuItem.Text = "长读分析"
+        长读条码ToolStripMenuItem.Visible = False
         ' 
         ' 分离序列ToolStripMenuItem
         ' 
         分离序列ToolStripMenuItem.Name = "分离序列ToolStripMenuItem"
-        分离序列ToolStripMenuItem.Size = New Size(180, 22)
+        分离序列ToolStripMenuItem.Size = New Size(133, 22)
         分离序列ToolStripMenuItem.Text = "分离条码"
         ' 
         ' 合并结果ToolStripMenuItem1
         ' 
         合并结果ToolStripMenuItem1.Name = "合并结果ToolStripMenuItem1"
-        合并结果ToolStripMenuItem1.Size = New Size(180, 22)
+        合并结果ToolStripMenuItem1.Size = New Size(133, 22)
         合并结果ToolStripMenuItem1.Text = "合并结果"
         ' 
         ' 重建序列ToolStripMenuItem
         ' 
         重建序列ToolStripMenuItem.Name = "重建序列ToolStripMenuItem"
-        重建序列ToolStripMenuItem.Size = New Size(180, 22)
+        重建序列ToolStripMenuItem.Size = New Size(133, 22)
         重建序列ToolStripMenuItem.Text = "重建序列"
         ' 
         ' ToolStripSeparator5
         ' 
         ToolStripSeparator5.Name = "ToolStripSeparator5"
-        ToolStripSeparator5.Size = New Size(177, 6)
+        ToolStripSeparator5.Size = New Size(130, 6)
         ' 
         ' 分离重建ToolStripMenuItem
         ' 
         分离重建ToolStripMenuItem.Name = "分离重建ToolStripMenuItem"
-        分离重建ToolStripMenuItem.Size = New Size(180, 22)
+        分离重建ToolStripMenuItem.Size = New Size(133, 22)
         分离重建ToolStripMenuItem.Text = "分离+重建"
         ' 
         ' 批量ToolStripMenuItem1
         ' 
-        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, ToolStripMenuItem4, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, ToolStripSeparator8, 旁系同源检测ToolStripMenuItem, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
+        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, ToolStripMenuItem4, 对齐参考ToolStripMenuItem1, ToolStripSeparator16, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, 构建系统发育树ToolStripMenuItem, ToolStripSeparator8, 旁系同源检测ToolStripMenuItem, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
         批量ToolStripMenuItem1.Name = "批量ToolStripMenuItem1"
         批量ToolStripMenuItem1.Size = New Size(44, 21)
         批量ToolStripMenuItem1.Text = "批量"
@@ -407,6 +424,17 @@ Partial Class Main_Form
         ToolStripMenuItem4.Size = New Size(179, 22)
         ToolStripMenuItem4.Text = "重新拼接"
         ' 
+        ' 对齐参考ToolStripMenuItem1
+        ' 
+        对齐参考ToolStripMenuItem1.Name = "对齐参考ToolStripMenuItem1"
+        对齐参考ToolStripMenuItem1.Size = New Size(179, 22)
+        对齐参考ToolStripMenuItem1.Text = "基于参考切齐"
+        ' 
+        ' ToolStripSeparator16
+        ' 
+        ToolStripSeparator16.Name = "ToolStripSeparator16"
+        ToolStripSeparator16.Size = New Size(176, 6)
+        ' 
         ' 合并结果ToolStripMenuItem
         ' 
         合并结果ToolStripMenuItem.Name = "合并结果ToolStripMenuItem"
@@ -418,6 +446,12 @@ Partial Class Main_Form
         合并比对ToolStripMenuItem.Name = "合并比对ToolStripMenuItem"
         合并比对ToolStripMenuItem.Size = New Size(179, 22)
         合并比对ToolStripMenuItem.Text = "合并+切齐"
+        ' 
+        ' 构建系统发育树ToolStripMenuItem
+        ' 
+        构建系统发育树ToolStripMenuItem.Name = "构建系统发育树ToolStripMenuItem"
+        构建系统发育树ToolStripMenuItem.Size = New Size(179, 22)
+        构建系统发育树ToolStripMenuItem.Text = "构建系统发育树"
         ' 
         ' ToolStripSeparator8
         ' 
@@ -478,74 +512,101 @@ Partial Class Main_Form
         ' 
         ' 三方工具ToolStripMenuItem
         ' 
-        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {序列比对ToolStripMenuItem1, 切齐比对ToolStripMenuItem1, 序列切片ToolStripMenuItem, 拆分fq文件ToolStripMenuItem, ToolStripSeparator15, EnglishToolStripMenuItem, DebugToolStripMenuItem})
+        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {序列比对ToolStripMenuItem1, 序列切片ToolStripMenuItem, 合并参考序列ToolStripMenuItem, 参考序列建树ToolStripMenuItem, 拆分fq文件ToolStripMenuItem, ToolStripSeparator15, EnglishToolStripMenuItem, DebugToolStripMenuItem})
         三方工具ToolStripMenuItem.Name = "三方工具ToolStripMenuItem"
         三方工具ToolStripMenuItem.Size = New Size(44, 21)
         三方工具ToolStripMenuItem.Text = "工具"
         ' 
         ' 序列比对ToolStripMenuItem1
         ' 
+        序列比对ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {比对ToolStripMenuItem, 切齐ToolStripMenuItem})
         序列比对ToolStripMenuItem1.Name = "序列比对ToolStripMenuItem1"
-        序列比对ToolStripMenuItem1.Size = New Size(148, 22)
-        序列比对ToolStripMenuItem1.Text = "加入参考比对"
+        序列比对ToolStripMenuItem1.Size = New Size(180, 22)
+        序列比对ToolStripMenuItem1.Text = "结果加入参考"
         ' 
-        ' 切齐比对ToolStripMenuItem1
+        ' 比对ToolStripMenuItem
         ' 
-        切齐比对ToolStripMenuItem1.Name = "切齐比对ToolStripMenuItem1"
-        切齐比对ToolStripMenuItem1.Size = New Size(148, 22)
-        切齐比对ToolStripMenuItem1.Text = "切齐参考比对"
+        比对ToolStripMenuItem.Name = "比对ToolStripMenuItem"
+        比对ToolStripMenuItem.Size = New Size(100, 22)
+        比对ToolStripMenuItem.Text = "比对"
+        ' 
+        ' 切齐ToolStripMenuItem
+        ' 
+        切齐ToolStripMenuItem.Name = "切齐ToolStripMenuItem"
+        切齐ToolStripMenuItem.Size = New Size(100, 22)
+        切齐ToolStripMenuItem.Text = "切齐"
         ' 
         ' 序列切片ToolStripMenuItem
         ' 
         序列切片ToolStripMenuItem.Name = "序列切片ToolStripMenuItem"
-        序列切片ToolStripMenuItem.Size = New Size(148, 22)
+        序列切片ToolStripMenuItem.Size = New Size(180, 22)
         序列切片ToolStripMenuItem.Text = "参考序列切片"
+        ' 
+        ' 合并参考序列ToolStripMenuItem
+        ' 
+        合并参考序列ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {按物种合并ToolStripMenuItem, 合并文件ToolStripMenuItem})
+        合并参考序列ToolStripMenuItem.Name = "合并参考序列ToolStripMenuItem"
+        合并参考序列ToolStripMenuItem.Size = New Size(180, 22)
+        合并参考序列ToolStripMenuItem.Text = "合并参考序列"
+        ' 
+        ' 按物种合并ToolStripMenuItem
+        ' 
+        按物种合并ToolStripMenuItem.Name = "按物种合并ToolStripMenuItem"
+        按物种合并ToolStripMenuItem.Size = New Size(180, 22)
+        按物种合并ToolStripMenuItem.Text = "按序列名合并"
+        ' 
+        ' 合并文件ToolStripMenuItem
+        ' 
+        合并文件ToolStripMenuItem.Name = "合并文件ToolStripMenuItem"
+        合并文件ToolStripMenuItem.Size = New Size(180, 22)
+        合并文件ToolStripMenuItem.Text = "直接合并文件"
         ' 
         ' 拆分fq文件ToolStripMenuItem
         ' 
         拆分fq文件ToolStripMenuItem.Name = "拆分fq文件ToolStripMenuItem"
-        拆分fq文件ToolStripMenuItem.Size = New Size(148, 22)
+        拆分fq文件ToolStripMenuItem.Size = New Size(180, 22)
         拆分fq文件ToolStripMenuItem.Text = "拆分过滤文件"
         ' 
         ' ToolStripSeparator15
         ' 
         ToolStripSeparator15.Name = "ToolStripSeparator15"
-        ToolStripSeparator15.Size = New Size(145, 6)
+        ToolStripSeparator15.Size = New Size(177, 6)
         ' 
         ' EnglishToolStripMenuItem
         ' 
         EnglishToolStripMenuItem.Name = "EnglishToolStripMenuItem"
-        EnglishToolStripMenuItem.Size = New Size(148, 22)
+        EnglishToolStripMenuItem.Size = New Size(180, 22)
         EnglishToolStripMenuItem.Text = "English"
         ' 
         ' DebugToolStripMenuItem
         ' 
         DebugToolStripMenuItem.Name = "DebugToolStripMenuItem"
-        DebugToolStripMenuItem.Size = New Size(148, 22)
+        DebugToolStripMenuItem.Size = New Size(180, 22)
         DebugToolStripMenuItem.Text = "Debug"
         ' 
         ' DataGridView1
         ' 
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        DataGridView1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle5.BackColor = SystemColors.Control
+        DataGridViewCellStyle5.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle5.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle5.WrapMode = DataGridViewTriState.True
+        DataGridView1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
         DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView1.ContextMenuStrip = ContextMenuStrip2
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Window
-        DataGridViewCellStyle2.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle2.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.False
-        DataGridView1.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = SystemColors.Window
+        DataGridViewCellStyle6.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle6.ForeColor = SystemColors.ControlText
+        DataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle6.WrapMode = DataGridViewTriState.False
+        DataGridView1.DefaultCellStyle = DataGridViewCellStyle6
         DataGridView1.Dock = DockStyle.Fill
         DataGridView1.Location = New Point(0, 0)
+        DataGridView1.MultiSelect = False
         DataGridView1.Name = "DataGridView1"
         DataGridView1.RowTemplate.Height = 25
         DataGridView1.Size = New Size(614, 291)
@@ -553,9 +614,9 @@ Partial Class Main_Form
         ' 
         ' ContextMenuStrip2
         ' 
-        ContextMenuStrip2.Items.AddRange(New ToolStripItem() {全选ToolStripMenuItem1, 反选ToolStripMenuItem, 清空ToolStripMenuItem1, ToolStripSeparator12, 失败的项ToolStripMenuItem})
+        ContextMenuStrip2.Items.AddRange(New ToolStripItem() {全选ToolStripMenuItem1, 反选ToolStripMenuItem, 清空ToolStripMenuItem1, ToolStripSeparator12, 失败的项ToolStripMenuItem, 参考数量ToolStripMenuItem})
         ContextMenuStrip2.Name = "ContextMenuStrip2"
-        ContextMenuStrip2.Size = New Size(125, 98)
+        ContextMenuStrip2.Size = New Size(125, 120)
         ' 
         ' 全选ToolStripMenuItem1
         ' 
@@ -586,28 +647,35 @@ Partial Class Main_Form
         失败的项ToolStripMenuItem.Size = New Size(124, 22)
         失败的项ToolStripMenuItem.Text = "失败的项"
         ' 
+        ' 参考数量ToolStripMenuItem
+        ' 
+        参考数量ToolStripMenuItem.Name = "参考数量ToolStripMenuItem"
+        参考数量ToolStripMenuItem.Size = New Size(124, 22)
+        参考数量ToolStripMenuItem.Text = "参考数量"
+        ' 
         ' DataGridView2
         ' 
-        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = SystemColors.Control
-        DataGridViewCellStyle3.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle3.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.True
-        DataGridView2.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridView2.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         DataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView2.ContextMenuStrip = ContextMenuStrip1
-        DataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = SystemColors.Window
-        DataGridViewCellStyle4.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle4.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle4.WrapMode = DataGridViewTriState.False
-        DataGridView2.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = SystemColors.Window
+        DataGridViewCellStyle2.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle2.ForeColor = SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.False
+        DataGridView2.DefaultCellStyle = DataGridViewCellStyle2
         DataGridView2.Dock = DockStyle.Fill
         DataGridView2.Location = New Point(0, 0)
+        DataGridView2.MultiSelect = False
         DataGridView2.Name = "DataGridView2"
         DataGridView2.RowTemplate.Height = 25
         DataGridView2.Size = New Size(614, 145)
@@ -684,7 +752,7 @@ Partial Class Main_Form
         NumericUpDown10.Name = "NumericUpDown10"
         NumericUpDown10.Size = New Size(73, 23)
         NumericUpDown10.TabIndex = 5
-        NumericUpDown10.Value = New Decimal(New Integer() {8, 0, 0, 0})
+        NumericUpDown10.Value = New Decimal(New Integer() {1, 0, 0, 0})
         ' 
         ' Button2
         ' 
@@ -749,7 +817,13 @@ Partial Class Main_Form
         RichTextBox1.ReadOnly = True
         RichTextBox1.Size = New Size(168, 349)
         RichTextBox1.TabIndex = 0
-        RichTextBox1.Text = "双击此处查看最近的日志"
+        RichTextBox1.Text = "双击此处查看最近的日志" & vbLf & vbLf
+        ' 
+        ' 参考序列建树ToolStripMenuItem
+        ' 
+        参考序列建树ToolStripMenuItem.Name = "参考序列建树ToolStripMenuItem"
+        参考序列建树ToolStripMenuItem.Size = New Size(180, 22)
+        参考序列建树ToolStripMenuItem.Text = "参考序列建树"
         ' 
         ' Main_Form
         ' 
@@ -838,7 +912,6 @@ Partial Class Main_Form
     Friend WithEvents 反选ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 失败的项ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 序列比对ToolStripMenuItem1 As ToolStripMenuItem
-    Friend WithEvents 切齐比对ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents SplitContainer1 As SplitContainer
     Friend WithEvents 重构ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
@@ -881,4 +954,15 @@ Partial Class Main_Form
     Friend WithEvents 序列切片ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents EnglishToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator15 As ToolStripSeparator
+    Friend WithEvents 合并参考序列ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 按物种合并ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 合并文件ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 比对ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 切齐ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 对齐参考ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 对齐参考ToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator16 As ToolStripSeparator
+    Friend WithEvents 参考数量ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 构建系统发育树ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 参考序列建树ToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -14,7 +14,11 @@
     Public Event CancelClicked()
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-
+        If CheckBox4.Checked Then
+            no_window = "1"
+        Else
+            no_window = "0"
+        End If
         k1 = NumericUpDown1.Value.ToString
         k2 = NumericUpDown5.Value.ToString
         Me.Hide()
@@ -27,6 +31,10 @@
     End Sub
 
     Private Sub Config_Basic_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ComboBox1.SelectedIndex = 1
+        ComboBox1.SelectedIndex = 0
+    End Sub
+
+    Private Sub CheckBox4_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox4.CheckedChanged
+
     End Sub
 End Class

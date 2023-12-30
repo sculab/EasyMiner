@@ -7,9 +7,7 @@ Imports Microsoft.VisualBasic.Devices
 
 Public Class Config_Plasty
     Private Sub Config_Plasty_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim computerInfo As New ComputerInfo()
-        Dim totalPhysicalMemory As Long = computerInfo.TotalPhysicalMemory
-        NumericUpDown2.Value = CInt(totalPhysicalMemory / (1024.0 * 1024.0 * 1024.0) / 2)
+        NumericUpDown2.Value = Math.Min(CInt(totalPhysicalMemory), 4)
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
@@ -40,9 +38,12 @@ Public Class Config_Plasty
             Exit Sub
         End If
         DeleteDir(currentDirectory + "temp\NOVOPlasty")
-        My.Computer.FileSystem.CreateDirectory(currentDirectory + "temp\NOVOPlasty")
+        Directory.CreateDirectory(currentDirectory + "temp\NOVOPlasty")
         waiting = True
         timer_id = 1
+        'If reads_length = 0 Then
+        '    reads_length = GetReadLength()
+        'End If
         Dim sr As New StreamReader(currentDirectory + "\analysis\NOVO_config.txt")
         Dim config_text As String = sr.ReadToEnd
         Dim sw As New StreamWriter(currentDirectory + "temp\NOVO_config.txt")
@@ -133,7 +134,7 @@ Public Class Config_Plasty
                     If File.Exists(currentDirectory + "temp\output.fasta") Then
                         File.Delete(currentDirectory + "temp\output.fasta")
                     End If
-                    My.Computer.FileSystem.CreateDirectory(out_dir + "\Organelle\")
+                    Directory.CreateDirectory(out_dir + "\Organelle\")
                     If cpg_assemble_mode <> 0 Then
                         File.Copy(assemble_file, out_dir + "\Organelle\" + TextBox5.Text + ".fasta", True)
                         Dim result0 As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)

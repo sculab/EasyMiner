@@ -64,7 +64,7 @@ Partial Class Config_Split
         NumericUpDown4.Name = "NumericUpDown4"
         NumericUpDown4.Size = New Size(87, 23)
         NumericUpDown4.TabIndex = 31
-        NumericUpDown4.Value = New Decimal(New Integer() {200, 0, 0, 0})
+        NumericUpDown4.Value = New Decimal(New Integer() {1000, 0, 0, 0})
         ' 
         ' Label4
         ' 
@@ -130,7 +130,6 @@ Partial Class Config_Split
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(87, 23)
         NumericUpDown1.TabIndex = 47
-        NumericUpDown1.Value = New Decimal(New Integer() {200, 0, 0, 0})
         ' 
         ' Label1
         ' 

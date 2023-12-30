@@ -217,7 +217,7 @@ class Extract_reference():
             else:
                 temp_file_count[seq_name_key] = 1
 
-        if len(record) >= 2:
+        if len(record) >= 1:
             record = [seq for seq in record if len(seq.seq) > 0]
             if record == []: return
             absolute_path = os.path.abspath(current_file)
@@ -457,7 +457,7 @@ if __name__ == '__main__':
     pars = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter, description=''' 把gb格式或者fas格式的参考序列进行拆分，gb格式参考序列按照基因名字拆分，fas格式的参考序列按照切片拆分 ''')
     pars.add_argument('-input', metavar='<str>', type=str,
-                      help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\database\cp_fasta\KU\KU559\KU559924.fasta")
+                      help='''input folder.''', required=False, default=r"D:\working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\out_gb")
     pars.add_argument('-soft_boundary', metavar='<int>', type=str,
                       help='''拆分gb格式时cds两端的扩展。 default=[200,200]''', required=False, default="200,200")
     pars.add_argument('-max_seq_length', metavar='<int>', type=int,
