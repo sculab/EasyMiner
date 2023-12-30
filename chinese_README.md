@@ -8,11 +8,10 @@ https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0
 
 EasyMiner的源代码均保存在github和Gitee上，您可以从此处获取最新的安装包: 
 
-[Index of /database/app/EasyMiner (tpddns.cn)](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/)
+[SourceForge](https://sourceforge.net/projects/scueasyminer/)或 [our site](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/).
 
-或
 
-[EasyMiner download | SourceForge.net](https://sourceforge.net/projects/scueasyminer/)
+**注意：请不要将软件下载在移动硬盘上。**
 
 如果您需要在macOS或Linux上使用命令行版本的基因挖掘工具，请访问: 
 
