@@ -23,10 +23,10 @@ Partial Class Main_Form
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle5 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As DataGridViewCellStyle = New DataGridViewCellStyle()
         MenuStrip1 = New MenuStrip()
         文件ToolStripMenuItem = New ToolStripMenuItem()
         载入参考序列ToolStripMenuItem = New ToolStripMenuItem()
@@ -97,6 +97,7 @@ Partial Class Main_Form
         合并参考序列ToolStripMenuItem = New ToolStripMenuItem()
         按物种合并ToolStripMenuItem = New ToolStripMenuItem()
         合并文件ToolStripMenuItem = New ToolStripMenuItem()
+        参考序列建树ToolStripMenuItem = New ToolStripMenuItem()
         拆分fq文件ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator15 = New ToolStripSeparator()
         EnglishToolStripMenuItem = New ToolStripMenuItem()
@@ -126,7 +127,6 @@ Partial Class Main_Form
         SplitContainer1 = New SplitContainer()
         ProgressBar1 = New ProgressBar()
         RichTextBox1 = New RichTextBox()
-        参考序列建树ToolStripMenuItem = New ToolStripMenuItem()
         MenuStrip1.SuspendLayout()
         CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         ContextMenuStrip2.SuspendLayout()
@@ -552,14 +552,20 @@ Partial Class Main_Form
         ' 按物种合并ToolStripMenuItem
         ' 
         按物种合并ToolStripMenuItem.Name = "按物种合并ToolStripMenuItem"
-        按物种合并ToolStripMenuItem.Size = New Size(180, 22)
+        按物种合并ToolStripMenuItem.Size = New Size(148, 22)
         按物种合并ToolStripMenuItem.Text = "按序列名合并"
         ' 
         ' 合并文件ToolStripMenuItem
         ' 
         合并文件ToolStripMenuItem.Name = "合并文件ToolStripMenuItem"
-        合并文件ToolStripMenuItem.Size = New Size(180, 22)
+        合并文件ToolStripMenuItem.Size = New Size(148, 22)
         合并文件ToolStripMenuItem.Text = "直接合并文件"
+        ' 
+        ' 参考序列建树ToolStripMenuItem
+        ' 
+        参考序列建树ToolStripMenuItem.Name = "参考序列建树ToolStripMenuItem"
+        参考序列建树ToolStripMenuItem.Size = New Size(180, 22)
+        参考序列建树ToolStripMenuItem.Text = "参考序列建树"
         ' 
         ' 拆分fq文件ToolStripMenuItem
         ' 
@@ -586,24 +592,24 @@ Partial Class Main_Form
         ' 
         ' DataGridView1
         ' 
-        DataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle5.BackColor = SystemColors.Control
-        DataGridViewCellStyle5.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle5.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle5.WrapMode = DataGridViewTriState.True
-        DataGridView1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridView1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView1.ContextMenuStrip = ContextMenuStrip2
-        DataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = SystemColors.Window
-        DataGridViewCellStyle6.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle6.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle6.WrapMode = DataGridViewTriState.False
-        DataGridView1.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = SystemColors.Window
+        DataGridViewCellStyle2.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle2.ForeColor = SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.False
+        DataGridView1.DefaultCellStyle = DataGridViewCellStyle2
         DataGridView1.Dock = DockStyle.Fill
         DataGridView1.Location = New Point(0, 0)
         DataGridView1.MultiSelect = False
@@ -655,24 +661,24 @@ Partial Class Main_Form
         ' 
         ' DataGridView2
         ' 
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        DataGridView2.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = SystemColors.Control
+        DataGridViewCellStyle3.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle3.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.True
+        DataGridView2.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         DataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridView2.ContextMenuStrip = ContextMenuStrip1
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Window
-        DataGridViewCellStyle2.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
-        DataGridViewCellStyle2.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.False
-        DataGridView2.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = SystemColors.Window
+        DataGridViewCellStyle4.Font = New Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point)
+        DataGridViewCellStyle4.ForeColor = SystemColors.ControlText
+        DataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = DataGridViewTriState.False
+        DataGridView2.DefaultCellStyle = DataGridViewCellStyle4
         DataGridView2.Dock = DockStyle.Fill
         DataGridView2.Location = New Point(0, 0)
         DataGridView2.MultiSelect = False
@@ -819,12 +825,6 @@ Partial Class Main_Form
         RichTextBox1.TabIndex = 0
         RichTextBox1.Text = "双击此处查看最近的日志" & vbLf & vbLf
         ' 
-        ' 参考序列建树ToolStripMenuItem
-        ' 
-        参考序列建树ToolStripMenuItem.Name = "参考序列建树ToolStripMenuItem"
-        参考序列建树ToolStripMenuItem.Size = New Size(180, 22)
-        参考序列建树ToolStripMenuItem.Text = "参考序列建树"
-        ' 
         ' Main_Form
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
@@ -838,7 +838,7 @@ Partial Class Main_Form
         MainMenuStrip = MenuStrip1
         Name = "Main_Form"
         StartPosition = FormStartPosition.CenterScreen
-        Text = "EasyMiner"
+        Text = "GeneMiner"
         MenuStrip1.ResumeLayout(False)
         MenuStrip1.PerformLayout()
         CType(DataGridView1, ComponentModel.ISupportInitialize).EndInit()

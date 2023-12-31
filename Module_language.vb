@@ -4,7 +4,7 @@ Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
 
 Module Module_Language
     Public Sub to_en()
-        form_main.Text = "EasyMiner" + " ver. " + version + " " + TargetOS
+        form_main.Text = "GeneMiner" + version + " " + TargetOS
         form_main.文件ToolStripMenuItem.Text = "File"
         form_main.载入参考序列ToolStripMenuItem.Text = "Load References"
         form_main.测序文件ToolStripMenuItem.Text = "Load Sequencing Files"
@@ -173,7 +173,7 @@ Module Module_Language
     End Sub
 
     Public Sub to_ch()
-        form_main.Text = "EasyMiner" + " ver. " + version + " " + TargetOS
+        form_main.Text = "GeneMiner" + version + " " + TargetOS
         form_main.文件ToolStripMenuItem.Text = "文件"
         form_main.载入参考序列ToolStripMenuItem.Text = "载入参考序列"
         form_main.测序文件ToolStripMenuItem.Text = "载入测序文件"

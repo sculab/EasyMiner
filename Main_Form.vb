@@ -46,6 +46,7 @@ Public Class Main_Form
         refsView.AllowDelete = False
         refsView.AllowEdit = False
 
+
         Dim Column_Select1 As New DataGridViewCheckBoxColumn
         Column_Select1.HeaderText = "Select"
         DataGridView2.Columns.Insert(0, Column_Select1)
@@ -66,6 +67,21 @@ Public Class Main_Form
         seqsView.AllowNew = False
         seqsView.AllowDelete = False
         seqsView.AllowEdit = False
+
+        Dim Column_Select2 As New DataGridViewCheckBoxColumn
+        Column_Select2.HeaderText = "Select"
+        form_config_tree.DataGridView1.Columns.Insert(0, Column_Select2)
+        Dim taxon_table As New System.Data.DataTable
+        form_config_tree.DataGridView1.AllowUserToAddRows = False
+        taxon_table.TableName = "Taxon Table"
+        Dim Column_Taxon_Name As New System.Data.DataColumn("Name")
+        taxon_table.Columns.Add(Column_Taxon_Name)
+        mydata_Dataset.Tables.Add(taxon_table)
+        taxonView = mydata_Dataset.Tables("Taxon Table").DefaultView
+        taxonView.AllowNew = False
+        taxonView.AllowDelete = False
+        taxonView.AllowEdit = False
+
     End Sub
     Public Sub do_filter(ByVal options() As String)
         'options = (0:kf,1:kr,2:q1,3:q2,4:ref,5:out_dir,6:lkd,7:rl,8:refilter,9:no_window,10:thread)
@@ -295,7 +311,7 @@ Public Class Main_Form
         currentDirectory = Application.StartupPath
         initialize_data()
         If TargetOS = "macos" Then
-            TextBox1.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "EasyMiner")
+            TextBox1.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "GeneMiner")
             Directory.CreateDirectory(TextBox1.Text)
         Else
             TextBox1.Text = currentDirectory + "results"
@@ -409,6 +425,18 @@ Public Class Main_Form
                 DataGridView2.Columns(2).Width = 400
                 DataGridView2.Columns(3).Width = 400
                 DataGridView2.RefreshEdit()
+
+                form_config_tree.DataGridView1.DataSource = taxonView
+                taxonView.AllowNew = False
+                taxonView.AllowEdit = True
+                form_config_tree.DataGridView1.Columns(1).ReadOnly = True
+                form_config_tree.DataGridView1.RefreshEdit()
+                form_config_tree.DataGridView1.Columns(0).Width = 50
+                form_config_tree.DataGridView1.Columns(1).Width = 350
+                form_config_tree.DataGridView1.Columns(0).SortMode = DataGridViewColumnSortMode.NotSortable
+                form_config_tree.DataGridView1.Columns(1).SortMode = DataGridViewColumnSortMode.NotSortable
+                form_config_tree.DataGridView1.RefreshEdit()
+
                 GC.Collect()
                 timer_id = 0
                 data_loaded = True
@@ -721,6 +749,12 @@ Public Class Main_Form
                             newrow(1) = sortedFileNames((i - 1) * 2)
                             newrow(2) = sortedFileNames((i - 1) * 2 + 1)
                             seqsView.Item(seqsView.Count - 1).Row.ItemArray = newrow
+
+                            Dim newrow_taxon(0) As String
+                            taxonView.AllowNew = True
+                            taxonView.AddNew()
+                            newrow_taxon(0) = i.ToString + "_" + make_out_name(System.IO.Path.GetFileNameWithoutExtension(sortedFileNames((i - 1) * 2)), System.IO.Path.GetFileNameWithoutExtension(sortedFileNames((i - 1) * 2 + 1)))
+                            taxonView.Item(taxonView.Count - 1).Row.ItemArray = newrow_taxon
                         Next
                         timer_id = 3
                     Else
@@ -737,6 +771,13 @@ Public Class Main_Form
                         newrow(1) = sortedFileNames(i - 1)
                         newrow(2) = sortedFileNames(i - 1)
                         seqsView.Item(seqsView.Count - 1).Row.ItemArray = newrow
+
+                        Dim newrow_taxon(0) As String
+                        taxonView.AllowNew = True
+                        taxonView.AddNew()
+                        newrow_taxon(0) = i.ToString + "_" + make_out_name(System.IO.Path.GetFileNameWithoutExtension(sortedFileNames(i - 1)), System.IO.Path.GetFileNameWithoutExtension(sortedFileNames(i - 1)))
+                        taxonView.Item(taxonView.Count - 1).Row.ItemArray = newrow_taxon
+
                     Next
                     timer_id = 3
                 End If
@@ -3533,6 +3574,7 @@ Public Class Main_Form
                     End If
                     Dim th1 As New Thread(AddressOf MakeConcatenationTree)
                     th1.Start(fasta_file)
+
                 Else
                     Dim fasta_folder As String
                     If form_config_tree.RadioButton3.Checked Then
@@ -3578,6 +3620,8 @@ Public Class Main_Form
 
             If File.Exists(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree")) Then
                 safe_copy(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"), Path.Combine(TextBox1.Text, "Concatenation.tree"))
+                safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "bootstrap.trees"), Path.Combine(TextBox1.Text, "bootstrap.trees"))
+
                 DeleteDir(Path.Combine(currentDirectory, "temp", random_folder))
                 File.Delete(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"))
                 File.Delete(Path.Combine(currentDirectory, "temp", random_folder + ".fasta"))
@@ -3625,7 +3669,7 @@ Public Class Main_Form
                         Dim commaCount As Integer = fileContent.Count(Function(c) c = ",")
                         ' 检查逗号数量是否大于等于3物种数量大于等于4
                         If commaCount >= 3 Then
-                            CombineFiles(Path.Combine(fasta_folder, "combined.trees"), tree_file)
+                            CombineFiles(Path.Combine(TextBox1.Text, "combined_genes.trees"), tree_file)
                         End If
                     End If
                 End If
@@ -3634,7 +3678,7 @@ Public Class Main_Form
             SI_astral.FileName = currentDirectory + "analysis\astral.exe" ' 替换为实际的命令行程序路径
             SI_astral.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
             SI_astral.CreateNoWindow = True
-            SI_astral.Arguments = "-i " + """" + Path.Combine(fasta_folder, "combined.trees") + """"
+            SI_astral.Arguments = "-i " + """" + Path.Combine(TextBox1.Text, "combined_genes.trees") + """"
             SI_astral.Arguments += " -o " + """" + Path.Combine(TextBox1.Text, "Coalescent.tree") + """"
             Dim process_filter As Process = Process.Start(SI_astral)
             process_filter.WaitForExit()
@@ -3644,6 +3688,17 @@ Public Class Main_Form
             MsgBox("You should Combine the results first!")
         End If
     End Sub
+    Public Sub do_newick(ByVal args_string As String)
+        Dim SI_newick As New ProcessStartInfo()
+        SI_newick.FileName = currentDirectory + "analysis\newick.exe" ' 替换为实际的命令行程序路径
+        SI_newick.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+
+        SI_newick.Arguments = args_string
+        Dim process_filter As Process = Process.Start(SI_newick)
+        process_filter.WaitForExit()
+        process_filter.Close()
+    End Sub
+
     Public Sub do_build_tree(ByVal args() As String)
         Dim SI_build_tree As New ProcessStartInfo()
         SI_build_tree.FileName = currentDirectory + "analysis\build_tree.exe" ' 替换为实际的命令行程序路径
@@ -3740,7 +3795,7 @@ Public Class Main_Form
         form_config_tree.Show()
     End Sub
 
-    Private Sub Main_Form_VisibleChanged(sender As Object, e As EventArgs) Handles Me.VisibleChanged
+    Private Sub Main_Form_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged
 
 
     End Sub

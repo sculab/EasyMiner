@@ -3,10 +3,10 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <StartupObject>GeneMiner2.My.MyApplication</StartupObject>
+    <StartupObject>GeneMiner.My.MyApplication</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
-    <ApplicationIcon>geneminer2.ico</ApplicationIcon>
+    <ApplicationIcon>GeneMiner.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="geneminer2.ico" />
+    <Content Include="GeneMiner.ico" />
   </ItemGroup>
 
   <ItemGroup>

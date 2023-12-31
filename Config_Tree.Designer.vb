@@ -34,9 +34,12 @@ Partial Class Config_Tree
         Button2 = New Button()
         Button1 = New Button()
         TextBox1 = New TextBox()
+        DataGridView1 = New DataGridView()
+        CheckBox1 = New CheckBox()
         GroupBox1.SuspendLayout()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox2.SuspendLayout()
+        CType(DataGridView1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' GroupBox1
@@ -127,7 +130,8 @@ Partial Class Config_Tree
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(300, 363)
+        Button2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        Button2.Location = New Point(653, 363)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 48
@@ -136,7 +140,8 @@ Partial Class Config_Tree
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(219, 363)
+        Button1.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+        Button1.Location = New Point(572, 363)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 47
@@ -145,6 +150,7 @@ Partial Class Config_Tree
         ' 
         ' TextBox1
         ' 
+        TextBox1.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         TextBox1.Location = New Point(12, 195)
         TextBox1.Multiline = True
         TextBox1.Name = "TextBox1"
@@ -153,17 +159,40 @@ Partial Class Config_Tree
         TextBox1.TabIndex = 49
         TextBox1.Text = resources.GetString("TextBox1.Text")
         ' 
+        ' DataGridView1
+        ' 
+        DataGridView1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        DataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridView1.Location = New Point(381, 36)
+        DataGridView1.Name = "DataGridView1"
+        DataGridView1.RowTemplate.Height = 25
+        DataGridView1.Size = New Size(347, 321)
+        DataGridView1.TabIndex = 50
+        ' 
+        ' CheckBox1
+        ' 
+        CheckBox1.AutoSize = True
+        CheckBox1.Location = New Point(381, 12)
+        CheckBox1.Name = "CheckBox1"
+        CheckBox1.Size = New Size(131, 21)
+        CheckBox1.TabIndex = 51
+        CheckBox1.Text = "选择外类群(有根树)"
+        CheckBox1.UseVisualStyleBackColor = True
+        ' 
         ' Config_Tree
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(385, 424)
+        ClientSize = New Size(737, 424)
         ControlBox = False
+        Controls.Add(CheckBox1)
+        Controls.Add(DataGridView1)
         Controls.Add(TextBox1)
         Controls.Add(Button2)
         Controls.Add(Button1)
         Controls.Add(GroupBox2)
         Controls.Add(GroupBox1)
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_Tree"
         StartPosition = FormStartPosition.CenterScreen
         Text = "建树设置"
@@ -173,6 +202,7 @@ Partial Class Config_Tree
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).EndInit()
         GroupBox2.ResumeLayout(False)
         GroupBox2.PerformLayout()
+        CType(DataGridView1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -188,4 +218,6 @@ Partial Class Config_Tree
     Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
     Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents DataGridView1 As DataGridView
+    Friend WithEvents CheckBox1 As CheckBox
 End Class

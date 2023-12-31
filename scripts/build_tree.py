@@ -70,9 +70,9 @@ def main(input_file, output_file, bootstrap_output_dir, num_bootstraps, num_proc
     print("Calculating Bootstrap Values")
     cmd = r'..\analysis\newick.exe -conf "'+os.path.join(bootstrap_output_dir, "input.tree")+ '" -trees "'+os.path.join(bootstrap_output_dir, "bootstrap.trees")+'" -output "' + output_file +'"'
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    os.remove(os.path.join(bootstrap_output_dir, "input.tree"))
-    os.remove(os.path.join(bootstrap_output_dir, "bootstrap.trees"))
-    shutil.rmtree(bootstrap_output_dir)
+    # os.remove(os.path.join(bootstrap_output_dir, "input.tree"))
+    # os.remove(os.path.join(bootstrap_output_dir, "bootstrap.trees"))
+    # shutil.rmtree(bootstrap_output_dir)
     print("DONE!")
 
 if __name__ == "__main__":

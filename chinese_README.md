@@ -1,50 +1,71 @@
+# 介绍
+GeneMiner2是一款为系统发育基因组学设计的全功能工具包，软件主要功能包括：
+- 从二代测序数据中挖掘单拷贝核基因、质体基因等分子标记
+- 将多个分子标记切齐、排序、建立串联和溯祖系统发育树
+- 拼接注释动植物质体基因组
+用户能够在GeneMiner2中完成从NGS数据获取到系统发育树建立的所有工作。
+
+## 引用
+GeneMiner2基于我们之前开发的GeneMiner和Easy353软件，并整合了Blast、Minimap2、Fasttree、Muscle5、Mafft、Astral、PDD、PGA、NOVOPlasty、OrthoFinder等优秀工具，请在使用对应功能时引用软件提示的文献。
+
+GeneMiner2的工作尚未发表，目前请引用我们关于GeneMiner的论文：
+- Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. DOI: 10.1111/1755-0998.13924
+如果挖掘被子植物353基因，请引用我们关于Easy353的论文：
+- Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
+
+
+
 # 安装和需求
 
 ![](images/main_page_chin.jpg)
 
-EasyMiner是基于.net平台开发的，仅提供x64版本，需要在计算机上安装有.NET 6.0 Desktop Runtime x64。如果不满足需求，软件会在第一次运行时提醒您下载。您也可以从此处获取.NET 6.0 Desktop Runtime x64的安装包: 
+软件基于.net平台开发，仅提供x64版本，需要在计算机上安装有.NET 6.0 Desktop Runtime x64。如果不满足需求，软件会在第一次运行时提醒您下载。您也可以从此处获取.NET 6.0 Desktop Runtime x64的安装包: 
 
 https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer
 
-EasyMiner的源代码均保存在github和Gitee上，您可以从此处获取最新的安装包: 
+GeneMiner的源代码均保存在github和Gitee上，您可以从下面的地址获取最新的安装包: 
 
-[Index of /database/app/EasyMiner (tpddns.cn)](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/)
+- [http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/)
 
-或
-
-[EasyMiner download | SourceForge.net](https://sourceforge.net/projects/scueasyminer/)
+- [https://sourceforge.net/projects/geneminer/files/](https://sourceforge.net/projects/geneminer/files/)
 
 如果您需要在macOS或Linux上使用命令行版本的基因挖掘工具，请访问: 
 
-Easy353: https://github.com/plant720/Easy353
+- GeneMiner: https://github.com/sculab/GeneMiner
 
-GeneMiner: https://github.com/sculab/GeneMiner
+- Easy353: https://github.com/plant720/Easy353
 
-你也可以使用github上scripts文件夹中的python脚本，这些脚本提供了EasyMiner的所有核心功能，并可以在macOS或Linux上部署。
-
-https://github.com/sculab/EasyMiner
+您也可以使用GeneMiner2上scripts文件夹中的python脚本，这些脚本提供了GeneMiner的所有核心功能，并可以在macOS或Linux上部署。
 
 ---
 
 # 示例数据
 
 
-[DEMO1](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO1):Part1演示中，提取指定基因所需测序数据，选用拟南芥(*Arabidopsis thaliana*)二代测序数据进行提取，使用近源物种琴叶拟南芥(*Arabidopsis lyrata*)的基因作为参考序列。
+[DEMO1](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO1): 用于 *Part1 基本操作* 的演示。基于目标物种的二代浅层测序，使用近缘种的参考序列获取目标因。
+- 目标物种：拟南芥(*Arabidopsis thaliana*)
+- 数据类型：全基因组测序（浅层测序），深度约2x
+- 拟获取的目标基因：ITS、martK、psbA、rbcL、rps16
+- 参考序列：来自近源物种琴叶拟南芥(*Arabidopsis lyrata*)的ITS、martK、psbA、rbcL、rps16基因
+
+[DEMO2](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO2): 用于 *Part2 构建被子植物353(AGS353)基因集合系统发育树* 的演示。基于多个目标物种的二代浅层测序，使用Kew的被子植物353基因集获取所需数据，获取数据并构建串联树和溯祖树。
+- 目标物种：来自唇形科香薷属的6个物种
+- 数据类型：全基因组测序数据（浅层数据），深度约10x。（**注意：为了便于下载和演示，我们对原始数据进行了缩减，仅保留了运行本DEMO所需的reads**）
+- 拟获取的目标基因：被子植物353基因集合的353条单拷贝基因
+- 参考序列：GeneMiner
+
+
+[DEMO2](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO2): 用于Part2的演示中。组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。
 
 
 
 
-[DEMO2](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO2):Part2演示中，组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。
+[DEMO3](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO3): 动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。
 
 
 
 
-[DEMO3](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO3):动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。
 
-
-
-
-[DEMO4](https://gitee.com/sculab/EasyMiner/tree/master/DEMO/DEMO4):提取被子植物353基因集所需数据，选用拟南芥二代测序数据。
 
 
 
@@ -63,9 +84,9 @@ https://github.com/sculab/EasyMiner
 
 ### 数据准备:
 
-**（1）测序数据**: 二代测序的数据文件，文件格式为.gz或.fq。EasyMiner主要针对短读长的测序文件（reads长度为100、150、300等）。一般而言，浅层基因组、转录组、全基因组的双端或者单端测序文件都可以使用。
+**（1）测序数据**: 二代测序的数据文件，文件格式为.gz或.fq。GeneMiner主要针对短读长的测序文件（reads长度为100、150、300等）。一般而言，浅层基因组、转录组、全基因组的双端或者单端测序文件都可以使用。
 
-**（2）参考序列**: 近源物种的参考基因序列文件。可以使用fasta或genbank格式。对于fasta格式，文件名通常为基因名，每个文件中可以包含多个不同物种的同一个基因。对于genbank，同一个gb文件中可以包含多个物种的多个基因，EasyMiner会自动按基因名进行分解和组合。
+**（2）参考序列**: 近源物种的参考基因序列文件。可以使用fasta或genbank格式。对于fasta格式，文件名通常为基因名，每个文件中可以包含多个不同物种的同一个基因。对于genbank，同一个gb文件中可以包含多个物种的多个基因，GeneMiner会自动按基因名进行分解和组合。
 
 
 **载入数据**: 
@@ -242,5 +263,5 @@ https://github.com/sculab/EasyMiner
 
 
 # 联系方式
-有关EasyMiner任何建议、问题，请联系邮箱
+有关GeneMiner任何建议、问题，请联系邮箱
 Xinyi_Yu2021@163.com.

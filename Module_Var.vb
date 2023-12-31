@@ -2,13 +2,14 @@
 
 Module Module_Var
     Public TargetOS As String = "win64"
-    Public version As String = "1.0b build 20231227"
+    Public version As String = " 2.0beta build 20231229"
     Public exe_mode As String
     Public database_url As String
     Public settings As Dictionary(Of String, String)
     Public currentDirectory As String
     Public refsView As New DataView
     Public seqsView As New DataView
+    Public taxonView As New DataView
     Public ci As Globalization.CultureInfo = New Globalization.CultureInfo("en-us")
     Public path_char As String
     Public root_path As String
