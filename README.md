@@ -32,7 +32,7 @@ The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper so
 
 You could download from [SourceForge](https://sourceforge.net/projects/scuGeneMiner/) or our [site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
 
-
+**Note: Avoid installing the software on a portable hard drive.**
 
 
 # Demo

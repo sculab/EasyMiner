@@ -25,9 +25,11 @@ https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0
 
 GeneMiner的源代码均保存在github和Gitee上，您可以从下面的地址获取最新的安装包: 
 
-- [http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/)
+[Index of /database/app/EasyMiner (tpddns.cn)](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/)
 
-- [https://sourceforge.net/projects/geneminer/files/](https://sourceforge.net/projects/geneminer/files/)
+或
+
+[EasyMiner download | SourceForge.net](https://sourceforge.net/projects/scueasyminer/)
 
 如果您需要在macOS或Linux上使用命令行版本的基因挖掘工具，请访问: 
 
