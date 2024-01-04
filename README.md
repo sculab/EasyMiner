@@ -37,19 +37,19 @@ You could download from [SourceForge](https://sourceforge.net/projects/scuGeneMi
 
 # Demo
 
-[DEMO1 - A Quick Tutorial For General Use (Part 1)](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO1)
+[DEMO1 - A Quick Tutorial For General Use (Part 1)](/DEMO/DEMO1/)
 
 
 
-[DEMO2 - For Obtaining Organelle Genes (Genome) (Part 2)](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO2)
+[DEMO2 - For Obtaining Organelle Genes (Genome) (Part 2)](/DEMO/DEMO2/)
 
 
   
-[DEMO3 - For Obtaining Single Copy Genes](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO3)
+[DEMO3 - For Obtaining Single Copy Genes](DEMO/DEMO3/)
 
 
 
-[DEMO4 - For Obtaining Angiosperms353 Genes](https://gitee.com/sculab/GeneMiner/tree/master/DEMO/DEMO4)
+[DEMO4 - For Obtaining Angiosperms353 Genes](DEMO/DEMO4/)
 
 
 # More Details
@@ -269,6 +269,7 @@ Ensure the selection of three or more species for batch extraction. Ensure there
 For mitochondrial genome assembly, it's recommended to utilize the full read length of the sequencing file. Uncheck the [Reads/File(M)] checkbox at [Analysis > Filter] to analyze the full read length data.
 
 
+**7.** **No results for Mitochondrial Genome?**
 
 
 # Contact
