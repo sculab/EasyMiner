@@ -36,6 +36,9 @@ Partial Class Config_Tree
         TextBox1 = New TextBox()
         DataGridView1 = New DataGridView()
         CheckBox1 = New CheckBox()
+        TextBox2 = New TextBox()
+        Label2 = New Label()
+        CheckBox2 = New CheckBox()
         GroupBox1.SuspendLayout()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox2.SuspendLayout()
@@ -90,10 +93,11 @@ Partial Class Config_Tree
         ' 
         NumericUpDown1.Location = New Point(288, 27)
         NumericUpDown1.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
+        NumericUpDown1.Minimum = New Decimal(New Integer() {10, 0, 0, 0})
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(69, 23)
         NumericUpDown1.TabIndex = 3
-        NumericUpDown1.Value = New Decimal(New Integer() {100, 0, 0, 0})
+        NumericUpDown1.Value = New Decimal(New Integer() {1000, 0, 0, 0})
         ' 
         ' GroupBox2
         ' 
@@ -172,12 +176,43 @@ Partial Class Config_Tree
         ' CheckBox1
         ' 
         CheckBox1.AutoSize = True
+        CheckBox1.Checked = True
+        CheckBox1.CheckState = CheckState.Checked
         CheckBox1.Location = New Point(381, 12)
         CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(131, 21)
+        CheckBox1.Size = New Size(87, 21)
         CheckBox1.TabIndex = 51
-        CheckBox1.Text = "选择外类群(有根树)"
+        CheckBox1.Text = "构建有根树"
         CheckBox1.UseVisualStyleBackColor = True
+        ' 
+        ' TextBox2
+        ' 
+        TextBox2.Location = New Point(381, 56)
+        TextBox2.Multiline = True
+        TextBox2.Name = "TextBox2"
+        TextBox2.Size = New Size(347, 301)
+        TextBox2.TabIndex = 52
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Location = New Point(381, 36)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(279, 17)
+        Label2.TabIndex = 53
+        Label2.Text = "Enter the names of the outgroup, one per line:"
+        ' 
+        ' CheckBox2
+        ' 
+        CheckBox2.AutoSize = True
+        CheckBox2.Checked = True
+        CheckBox2.CheckState = CheckState.Checked
+        CheckBox2.Location = New Point(573, 12)
+        CheckBox2.Name = "CheckBox2"
+        CheckBox2.Size = New Size(111, 21)
+        CheckBox2.TabIndex = 54
+        CheckBox2.Text = "结束后修订时间"
+        CheckBox2.UseVisualStyleBackColor = True
         ' 
         ' Config_Tree
         ' 
@@ -185,6 +220,9 @@ Partial Class Config_Tree
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(737, 424)
         ControlBox = False
+        Controls.Add(CheckBox2)
+        Controls.Add(Label2)
+        Controls.Add(TextBox2)
         Controls.Add(CheckBox1)
         Controls.Add(DataGridView1)
         Controls.Add(TextBox1)
@@ -220,4 +258,7 @@ Partial Class Config_Tree
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents DataGridView1 As DataGridView
     Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents Label2 As Label
+    Friend WithEvents CheckBox2 As CheckBox
 End Class

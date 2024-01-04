@@ -426,5 +426,25 @@ Module Module_Function
         End Try
         Return 0 ' Return 0 if an error occurs or the conditions are not met
     End Function
+    Public Function safe_delete(ByVal file_path As String)
+        Try
+            If File.Exists(file_path) Then
+                File.Delete(file_path)
+            End If
+            Return 0
+        Catch ex As Exception
+            Return 1
+        End Try
 
+    End Function
+    Public Sub do_newick(ByVal args() As String)
+        Dim SI_newick As New ProcessStartInfo()
+        SI_newick.FileName = currentDirectory + "analysis\newick.exe" ' 替换为实际的命令行程序路径
+        SI_newick.WorkingDirectory = args(0) ' 替换为实际的运行文件夹
+        SI_newick.CreateNoWindow = False
+        SI_newick.Arguments = args(1)
+        Dim process_filter As Process = Process.Start(SI_newick)
+        process_filter.WaitForExit()
+        process_filter.Close()
+    End Sub
 End Module

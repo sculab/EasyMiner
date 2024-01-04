@@ -30,7 +30,7 @@ The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper so
 [.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
 
 
-You could download from [SourceForge](https://sourceforge.net/projects/scuGeneMiner/) or our [site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
+You could download from [SourceForge](https://sourceforge.net/projects/geneminer/files/) or [our site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
 
 **Note: Avoid installing the software on a portable hard drive.**
 
