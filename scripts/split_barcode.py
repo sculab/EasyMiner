@@ -5,6 +5,7 @@ import re
 import argparse
 import subprocess
 import shutil
+import gzip
 from Bio import SeqIO
 from multiprocessing import Pool
 import multiprocessing
@@ -101,9 +102,9 @@ def split_wo_combine(query_file, subject_file, word_size, out_folder):
 
 def main():
     parser = argparse.ArgumentParser(description="基于Blast分割barcode")
-    parser.add_argument("-i", "--input", required=False, default=r"D:\20231207", help="选项文件夹的路径")
-    parser.add_argument("-r", "--ref", required=False, default=r"D:\HIVTEST\barcode.fasta", help="barcode序列的路径")
-    parser.add_argument("-o", "--output", required=False, default=r'D:\HIVTEST\app\results', help="结果文件夹的路径")
+    parser.add_argument("-i", "--input", required=False, default=r"E:\测试数据\HIVTEST\R003", help="测序数据文件夹的路径")
+    parser.add_argument("-r", "--ref", required=False, default=r"E:\测试数据\HIVTEST\barcode.fasta", help="barcode序列的路径")
+    parser.add_argument("-o", "--output", required=False, default=r'E:\测试数据\HIV', help="结果文件夹的路径")
     parser.add_argument('-w', "--word_size", required=False, type=int, default = 15, help='''word size''')
     parser.add_argument('-p', "--processes", required=False, type=int, default=8, help='Number of processes')
     args = parser.parse_args()
@@ -223,10 +224,12 @@ def split_subreads(query_file, subject_file, word_size, seq_file_name, out_folde
             sequence_seq = str(record.seq)
             if sequence_name in subreads_dict:
                 subreads_list = sorted(subreads_dict[sequence_name]) + [len(sequence_seq)]
-                for i in range(0, len(subreads_list) - 1, 2):
-                    if subreads_list[i+1] - subreads_list[i] > 300:
+                for i in range(0, len(subreads_list) - 1, 1):
+                    if subreads_list[i+1] - subreads_list[i] > 100:
                         sequence_entry = f'>{sequence_name}_{str(int(i/2))}\n{sequence_seq[subreads_list[i]:subreads_list[i+1]]}\n'
                         splited_file.write(sequence_entry)
+            else:
+                splited_file.write(record)
     splited_file.close()
 
 def get_subreads_dict(blast_output_file, _subreads_dict):

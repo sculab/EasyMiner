@@ -8,6 +8,7 @@ Imports System.Security.Cryptography
 
 
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports System.Security.Policy
 Module Module_Function
     Public Function ReadSettings(filePath As String) As Dictionary(Of String, String)
         Dim settings As New Dictionary(Of String, String)()
@@ -252,7 +253,7 @@ Module Module_Function
         While retryCount <= maxRetries
             Try
                 If Not File.Exists(file_path) Then
-                    Dim source_file As String = database_url & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
+                    Dim source_file As String = database_url.Split(";")(0) & database_type & "_" & file_type & "/" & gb_id.Substring(0, Math.Min(2, gb_id.Length)) & "/" & gb_id.Substring(0, Math.Min(5, gb_id.Length)) & "/" & gb_id & "." & file_type
                     Directory.CreateDirectory(data_folder)
 
                     Dim response = Await httpClient.GetAsync(source_file)
@@ -278,6 +279,40 @@ Module Module_Function
         End While
         Return ""
     End Function
+
+
+    Public Async Function TestUrlsAsync(ByVal urls() As String) As Task(Of String)
+        Dim fastestUrl As String = urls(0)
+        Dim minResponseTime As Long = Long.MaxValue
+        Dim httpClient As HttpClient = New HttpClient()
+        httpClient.Timeout = TimeSpan.FromSeconds(10) ' 设置超时时间为10秒
+
+        For Each url As String In urls
+            Try
+                Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+
+                ' 使用ConfigureAwait(False)来避免死锁
+                Dim response As HttpResponseMessage = Await httpClient.GetAsync(url + "test.fasta").ConfigureAwait(False)
+                If response.IsSuccessStatusCode Then
+                    stopwatch.Stop()
+                    Dim responseTime As Long = stopwatch.ElapsedMilliseconds
+
+                    ' 检查是否是最快的URL
+                    If responseTime < minResponseTime Then
+                        minResponseTime = responseTime
+                        fastestUrl = url
+                    End If
+                End If
+            Catch ex As Exception
+                ' 出错时忽略该URL
+                Console.WriteLine("Error accessing URL: " & url & " - " & ex.Message)
+            End Try
+        Next
+
+        Return fastestUrl
+    End Function
+
+
 
     'Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)
     '    Dim SI_build_ann As New ProcessStartInfo()

@@ -27,7 +27,7 @@ Public Class Welcome
         TargetOS = settings.GetValueOrDefault("os", "macos")
         language = settings.GetValueOrDefault("language", "EN")
         exe_mode = settings.GetValueOrDefault("mode", "basic")
-        database_url = settings.GetValueOrDefault("database_url", "http://life-bioinfo.tpddns.cn:8445/database/")
+        database_url = "https://bbpt.scu.edu.cn/database/;http://life-bioinfo.tpddns.cn:8445/database/"
         filter_thread = CInt(settings.GetValueOrDefault("filter_thread", "2"))
         align_app = settings.GetValueOrDefault("align_app", "muscle")
 
@@ -67,6 +67,7 @@ Public Class Welcome
         Else
             Timer1.Enabled = False
             Me.Hide()
+            database_url = TestUrlsAsync(database_url.Split(";")).Result
         End If
     End Sub
     Public Sub DeleteTemp(ByVal aimPath As String)

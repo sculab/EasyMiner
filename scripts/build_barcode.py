@@ -25,7 +25,7 @@ degenerate_bases = {
     'N': ['A', 'C', 'G', 'T'],
     'AG': 'R',
     'CT': 'Y',
-    'GC': 'S',
+    'CG': 'S',
     'GT': 'K',
     'AT': 'W',
     'AC': 'M',
@@ -103,7 +103,7 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
         if os.path.exists(os.path.join(out_folder, folder_name + ".sam")) == False:
             if os.path.exists(os.path.join(out_folder, folder_name + "_ref.fasta")): os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
             exit(0)
-        build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", "0.75","-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp']
+        build_consensus_cmd = [r"..\analysis\build_consensus.exe", "-i", '"' + os.path.join(out_folder, folder_name + ".sam") + '"', "-c", "0.25","-m 2", "-o", '"' + out_folder + '"', "-p", folder_name + '_tmp']
         print(" ".join(build_consensus_cmd))
         subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -116,6 +116,7 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
         subprocess.run(" ".join(build_consensus_cmd), check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         print("Making alignment ...")
+        #build_mafft_cmd = [r"..\analysis\mafft-win\mafft.bat --adjustdirection --auto", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}">"{os.path.join(out_folder, folder_name + ".fasta")}"']
         build_muscle_cmd = [r"..\analysis\muscle_warpper.exe", "-i", f'"{os.path.join(out_folder, folder_name + "_tmp.fasta")}"', f'-o "{os.path.join(out_folder, folder_name + ".fasta")}"']
         subprocess.run(" ".join(build_muscle_cmd), shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
@@ -123,12 +124,16 @@ def check_muti_copy(query_file, word_size, folder_name, out_folder, con_thr, lev
         if os.path.exists(os.path.join(out_folder, folder_name + ".sam")): os.remove(os.path.join(out_folder, folder_name + ".sam"))
         if os.path.exists(os.path.join(out_folder, folder_name + "_ref.fasta")): os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
         if os.path.exists(os.path.join(out_folder, folder_name + ".png")): os.remove(os.path.join(out_folder, folder_name + ".png"))
+        Write_Print(os.path.join(out_folder, "log.txt"), 'Error: Could not complete map: ', folder_name)
         exit(0)
     os.remove(os.path.join(out_folder, folder_name + "_tmp.fasta"))
     os.remove(os.path.join(out_folder, folder_name + ".sam"))
     os.remove(os.path.join(out_folder, folder_name + "_ref.fasta"))
     print("Making final results")
-    check_degenerate(os.path.join(out_folder, folder_name + ".fasta"), level, "", keep_best)
+    try:
+        check_degenerate(os.path.join(out_folder, folder_name + ".fasta"), level, "", keep_best)
+    except:
+        Write_Print(os.path.join(out_folder, "log.txt"), 'Warning: Could not get best sequence: ', folder_name)
 
 
 
@@ -184,8 +189,8 @@ def process_query_file(input_file, subject_file, word_size, out_folder, con_thr,
 
 def main():
     parser = argparse.ArgumentParser(description="基于参考序列对二代或者三代的测序数据构建一致性序列，并且检测多拷贝序列。")
-    parser.add_argument("-i", "--input", required=False, default=r"E:\测试数据\HIV\combined\Barcode_adapter_BA1.fasta", help="测序数据路径，文件或者文件夹")
-    parser.add_argument("-r", "--ref", required=False, default=r"E:\测试数据\HIVTEST\barcode.fasta", help="参考序列的路径")
+    parser.add_argument("-i", "--input", required=False, default=r"E:\Workshop\alldata\clean_data\Barcode_adapter_BA2_clean.fasta", help="测序数据路径，文件或者文件夹")
+    parser.add_argument("-r", "--ref", required=False, default=r"E:\测试数据\HIVTEST\HIV_ref.fasta", help="参考序列的路径")
     parser.add_argument("-o", "--output", required=False, default=r"E:\测试数据\HIV", help="结果文件夹的路径")
     parser.add_argument('-w', "--word_size", required=False, default = "7", help='''执行Blast时的word size''')
     parser.add_argument("-c", "--con_thr", required=False, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75", help="List of consensus thresold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.25")

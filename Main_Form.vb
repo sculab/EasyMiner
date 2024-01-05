@@ -11,6 +11,7 @@ Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.Devices
 Imports System.DirectoryServices
 Imports System.Windows.Forms.VisualStyles
+Imports System.Windows.Forms.Design.AxImporter
 
 
 Public Class Main_Form
@@ -336,7 +337,6 @@ Public Class Main_Form
     Private Sub Main_Form_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         e.Cancel = True
         settings("language") = language
-        settings("database_url") = database_url
         SaveSettings(root_path + "analysis\" + "setting.ini", settings)
         End
     End Sub
@@ -1695,13 +1695,13 @@ Public Class Main_Form
             End If
         Next
         If refs_count >= 1 Then
-            Dim th1 As New Thread(AddressOf batch_filer_assemble)
+            Dim th1 As New Thread(AddressOf batch_filter_assemble)
             th1.Start()
         Else
             MsgBox("Please select at least one reference and one sequencing data!", MsgBoxStyle.Information, "Infomation")
         End If
     End Sub
-    Public Sub batch_filer_assemble()
+    Public Sub batch_filter_assemble()
         If File.Exists(TextBox1.Text + "\kmer_dict_k" + k1.ToString + ".dict") Then
             File.Delete(TextBox1.Text + "\kmer_dict_k" + k1.ToString + ".dict")
         End If
@@ -3216,7 +3216,6 @@ Public Class Main_Form
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
 
                 Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
-                Dim pre_out As String = out_dir
                 out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
                 q1 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
                 q2 = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
@@ -3249,10 +3248,12 @@ Public Class Main_Form
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
         'Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
+
         For i As Integer = 1 To refsView.Count
             count += 1
             PB_value = count / refsView.Count * 100
             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+
                 Dim inputFilePath As String = Path.Combine(TextBox1.Text, "filtered", refsView.Item(i - 1).Item(1).ToString + ".fq")
                 If File.Exists(inputFilePath) Then
                     SplitFastqFile(inputFilePath)
@@ -3261,9 +3262,37 @@ Public Class Main_Form
             End If
         Next
 
-
         'End Sub)
+        For batch_i As Integer = 1 To seqsView.Count
+            PB_value = batch_i / seqsView.Count * 100
+            If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                Dim folder_name_tmp As String = batch_i.ToString + "_" + folder_name
+                Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
+                                                                         If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                             Dim inputFilePath As String = Path.Combine(TextBox1.Text, folder_name_tmp, "filtered", refsView.Item(i - 1).Item(1).ToString + ".fq")
+                                                                             If File.Exists(inputFilePath) Then
+                                                                                 SplitFastqFile(inputFilePath)
+                                                                             End If
+                                                                         End If
+                                                                     End Sub)
+                safe_delete(Path.Combine(TextBox1.Text, folder_name + ".1.fq"))
+                safe_delete(Path.Combine(TextBox1.Text, folder_name + ".2.fq"))
+                For i As Integer = 1 To refsView.Count
+                    If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                        Dim inputfq As String = Path.Combine(TextBox1.Text, folder_name_tmp, "filtered", refsView.Item(i - 1).Item(1).ToString)
+                        If File.Exists(inputfq + ".1.fq") Then
+                            CombineFiles(Path.Combine(TextBox1.Text, folder_name + ".1.fq"), inputfq + ".1.fq")
+                        End If
+                        If File.Exists(inputfq + ".2.fq") Then
+                            CombineFiles(Path.Combine(TextBox1.Text, folder_name + ".2.fq"), inputfq + ".2.fq")
+                        End If
+                    End If
+                Next
+            End If
+        Next
         PB_value = -1
+
 
         MsgBox("Analysis completed! Please check filtered folder in output.", MsgBoxStyle.Information, "Infomation")
     End Sub
@@ -3849,6 +3878,8 @@ Public Class Main_Form
                 menu_assemble()
             Case "batch_auto_assemble"
                 menu_batch_auto_assemble()
+            Case "batch_filter"
+                menu_batch_filter()
             Case "auto_assemble"
                 menu_auto_assemble()
             Case "iteration"
@@ -4016,5 +4047,101 @@ Public Class Main_Form
                 DataGridView1.Rows(i).Cells(0).Value = selectrow(i)
             Next
         End If
+    End Sub
+
+    Private Sub 过滤ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 过滤ToolStripMenuItem1.Click
+        Directory.CreateDirectory(TextBox1.Text)
+        If Directory.GetFileSystemEntries(TextBox1.Text).Length > 0 And DebugToolStripMenuItem.Checked = False Then
+            Dim result As DialogResult = MessageBox.Show("The result folder is not empty. Are you sure to proceed?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            If result = DialogResult.No Then
+                Exit Sub
+            End If
+        End If
+        If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
+            MenuClicked = "batch_filter"
+            form_config_basic.CheckBox3.Checked = False
+            form_config_basic.CheckBox4.Enabled = True
+            form_config_basic.GroupBox2.Enabled = True
+            form_config_basic.GroupBox3.Enabled = True
+            form_config_basic.GroupBox4.Enabled = False
+            form_config_basic.NumericUpDown1.Value = 31
+            form_config_basic.Show()
+
+        Else
+            MsgBox("Please select an output folder!", MsgBoxStyle.Information, "Infomation")
+        End If
+    End Sub
+    Private Sub menu_batch_filter()
+        Dim refs_count As Integer = 0
+        ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
+        DeleteDir(ref_dir)
+        Directory.CreateDirectory(ref_dir)
+
+        timer_id = 4
+        PB_value = 0
+        For i As Integer = 1 To refsView.Count
+            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                refs_count += 1
+                safe_copy(currentDirectory + "temp\org_seq\" + refsView.Item(i - 1).Item(1).ToString + ".fasta", ref_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", True)
+            End If
+        Next
+        If refs_count >= 1 Then
+            Dim th1 As New Thread(AddressOf batch_filter)
+            th1.Start()
+        Else
+            MsgBox("Please select at least one reference and one sequencing data!", MsgBoxStyle.Information, "Infomation")
+        End If
+    End Sub
+    Public Sub batch_filter()
+        If File.Exists(TextBox1.Text + "\kmer_dict_k" + k1.ToString + ".dict") Then
+            File.Delete(TextBox1.Text + "\kmer_dict_k" + k1.ToString + ".dict")
+        End If
+        Dim memory_used As Double = make_ref_dict(TextBox1.Text, ref_dir, TextBox1.Text, "kmer_dict_k" + k1.ToString + ".dict")
+        memory_used = Math.Max(memory_used, 0.1) * 2
+        Dim my_current_thread As Integer = Math.Max(Math.Min(Int(Math.Max((totalPhysicalMemory - 4), 0) / memory_used), current_thread), 1)
+        my_current_thread = Math.Min(filter_thread, my_current_thread)
+        Dim count As Integer = 0
+        PB_value = 0
+        Dim parallelOptions As New ParallelOptions()
+        parallelOptions.MaxDegreeOfParallelism = my_current_thread
+        Parallel.For(1, seqsView.Count + 1, parallelOptions, Sub(batch_i)
+                                                                 count += 1
+                                                                 PB_value = count / seqsView.Count * 100
+                                                                 If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+
+                                                                     Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+
+                                                                     Dim my_out_dir As String = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                                                                     Directory.CreateDirectory(my_out_dir)
+                                                                     Dim my_q1 As String = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString.Replace("\", "/") + """"
+                                                                     Dim my_q2 As String = " " + """" + DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString.Replace("\", "/") + """"
+                                                                     If My.Computer.FileSystem.DirectoryExists(Path.Combine(my_out_dir, "results")) Then
+                                                                         DeleteDir(Path.Combine(my_out_dir, "results"))
+                                                                     End If
+                                                                     Dim my_options() As String = {k1, k2, my_q1, my_q2, ref_dir, my_out_dir, "..\kmer_dict_k" + k1.ToString + ".dict", 0, "0", no_window, my_current_thread}
+                                                                     do_filter(my_options)
+                                                                     my_options(10) = current_thread
+                                                                     my_options(8) = "1"
+                                                                     do_filter(my_options)
+                                                                     If Directory.Exists(my_out_dir + "\large_files") Then
+                                                                         Directory.Delete(my_out_dir + "\large_files", True)
+                                                                     End If
+                                                                     Using LogFileReader As New StreamReader(my_out_dir + "\log.txt")
+                                                                         Dim line As String = ""
+                                                                         While InlineAssignHelper(line, LogFileReader.ReadLine()) IsNot Nothing
+                                                                             If line.ToLower.StartsWith("error") Then
+                                                                                 RichTextBox1.AppendText("Error: " + folder_name + vbCrLf)
+                                                                             End If
+                                                                         End While
+                                                                     End Using
+                                                                     CombineFiles(TextBox1.Text + "\log.txt", my_out_dir + "\log.txt")
+                                                                 End If
+                                                             End Sub)
+        PB_value = -1
+        MsgBox("Analysis completed!", MsgBoxStyle.Information, "Infomation")
     End Sub
 End Class

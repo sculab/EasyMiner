@@ -26,14 +26,13 @@ If mining angiosperm 353 genes, please cite our paper on Easy353:
 
 
 # Install
-The .NET 6.0 Desktop Runtime x64 must be installed on the computer for proper software functionality.
-[.NET 6.0 Desktop Runtime](https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer)
-
-
 You could download from [SourceForge](https://sourceforge.net/projects/geneminer/files/) or [our site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
 
 **Note: Avoid installing the software on a portable hard drive.**
 
+**For macOS**: MATO is packaged with Wineskin to run on macOS. Please try to use the latest version of MacOS. Due to limited conditions, MATO has not been tested on all macOS versions. If you meet error like "XXX is damaged" You can type this in terminal:
+- xattr -cr /location_of_MATO.app
+- Example: xattr -cr /Applications/MATO.app
 
 # Demo
 
