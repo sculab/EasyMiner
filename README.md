@@ -268,7 +268,11 @@ Ensure the selection of three or more species for batch extraction. Ensure there
 For mitochondrial genome assembly, it's recommended to utilize the full read length of the sequencing file. Uncheck the [Reads/File(M)] checkbox at [Analysis > Filter] to analyze the full read length data.
 
 
-**7.** **No results for Mitochondrial Genome?**
+
+**8.** **Want to Run Multiple GeneMiner Simultaneously?**
+
+**NOTE:**  Do not open and operate multiple GeneMiner windows in the same directory.
+To expedite the extraction process, you can run multiple GeneMiner concurrently, provided your computer has sufficient memory. Create a copy of the GeneMiner folder and run the additional instance from the duplicated directory. (Ensure that the folder path does not contain any Chinese characters).
 
 
 # Contact
