@@ -6,6 +6,7 @@ def merge_sequences(input_folder, output_file, exts, missingchar):
     species_sequences = {}
     sequence_index = 0
     total_count = 0
+    gene_name = []
     # Traverse through all FASTA files in the folder
     for filename in os.listdir(input_folder):
         if os.path.splitext(filename)[-1].lower() in exts.split(","):
@@ -14,6 +15,7 @@ def merge_sequences(input_folder, output_file, exts, missingchar):
     for filename in os.listdir(input_folder):
         if os.path.splitext(filename)[-1].lower() in exts.split(","):
             filepath = os.path.join(input_folder, filename)
+            gene_name.append(filename.split('.')[0])
             for record in SeqIO.parse(filepath, "fasta"):
                 sequence = str(record.seq)
                 species = record.name
@@ -42,7 +44,7 @@ def merge_sequences(input_folder, output_file, exts, missingchar):
                 start_pos = end_pos + 1
                 end_pos += len(first_value[i])
                 if end_pos-start_pos>=0:
-                    partition_file.write(f'charset part{i+1}= {start_pos} - {end_pos};\n')
+                    partition_file.write(f'charset part{i+1}_{gene_name[i]}= {start_pos} - {end_pos};\n')
             partition_file.write('end;')
             
 

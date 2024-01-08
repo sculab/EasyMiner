@@ -31,6 +31,7 @@ Partial Class Main_Form
         文件ToolStripMenuItem = New ToolStripMenuItem()
         载入参考序列ToolStripMenuItem = New ToolStripMenuItem()
         测序文件ToolStripMenuItem = New ToolStripMenuItem()
+        导入列表信息ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator11 = New ToolStripSeparator()
         下载序列ToolStripMenuItem = New ToolStripMenuItem()
         下载叶绿体基因组ToolStripMenuItem = New ToolStripMenuItem()
@@ -39,9 +40,9 @@ Partial Class Main_Form
         ToolStripSeparator1 = New ToolStripSeparator()
         下载ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator3 = New ToolStripSeparator()
-        导出ToolStripMenuItem = New ToolStripMenuItem()
         导出参考序列ToolStripMenuItem = New ToolStripMenuItem()
         导出测序文件ToolStripMenuItem = New ToolStripMenuItem()
+        导出ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator2 = New ToolStripSeparator()
         刷新数据ToolStripMenuItem = New ToolStripMenuItem()
         分析ToolStripMenuItem = New ToolStripMenuItem()
@@ -72,8 +73,9 @@ Partial Class Main_Form
         ToolStripSeparator5 = New ToolStripSeparator()
         分离重建ToolStripMenuItem = New ToolStripMenuItem()
         批量ToolStripMenuItem1 = New ToolStripMenuItem()
-        过滤拼接ToolStripMenuItem = New ToolStripMenuItem()
+        过滤ToolStripMenuItem1 = New ToolStripMenuItem()
         ToolStripMenuItem4 = New ToolStripMenuItem()
+        过滤拼接ToolStripMenuItem = New ToolStripMenuItem()
         对齐参考ToolStripMenuItem1 = New ToolStripMenuItem()
         ToolStripSeparator16 = New ToolStripSeparator()
         合并结果ToolStripMenuItem = New ToolStripMenuItem()
@@ -90,6 +92,7 @@ Partial Class Main_Form
         ToolStripSeparator10 = New ToolStripSeparator()
         统计结果ToolStripMenuItem = New ToolStripMenuItem()
         三方工具ToolStripMenuItem = New ToolStripMenuItem()
+        拆分fq文件ToolStripMenuItem = New ToolStripMenuItem()
         序列比对ToolStripMenuItem1 = New ToolStripMenuItem()
         比对ToolStripMenuItem = New ToolStripMenuItem()
         切齐ToolStripMenuItem = New ToolStripMenuItem()
@@ -97,8 +100,10 @@ Partial Class Main_Form
         合并参考序列ToolStripMenuItem = New ToolStripMenuItem()
         按物种合并ToolStripMenuItem = New ToolStripMenuItem()
         合并文件ToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator17 = New ToolStripSeparator()
         参考序列建树ToolStripMenuItem = New ToolStripMenuItem()
-        拆分fq文件ToolStripMenuItem = New ToolStripMenuItem()
+        修订树时间ToolStripMenuItem = New ToolStripMenuItem()
+        整理树格式ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator15 = New ToolStripSeparator()
         EnglishToolStripMenuItem = New ToolStripMenuItem()
         DebugToolStripMenuItem = New ToolStripMenuItem()
@@ -110,6 +115,7 @@ Partial Class Main_Form
         ToolStripSeparator12 = New ToolStripSeparator()
         失败的项ToolStripMenuItem = New ToolStripMenuItem()
         参考数量ToolStripMenuItem = New ToolStripMenuItem()
+        最大差异度ToolStripMenuItem = New ToolStripMenuItem()
         DataGridView2 = New DataGridView()
         ContextMenuStrip1 = New ContextMenuStrip(components)
         全选ToolStripMenuItem = New ToolStripMenuItem()
@@ -151,7 +157,7 @@ Partial Class Main_Form
         ' 
         ' 文件ToolStripMenuItem
         ' 
-        文件ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {载入参考序列ToolStripMenuItem, 测序文件ToolStripMenuItem, ToolStripSeparator11, 下载序列ToolStripMenuItem, ToolStripSeparator3, 导出ToolStripMenuItem, 导出参考序列ToolStripMenuItem, 导出测序文件ToolStripMenuItem, ToolStripSeparator2, 刷新数据ToolStripMenuItem})
+        文件ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {载入参考序列ToolStripMenuItem, 测序文件ToolStripMenuItem, 导入列表信息ToolStripMenuItem, ToolStripSeparator11, 下载序列ToolStripMenuItem, ToolStripSeparator3, 导出参考序列ToolStripMenuItem, 导出测序文件ToolStripMenuItem, 导出ToolStripMenuItem, ToolStripSeparator2, 刷新数据ToolStripMenuItem})
         文件ToolStripMenuItem.Name = "文件ToolStripMenuItem"
         文件ToolStripMenuItem.Size = New Size(44, 21)
         文件ToolStripMenuItem.Text = "文件"
@@ -167,6 +173,12 @@ Partial Class Main_Form
         测序文件ToolStripMenuItem.Name = "测序文件ToolStripMenuItem"
         测序文件ToolStripMenuItem.Size = New Size(148, 22)
         测序文件ToolStripMenuItem.Text = "载入测序文件"
+        ' 
+        ' 导入列表信息ToolStripMenuItem
+        ' 
+        导入列表信息ToolStripMenuItem.Name = "导入列表信息ToolStripMenuItem"
+        导入列表信息ToolStripMenuItem.Size = New Size(148, 22)
+        导入列表信息ToolStripMenuItem.Text = "载入列表信息"
         ' 
         ' ToolStripSeparator11
         ' 
@@ -214,12 +226,6 @@ Partial Class Main_Form
         ToolStripSeparator3.Name = "ToolStripSeparator3"
         ToolStripSeparator3.Size = New Size(145, 6)
         ' 
-        ' 导出ToolStripMenuItem
-        ' 
-        导出ToolStripMenuItem.Name = "导出ToolStripMenuItem"
-        导出ToolStripMenuItem.Size = New Size(148, 22)
-        导出ToolStripMenuItem.Text = "导出列表信息"
-        ' 
         ' 导出参考序列ToolStripMenuItem
         ' 
         导出参考序列ToolStripMenuItem.Name = "导出参考序列ToolStripMenuItem"
@@ -231,6 +237,12 @@ Partial Class Main_Form
         导出测序文件ToolStripMenuItem.Name = "导出测序文件ToolStripMenuItem"
         导出测序文件ToolStripMenuItem.Size = New Size(148, 22)
         导出测序文件ToolStripMenuItem.Text = "导出测序文件"
+        ' 
+        ' 导出ToolStripMenuItem
+        ' 
+        导出ToolStripMenuItem.Name = "导出ToolStripMenuItem"
+        导出ToolStripMenuItem.Size = New Size(148, 22)
+        导出ToolStripMenuItem.Text = "导出列表信息"
         ' 
         ' ToolStripSeparator2
         ' 
@@ -374,7 +386,6 @@ Partial Class Main_Form
         长读条码ToolStripMenuItem.Name = "长读条码ToolStripMenuItem"
         长读条码ToolStripMenuItem.Size = New Size(68, 21)
         长读条码ToolStripMenuItem.Text = "长读分析"
-        长读条码ToolStripMenuItem.Visible = False
         ' 
         ' 分离序列ToolStripMenuItem
         ' 
@@ -407,121 +418,133 @@ Partial Class Main_Form
         ' 
         ' 批量ToolStripMenuItem1
         ' 
-        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤拼接ToolStripMenuItem, ToolStripMenuItem4, 对齐参考ToolStripMenuItem1, ToolStripSeparator16, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, 构建系统发育树ToolStripMenuItem, ToolStripSeparator8, 旁系同源检测ToolStripMenuItem, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
+        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem1, ToolStripMenuItem4, 过滤拼接ToolStripMenuItem, 对齐参考ToolStripMenuItem1, ToolStripSeparator16, 合并结果ToolStripMenuItem, 合并比对ToolStripMenuItem, 构建系统发育树ToolStripMenuItem, ToolStripSeparator8, 旁系同源检测ToolStripMenuItem, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
         批量ToolStripMenuItem1.Name = "批量ToolStripMenuItem1"
         批量ToolStripMenuItem1.Size = New Size(44, 21)
         批量ToolStripMenuItem1.Text = "批量"
         ' 
-        ' 过滤拼接ToolStripMenuItem
+        ' 过滤ToolStripMenuItem1
         ' 
-        过滤拼接ToolStripMenuItem.Name = "过滤拼接ToolStripMenuItem"
-        过滤拼接ToolStripMenuItem.Size = New Size(179, 22)
-        过滤拼接ToolStripMenuItem.Text = "过滤+拼接"
+        过滤ToolStripMenuItem1.Name = "过滤ToolStripMenuItem1"
+        过滤ToolStripMenuItem1.Size = New Size(180, 22)
+        过滤ToolStripMenuItem1.Text = "批量过滤"
         ' 
         ' ToolStripMenuItem4
         ' 
         ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        ToolStripMenuItem4.Size = New Size(179, 22)
+        ToolStripMenuItem4.Size = New Size(180, 22)
         ToolStripMenuItem4.Text = "重新拼接"
+        ' 
+        ' 过滤拼接ToolStripMenuItem
+        ' 
+        过滤拼接ToolStripMenuItem.Name = "过滤拼接ToolStripMenuItem"
+        过滤拼接ToolStripMenuItem.Size = New Size(180, 22)
+        过滤拼接ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' 对齐参考ToolStripMenuItem1
         ' 
         对齐参考ToolStripMenuItem1.Name = "对齐参考ToolStripMenuItem1"
-        对齐参考ToolStripMenuItem1.Size = New Size(179, 22)
+        对齐参考ToolStripMenuItem1.Size = New Size(180, 22)
         对齐参考ToolStripMenuItem1.Text = "基于参考切齐"
         ' 
         ' ToolStripSeparator16
         ' 
         ToolStripSeparator16.Name = "ToolStripSeparator16"
-        ToolStripSeparator16.Size = New Size(176, 6)
+        ToolStripSeparator16.Size = New Size(177, 6)
         ' 
         ' 合并结果ToolStripMenuItem
         ' 
         合并结果ToolStripMenuItem.Name = "合并结果ToolStripMenuItem"
-        合并结果ToolStripMenuItem.Size = New Size(179, 22)
+        合并结果ToolStripMenuItem.Size = New Size(180, 22)
         合并结果ToolStripMenuItem.Text = "合并结果"
         ' 
         ' 合并比对ToolStripMenuItem
         ' 
         合并比对ToolStripMenuItem.Name = "合并比对ToolStripMenuItem"
-        合并比对ToolStripMenuItem.Size = New Size(179, 22)
+        合并比对ToolStripMenuItem.Size = New Size(180, 22)
         合并比对ToolStripMenuItem.Text = "合并+切齐"
         ' 
         ' 构建系统发育树ToolStripMenuItem
         ' 
         构建系统发育树ToolStripMenuItem.Name = "构建系统发育树ToolStripMenuItem"
-        构建系统发育树ToolStripMenuItem.Size = New Size(179, 22)
+        构建系统发育树ToolStripMenuItem.Size = New Size(180, 22)
         构建系统发育树ToolStripMenuItem.Text = "构建系统发育树"
         ' 
         ' ToolStripSeparator8
         ' 
         ToolStripSeparator8.Name = "ToolStripSeparator8"
-        ToolStripSeparator8.Size = New Size(176, 6)
+        ToolStripSeparator8.Size = New Size(177, 6)
         ' 
         ' 旁系同源检测ToolStripMenuItem
         ' 
         旁系同源检测ToolStripMenuItem.Name = "旁系同源检测ToolStripMenuItem"
-        旁系同源检测ToolStripMenuItem.Size = New Size(179, 22)
+        旁系同源检测ToolStripMenuItem.Size = New Size(180, 22)
         旁系同源检测ToolStripMenuItem.Text = "多拷贝检测"
         ' 
         ' 重构序列ToolStripMenuItem
         ' 
         重构序列ToolStripMenuItem.Name = "重构序列ToolStripMenuItem"
-        重构序列ToolStripMenuItem.Size = New Size(179, 22)
+        重构序列ToolStripMenuItem.Size = New Size(180, 22)
         重构序列ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' PPDToolStripMenuItem
         ' 
         PPDToolStripMenuItem.Name = "PPDToolStripMenuItem"
-        PPDToolStripMenuItem.Size = New Size(179, 22)
+        PPDToolStripMenuItem.Size = New Size(180, 22)
         PPDToolStripMenuItem.Text = "旁系同源检测(PPD)"
         ' 
         ' ToolStripSeparator7
         ' 
         ToolStripSeparator7.Name = "ToolStripSeparator7"
-        ToolStripSeparator7.Size = New Size(176, 6)
+        ToolStripSeparator7.Size = New Size(177, 6)
         ' 
         ' ToolStripMenuItem2
         ' 
         ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        ToolStripMenuItem2.Size = New Size(179, 22)
+        ToolStripMenuItem2.Size = New Size(180, 22)
         ToolStripMenuItem2.Text = "植物叶绿体基因组"
         ' 
         ' ToolStripMenuItem3
         ' 
         ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        ToolStripMenuItem3.Size = New Size(179, 22)
+        ToolStripMenuItem3.Size = New Size(180, 22)
         ToolStripMenuItem3.Text = "植物线粒体基因组"
         ' 
         ' 哺乳动物线粒体基因组ToolStripMenuItem2
         ' 
         哺乳动物线粒体基因组ToolStripMenuItem2.Name = "哺乳动物线粒体基因组ToolStripMenuItem2"
-        哺乳动物线粒体基因组ToolStripMenuItem2.Size = New Size(179, 22)
+        哺乳动物线粒体基因组ToolStripMenuItem2.Size = New Size(180, 22)
         哺乳动物线粒体基因组ToolStripMenuItem2.Text = "动物线粒体基因组"
         ' 
         ' ToolStripSeparator10
         ' 
         ToolStripSeparator10.Name = "ToolStripSeparator10"
-        ToolStripSeparator10.Size = New Size(176, 6)
+        ToolStripSeparator10.Size = New Size(177, 6)
         ' 
         ' 统计结果ToolStripMenuItem
         ' 
         统计结果ToolStripMenuItem.Name = "统计结果ToolStripMenuItem"
-        统计结果ToolStripMenuItem.Size = New Size(179, 22)
+        统计结果ToolStripMenuItem.Size = New Size(180, 22)
         统计结果ToolStripMenuItem.Text = "统计汇总结果"
         ' 
         ' 三方工具ToolStripMenuItem
         ' 
-        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {序列比对ToolStripMenuItem1, 序列切片ToolStripMenuItem, 合并参考序列ToolStripMenuItem, 参考序列建树ToolStripMenuItem, 拆分fq文件ToolStripMenuItem, ToolStripSeparator15, EnglishToolStripMenuItem, DebugToolStripMenuItem})
+        三方工具ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {拆分fq文件ToolStripMenuItem, 序列比对ToolStripMenuItem1, 序列切片ToolStripMenuItem, 合并参考序列ToolStripMenuItem, ToolStripSeparator17, 参考序列建树ToolStripMenuItem, 修订树时间ToolStripMenuItem, 整理树格式ToolStripMenuItem, ToolStripSeparator15, EnglishToolStripMenuItem, DebugToolStripMenuItem})
         三方工具ToolStripMenuItem.Name = "三方工具ToolStripMenuItem"
         三方工具ToolStripMenuItem.Size = New Size(44, 21)
         三方工具ToolStripMenuItem.Text = "工具"
+        ' 
+        ' 拆分fq文件ToolStripMenuItem
+        ' 
+        拆分fq文件ToolStripMenuItem.Name = "拆分fq文件ToolStripMenuItem"
+        拆分fq文件ToolStripMenuItem.Size = New Size(148, 22)
+        拆分fq文件ToolStripMenuItem.Text = "拆分过滤文件"
         ' 
         ' 序列比对ToolStripMenuItem1
         ' 
         序列比对ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {比对ToolStripMenuItem, 切齐ToolStripMenuItem})
         序列比对ToolStripMenuItem1.Name = "序列比对ToolStripMenuItem1"
-        序列比对ToolStripMenuItem1.Size = New Size(180, 22)
+        序列比对ToolStripMenuItem1.Size = New Size(148, 22)
         序列比对ToolStripMenuItem1.Text = "结果加入参考"
         ' 
         ' 比对ToolStripMenuItem
@@ -539,14 +562,14 @@ Partial Class Main_Form
         ' 序列切片ToolStripMenuItem
         ' 
         序列切片ToolStripMenuItem.Name = "序列切片ToolStripMenuItem"
-        序列切片ToolStripMenuItem.Size = New Size(180, 22)
+        序列切片ToolStripMenuItem.Size = New Size(148, 22)
         序列切片ToolStripMenuItem.Text = "参考序列切片"
         ' 
         ' 合并参考序列ToolStripMenuItem
         ' 
         合并参考序列ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {按物种合并ToolStripMenuItem, 合并文件ToolStripMenuItem})
         合并参考序列ToolStripMenuItem.Name = "合并参考序列ToolStripMenuItem"
-        合并参考序列ToolStripMenuItem.Size = New Size(180, 22)
+        合并参考序列ToolStripMenuItem.Size = New Size(148, 22)
         合并参考序列ToolStripMenuItem.Text = "合并参考序列"
         ' 
         ' 按物种合并ToolStripMenuItem
@@ -561,33 +584,44 @@ Partial Class Main_Form
         合并文件ToolStripMenuItem.Size = New Size(148, 22)
         合并文件ToolStripMenuItem.Text = "直接合并文件"
         ' 
+        ' ToolStripSeparator17
+        ' 
+        ToolStripSeparator17.Name = "ToolStripSeparator17"
+        ToolStripSeparator17.Size = New Size(145, 6)
+        ' 
         ' 参考序列建树ToolStripMenuItem
         ' 
         参考序列建树ToolStripMenuItem.Name = "参考序列建树ToolStripMenuItem"
-        参考序列建树ToolStripMenuItem.Size = New Size(180, 22)
+        参考序列建树ToolStripMenuItem.Size = New Size(148, 22)
         参考序列建树ToolStripMenuItem.Text = "参考序列建树"
         ' 
-        ' 拆分fq文件ToolStripMenuItem
+        ' 修订树时间ToolStripMenuItem
         ' 
-        拆分fq文件ToolStripMenuItem.Name = "拆分fq文件ToolStripMenuItem"
-        拆分fq文件ToolStripMenuItem.Size = New Size(180, 22)
-        拆分fq文件ToolStripMenuItem.Text = "拆分过滤文件"
+        修订树时间ToolStripMenuItem.Name = "修订树时间ToolStripMenuItem"
+        修订树时间ToolStripMenuItem.Size = New Size(148, 22)
+        修订树时间ToolStripMenuItem.Text = "修订树时间"
+        ' 
+        ' 整理树格式ToolStripMenuItem
+        ' 
+        整理树格式ToolStripMenuItem.Name = "整理树格式ToolStripMenuItem"
+        整理树格式ToolStripMenuItem.Size = New Size(148, 22)
+        整理树格式ToolStripMenuItem.Text = "整理树格式"
         ' 
         ' ToolStripSeparator15
         ' 
         ToolStripSeparator15.Name = "ToolStripSeparator15"
-        ToolStripSeparator15.Size = New Size(177, 6)
+        ToolStripSeparator15.Size = New Size(145, 6)
         ' 
         ' EnglishToolStripMenuItem
         ' 
         EnglishToolStripMenuItem.Name = "EnglishToolStripMenuItem"
-        EnglishToolStripMenuItem.Size = New Size(180, 22)
+        EnglishToolStripMenuItem.Size = New Size(148, 22)
         EnglishToolStripMenuItem.Text = "English"
         ' 
         ' DebugToolStripMenuItem
         ' 
         DebugToolStripMenuItem.Name = "DebugToolStripMenuItem"
-        DebugToolStripMenuItem.Size = New Size(180, 22)
+        DebugToolStripMenuItem.Size = New Size(148, 22)
         DebugToolStripMenuItem.Text = "Debug"
         ' 
         ' DataGridView1
@@ -620,44 +654,50 @@ Partial Class Main_Form
         ' 
         ' ContextMenuStrip2
         ' 
-        ContextMenuStrip2.Items.AddRange(New ToolStripItem() {全选ToolStripMenuItem1, 反选ToolStripMenuItem, 清空ToolStripMenuItem1, ToolStripSeparator12, 失败的项ToolStripMenuItem, 参考数量ToolStripMenuItem})
+        ContextMenuStrip2.Items.AddRange(New ToolStripItem() {全选ToolStripMenuItem1, 反选ToolStripMenuItem, 清空ToolStripMenuItem1, ToolStripSeparator12, 失败的项ToolStripMenuItem, 参考数量ToolStripMenuItem, 最大差异度ToolStripMenuItem})
         ContextMenuStrip2.Name = "ContextMenuStrip2"
-        ContextMenuStrip2.Size = New Size(125, 120)
+        ContextMenuStrip2.Size = New Size(137, 142)
         ' 
         ' 全选ToolStripMenuItem1
         ' 
         全选ToolStripMenuItem1.Name = "全选ToolStripMenuItem1"
-        全选ToolStripMenuItem1.Size = New Size(124, 22)
+        全选ToolStripMenuItem1.Size = New Size(136, 22)
         全选ToolStripMenuItem1.Text = "全选"
         ' 
         ' 反选ToolStripMenuItem
         ' 
         反选ToolStripMenuItem.Name = "反选ToolStripMenuItem"
-        反选ToolStripMenuItem.Size = New Size(124, 22)
+        反选ToolStripMenuItem.Size = New Size(136, 22)
         反选ToolStripMenuItem.Text = "反选"
         ' 
         ' 清空ToolStripMenuItem1
         ' 
         清空ToolStripMenuItem1.Name = "清空ToolStripMenuItem1"
-        清空ToolStripMenuItem1.Size = New Size(124, 22)
+        清空ToolStripMenuItem1.Size = New Size(136, 22)
         清空ToolStripMenuItem1.Text = "全不选"
         ' 
         ' ToolStripSeparator12
         ' 
         ToolStripSeparator12.Name = "ToolStripSeparator12"
-        ToolStripSeparator12.Size = New Size(121, 6)
+        ToolStripSeparator12.Size = New Size(133, 6)
         ' 
         ' 失败的项ToolStripMenuItem
         ' 
         失败的项ToolStripMenuItem.Name = "失败的项ToolStripMenuItem"
-        失败的项ToolStripMenuItem.Size = New Size(124, 22)
+        失败的项ToolStripMenuItem.Size = New Size(136, 22)
         失败的项ToolStripMenuItem.Text = "失败的项"
         ' 
         ' 参考数量ToolStripMenuItem
         ' 
         参考数量ToolStripMenuItem.Name = "参考数量ToolStripMenuItem"
-        参考数量ToolStripMenuItem.Size = New Size(124, 22)
+        参考数量ToolStripMenuItem.Size = New Size(136, 22)
         参考数量ToolStripMenuItem.Text = "参考数量"
+        ' 
+        ' 最大差异度ToolStripMenuItem
+        ' 
+        最大差异度ToolStripMenuItem.Name = "最大差异度ToolStripMenuItem"
+        最大差异度ToolStripMenuItem.Size = New Size(136, 22)
+        最大差异度ToolStripMenuItem.Text = "最大差异度"
         ' 
         ' DataGridView2
         ' 
@@ -965,4 +1005,10 @@ Partial Class Main_Form
     Friend WithEvents 参考数量ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 构建系统发育树ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 参考序列建树ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator17 As ToolStripSeparator
+    Friend WithEvents 修订树时间ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 整理树格式ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 最大差异度ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 导入列表信息ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 过滤ToolStripMenuItem1 As ToolStripMenuItem
 End Class
