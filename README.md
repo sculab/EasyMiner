@@ -44,7 +44,8 @@ You could download from [SourceForge](https://sourceforge.net/projects/geneminer
 
 
   
-[DEMO3 - For Obtaining Single Copy Genes](DEMO/DEMO3/)
+[DEMO3 - For Obtaining Single Copy Genes](DEMO/DEMO3/DEMO3.md)
+
 
 
 
