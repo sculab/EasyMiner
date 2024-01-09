@@ -1,3 +1,9 @@
+## NOTE：
+* Please do not install GeneMiner on a portable hard drive.
+* If files (sequences) are currently in use by GeneMiner, please do not open them to avoid program conflicts that may cause crashes.
+
+
+
 **1.** **Does sequencing data require the removal of junctions and low-quality reads?**
 
 
@@ -75,3 +81,14 @@ For mitochondrial genome assembly, it's recommended to utilize the full read len
 
 **NOTE:**  Do not open and operate multiple GeneMiner windows in the same directory.
 To expedite the extraction process, you can run multiple GeneMiner concurrently, provided your computer has sufficient memory. Create a copy of the GeneMiner folder and run the additional instance from the duplicated directory. (Ensure that the folder path does not contain any Chinese characters).
+
+
+9. Why are the results obtained from [Trim With Reference] incomplete and of varying lengths?
+
+Reference-based trimming retains only the sequence results that are longer than a set threshold times the median length of the sequences. If the option [Keep Only the Longest Match] is not selected, the sequence will preserve the maximum length matched with all reference sequences.
+
+
+
+
+
+
