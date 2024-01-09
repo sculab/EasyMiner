@@ -10,9 +10,10 @@
 
 
 
-### Loading the data files
+### Obtaining Single Copy Genes Reference Sequences
 
-Click [File > Load References] select all Transcript Data .
+
+Click [File > Load References] select all **Transcript Data** .
 
 Click [Analysis > Find Single Copy Genes] to get SCG reference.
 
@@ -23,12 +24,12 @@ Click [Analysis > Find Single Copy Genes] to get SCG reference.
 
 ### Obtaining Single Copy Genes
 
+Click [Change] to modify the folder for results.
 
 Click [File > Load References] select the SCG (Single-Copy Gene) reference you have obtained.
 
-Click [File > Load Sequencing Files] to import Sequencing Data in batch
+Click [File > Load Sequencing Files] to import **Sequencing Data** in batch
 
-Click [Change] to modify the folder for results.
 
 Click [Batch > Filter & Assemble] to obtain Single Copy Genes.
 
@@ -40,7 +41,7 @@ NOTE: When importing a pair of sequencing files, click [Analyse > Filter & Assem
 ![](gif/SCG_result.gif)
 
 
-Click [Open] to view the SCG (Single-Copy Gene) results located in the 'result' folder under the sequence name directory.
+Click [Open] to view the SCG (Single-Copy Gene) results located in the 'results' folder under the sequence name directory.
 
 
 ![](gif/SCG_findresult.gif)

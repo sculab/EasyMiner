@@ -39,14 +39,10 @@ You could download from [SourceForge](https://sourceforge.net/projects/geneminer
 [Tutorial 1 - A Quick Tutorial For General Use](/DEMO/DEMO1/DEMO1.md)
 
 
-
 [Tutorial 2 - For Obtaining Organelle Genes (Genome)](/DEMO/DEMO2/DEMO2.md)
-
 
   
 [Tutorial 3 - For Obtaining Single Copy Genes](DEMO/DEMO3/DEMO3.md)
-
-
 
 
 [Tutorial 4 - For Obtaining Angiosperms353 Genes](DEMO/DEMO4/DEMO4.md)

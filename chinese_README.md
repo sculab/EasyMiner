@@ -41,36 +41,30 @@ GeneMiner的源代码均保存在github和Gitee上，您可以从下面的地址
 
 ---
 
-# 示例数据
 
 
-[DEMO1](DEMO/DEMO1/): 用于 *Part1 基本操作* 的演示。基于目标物种的二代浅层测序，使用近缘种的参考序列获取目标因。
-- 目标物种：拟南芥(*Arabidopsis thaliana*)
-- 数据类型：全基因组测序（浅层测序），深度约2x
-- 拟获取的目标基因：ITS、martK、psbA、rbcL、rps16
-- 参考序列：来自近源物种琴叶拟南芥(*Arabidopsis lyrata*)的ITS、martK、psbA、rbcL、rps16基因
+
+# 示例演示
+
+[Tutorial 1 - 快速掌握使用方法](/DEMO/DEMO1/DEMO1.md)
 
 
-[DEMO2](DEMO/DEMO2/): 用于Part2的演示中。组装植物叶绿体和线粒体基因组所需数据，选用拟南芥二代测序数据。
+[Tutorial 2 - 获取质体基因组和质体基因](/DEMO/DEMO2/DEMO2.md)
+
+  
+[Tutorial 3 - 获取单拷贝基因](DEMO/DEMO3/DEMO3.md)
 
 
-[DEMO3](DEMO/DEMO3/): 动物线粒体基因组拼接所需测序序列，选用红原鸡（*Gallus gallus*）二代测序数据。
-
-
-[DEMO4](DEMO/DEMO4/): 用于 **Part2 构建被子植物353(AGS353)基因集合系统发育树** 的演示。基于多个目标物种的二代浅层测序，使用Kew的被子植物353基因集获取所需数据，获取数据并构建串联树和溯祖树。
-- 目标物种：来自唇形科香薷属的6个物种
-- 数据类型：全基因组测序数据（浅层数据），深度约10x。（**注意：为了便于下载和演示，我们对原始数据进行了缩减，仅保留了运行本DEMO所需的reads**）
-- 拟获取的目标基因：被子植物353基因集合的353条单拷贝基因
-- 参考序列：GeneMiner
+[Tutorial 4 - 获取被子植物353基因集](DEMO/DEMO4/DEMO4.md)
 
 
 
 
 
 
-# 详细
+# 详细说明
 
-有关软件的详细说明。请见： [here](manual/ZH_CN/readmeall.md)
+有关软件的详细说明以及输出目录解释。请见： [here](manual/ZH_CN/readmeall.md)
 
 
 ---
