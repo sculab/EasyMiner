@@ -12,6 +12,8 @@ Imports Microsoft.VisualBasic.Devices
 Imports System.DirectoryServices
 Imports System.Windows.Forms.VisualStyles
 Imports System.Windows.Forms.Design.AxImporter
+Imports System.Net.Http
+Imports System.Collections.Concurrent
 
 
 Public Class Main_Form
@@ -165,7 +167,7 @@ Public Class Main_Form
             Using sr As New StreamReader(filePath)
                 While Not sr.EndOfStream
                     Dim line As String = sr.ReadLine().ToLower
-                    Dim parts As String() = line.Split(","c)
+                    Dim parts As String() = line.ToLower().Split(","c)
 
                     If parts.Length >= 2 Then
                         Dim key As String = parts(0)
@@ -184,11 +186,11 @@ Public Class Main_Form
             End Using
             For i As Integer = 1 To refsView.Count
                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    If count_dict.ContainsKey(refsView.Item(i - 1).Item(1).ToString) Then
+                    If count_dict.ContainsKey(refsView.Item(i - 1).Item(1).ToString.ToLower) Then
                         If reads_length = 0 Then
                             reads_length = GetReadLength(Path.GetDirectoryName(filePath) + "\filtered\" + refsView.Item(i - 1).Item(1).ToString + ".fq")
                         End If
-                        DataGridView1.Rows(i - 1).Cells(5).Value = CInt(count_dict(refsView.Item(i - 1).Item(1).ToString))
+                        DataGridView1.Rows(i - 1).Cells(5).Value = CInt(count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower))
                     Else
                         DataGridView1.Rows(i - 1).Cells(5).Value = 0
                     End If
@@ -327,7 +329,8 @@ Public Class Main_Form
         AddHandler form_config_trim.CancelClicked, AddressOf SubCancel
         AddHandler form_config_tree.ConfirmClicked, AddressOf Tree_ConfirmClickedHandler
         AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
-
+        AddHandler form_config_combine.ConfirmClicked, AddressOf Combine_ConfirmClickedHandler
+        AddHandler form_config_combine.CancelClicked, AddressOf SubCancel
         init_output_folder = True
     End Sub
 
@@ -383,14 +386,19 @@ Public Class Main_Form
                 ProgressBar1.Value = PB_value
                 If init_output_folder Then
                     Timer1.Enabled = False
-                    Dim my_message As String = "Current output directory:" + vbCrLf + TextBox1.Text + vbCrLf + "Change required?"
-                    If language = "CH" Then
-                        my_message = "当前输出目录为:" + vbCrLf + TextBox1.Text + vbCrLf + "是否需要变更?"
-                    End If
-                    Dim result As DialogResult = MessageBox.Show(my_message, "Setting", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                    ' 根据用户的选择执行相应的操作
-                    If result = DialogResult.Yes Then
-                        Button1_Click(sender, e)
+                    If TargetOS = "win64" Then
+                        Dim my_message As String = "Current output directory:" + vbCrLf + TextBox1.Text + vbCrLf + "Change required?"
+                        If language = "CH" Then
+                            my_message = "当前输出目录为:" + vbCrLf + TextBox1.Text + vbCrLf + "是否需要变更?"
+                        End If
+                        Dim result As DialogResult = MessageBox.Show(my_message, "Setting", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        ' 根据用户的选择执行相应的操作
+                        If result = DialogResult.Yes Then
+                            Button1_Click(sender, e)
+                        End If
+                    Else
+                        MsgBox("Output directory: GeneMiner folder on desktop.")
+                        form_config_basic.CheckBox4.Checked = True
                     End If
                     init_output_folder = False
                     Timer1.Enabled = True
@@ -532,6 +540,9 @@ Public Class Main_Form
         PB_value = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = my_current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, seqsView.Count + 1, parallelOptions, Sub(batch_i)
                                                                  count += 1
                                                                  PB_value = count / seqsView.Count * 100
@@ -641,6 +652,9 @@ Public Class Main_Form
                                                                              Dim assemble_file As String = ""
                                                                              If File.Exists(my_out_dir + "\NOVOPlasty\Circularized_assembly_1_Project1.fasta") Then
                                                                                  assemble_file = my_out_dir + "\NOVOPlasty\Circularized_assembly_1_Project1.fasta"
+                                                                             End If
+                                                                             If TargetOS = "macos" Then
+                                                                                 Thread.Sleep(100)
                                                                              End If
                                                                              If File.Exists(my_out_dir + "\NOVOPlasty\Option_1_Project1.fasta") Then
                                                                                  Dim SI_check_option As New ProcessStartInfo()
@@ -1400,6 +1414,9 @@ Public Class Main_Form
         Dim count As Integer = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                  count += 1
                                                                  PB_value = count / refsView.Count * 100
@@ -1607,6 +1624,9 @@ Public Class Main_Form
         Dim count As Integer = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                  count += 1
                                                                  PB_value = count / refsView.Count * 100
@@ -1620,7 +1640,9 @@ Public Class Main_Form
                                                                              Else
                                                                                  do_mafft_align(in_path, out_path)
                                                                              End If
-
+                                                                             If TargetOS = "macos" Then
+                                                                                 Thread.Sleep(100)
+                                                                             End If
                                                                              Dim SI_trimed As New ProcessStartInfo()
                                                                              SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
                                                                              SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
@@ -1713,6 +1735,9 @@ Public Class Main_Form
         PB_value = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = my_current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, seqsView.Count + 1, parallelOptions, Sub(batch_i)
                                                                  count += 1
                                                                  PB_value = count / seqsView.Count * 100
@@ -1748,19 +1773,7 @@ Public Class Main_Form
         PB_value = -1
         MsgBox("Analysis completed!", MsgBoxStyle.Information, "Infomation")
     End Sub
-    Public Function make_out_name(ByVal fq_1 As String, ByVal fq_2 As String)
-        Dim out_name As String = ""
-        For i As Integer = 1 To fq_1.Length
-            If fq_1.Substring(i - 1, 1) = fq_2.Substring(i - 1, 1) Then
-                out_name += fq_1.Substring(i - 1, 1)
-            End If
-        Next
-        out_name = out_name.Replace(".fasta", "").Replace(".fastq", "").Replace(".fq", "").Replace(".gz", "").Replace(".fas", "").Replace("  ", " ").Replace(".", "_").Replace(" ", "_").Replace("-", "_")
-        Do While out_name.EndsWith("_")
-            out_name = out_name.Substring(0, out_name.Length - 1)
-        Loop
-        Return out_name
-    End Function
+
 
     'Private Sub 过滤拼接切齐ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 过滤拼接切齐ToolStripMenuItem1.Click
     '    If TextBox1.Text <> "" Then
@@ -1802,6 +1815,9 @@ Public Class Main_Form
         Dim count As Integer = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         '生成排序的临时文件
         Parallel.For(0, refsView.Count, parallelOptions, Sub(i)
                                                              count += 1
@@ -1824,17 +1840,19 @@ Public Class Main_Form
                                                          End Sub)
     End Sub
 
-    Private Sub 合并结果ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 合并结果ToolStripMenuItem.Click
-        timer_id = 4
-        PB_value = 0
-        Dim th1 As New Thread(AddressOf do_combine)
-        th1.Start(False)
+    Private Sub 合并结果ToolStripMenuItem_Click(sender As Object, e As EventArgs)
+        MenuClicked = "combine"
+        form_config_combine.Show()
+
     End Sub
 
     Public Sub do_combine(ByVal do_align As Boolean)
-
         Dim combine_res_dir As String = TextBox1.Text + "\combined_results\"
         Dim combine_trimed_dir As String = TextBox1.Text + "\combined_trimed\"
+        Dim source_folder As String = "results"
+        If form_config_combine.CheckBox2.Checked Then
+            source_folder = "blast"
+        End If
         DeleteDir(combine_res_dir)
         DeleteDir(combine_trimed_dir)
         Directory.CreateDirectory(combine_res_dir)
@@ -1844,26 +1862,36 @@ Public Class Main_Form
         End If
 
         Dim count As Integer = 0
-        Dim result_count_dict As New Dictionary(Of String, Integer)
-        Dim result_length_dict As New Dictionary(Of String, Integer)
-
+        Dim result_count_dict As New ConcurrentDictionary(Of String, Integer)
+        Dim result_length_dict As New ConcurrentDictionary(Of String, Integer)
+        Dim max_distance() As Single
+        Dim passed_genes() As Boolean
+        ReDim max_distance(refsView.Count - 1)
+        ReDim passed_genes(refsView.Count - 1)
+        For i As Integer = 0 To refsView.Count - 1
+            passed_genes(i) = True
+            max_distance(i) = -1
+            result_count_dict.TryAdd(refsView.Item(i).Item(1).ToString.ToLower, 0)
+            result_length_dict.TryAdd(refsView.Item(i).Item(1).ToString.ToLower, 0)
+        Next
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
-                                                                 count += 1
-                                                                 PB_value = count / refsView.Count * 100
+
                                                                  If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-
                                                                      Dim sw_res As New StreamWriter(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", False, utf8WithoutBom)
-
                                                                      For batch_i As Integer = 1 To seqsView.Count
                                                                          If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                             count += 1
+                                                                             PB_value = count / refsView.Count / seqsView.Count * 100
                                                                              Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
                                                                              folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-
                                                                              Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                                                                             Dim result_path As String = temp_out_dir + "\results\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
-                                                                             Dim trimed_path As String = temp_out_dir + "\trimed\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
+                                                                             Dim result_path As String = Path.Combine(temp_out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                             Dim trimed_path As String = Path.Combine(temp_out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                              Dim sr_line As String = ""
                                                                              If File.Exists(result_path) Then
                                                                                  Dim sr_res As New StreamReader(result_path)
@@ -1873,16 +1901,8 @@ Public Class Main_Form
                                                                                      If sr_line <> "" Then
                                                                                          sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name)
                                                                                          sw_res.WriteLine(sr_line)
-                                                                                         If result_length_dict.ContainsKey(refsView.Item(i - 1).Item(1).ToString.ToLower) Then
-                                                                                             result_length_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += sr_line.Length
-                                                                                         Else
-                                                                                             result_length_dict.Add(refsView.Item(i - 1).Item(1).ToString.ToLower, sr_line.Length)
-                                                                                         End If
-                                                                                         If result_count_dict.ContainsKey(refsView.Item(i - 1).Item(1).ToString.ToLower) Then
-                                                                                             result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += 1
-                                                                                         Else
-                                                                                             result_count_dict.Add(refsView.Item(i - 1).Item(1).ToString.ToLower, 1)
-                                                                                         End If
+                                                                                         result_length_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += sr_line.Length
+                                                                                         result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += 1
                                                                                      End If
                                                                                  End If
                                                                                  sr_res.Close()
@@ -1890,22 +1910,56 @@ Public Class Main_Form
                                                                          End If
                                                                      Next
                                                                      sw_res.Close()
+                                                                     If result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = 0 Then
+                                                                         safe_delete(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                     End If
                                                                      If do_align Then
-                                                                         If align_app = "muscle" Then
+                                                                         If form_config_combine.ComboBox1.Text = "muscle" Then
                                                                              do_muscle_align(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                          Else
                                                                              do_mafft_align(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                          End If
-                                                                         Dim SI_trimed As New ProcessStartInfo()
-                                                                         SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
-                                                                         SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
-                                                                         SI_trimed.CreateNoWindow = True
-                                                                         SI_trimed.Arguments = "-in " + """" + combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
-                                                                         SI_trimed.Arguments += " -out " + """" + combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
-                                                                         SI_trimed.Arguments += " -automated1"
-                                                                         Dim process_trimed As Process = Process.Start(SI_trimed)
-                                                                         process_trimed.WaitForExit()
-                                                                         process_trimed.Close()
+                                                                         Dim passed As Boolean = True
+                                                                         If File.Exists(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta") Then
+                                                                             Dim distanceMatrix As Double(,) = CalculateMaxDifference(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                             max_distance(i - 1) = distanceMatrix(0, 0)
+                                                                             If form_config_combine.CheckBox3.Checked Then
+                                                                                 Dim mysubset As List(Of Integer) = FindMaxSubset(distanceMatrix, CDbl(form_config_combine.TextBox2.Text))
+
+                                                                                 If mysubset.Count >= form_config_combine.NumericUpDown1.Value Then
+                                                                                     Dim temp_count As Integer = FilterAndSaveFile(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta", mysubset)
+                                                                                     result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = temp_count
+                                                                                     If result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = 0 Then
+                                                                                         passed = False
+                                                                                     End If
+                                                                                 Else
+                                                                                     result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = mysubset.Count
+                                                                                     passed = False
+                                                                                 End If
+                                                                             End If
+                                                                         Else
+                                                                             passed = False
+                                                                         End If
+                                                                         passed_genes(i - 1) = passed
+                                                                         If passed Then
+                                                                             Dim SI_trimed As New ProcessStartInfo()
+                                                                             SI_trimed.FileName = currentDirectory + "analysis\trimal.exe" ' 替换为实际的命令行程序路径
+                                                                             SI_trimed.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
+                                                                             SI_trimed.CreateNoWindow = True
+                                                                             SI_trimed.Arguments = "-in " + """" + combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
+                                                                             SI_trimed.Arguments += " -out " + """" + combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
+                                                                             SI_trimed.Arguments += " -automated1"
+                                                                             Dim process_trimed As Process = Process.Start(SI_trimed)
+                                                                             process_trimed.WaitForExit()
+                                                                             process_trimed.Close()
+                                                                             If form_config_combine.CheckBox1.Checked Then
+                                                                                 replace_gap2missing(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                                 replace_gap2missing(combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                             End If
+                                                                         Else
+                                                                             safe_delete(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                         End If
+
                                                                      End If
                                                                  End If
 
@@ -1918,7 +1972,6 @@ Public Class Main_Form
                 folder_name = folder_name.Replace("-", "_").Replace(":", "_")
                 Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
                 Dim filter_file As String = Path.Combine(temp_out_dir, "ref_reads_count_dict.txt")
-                'Dim assemble_file As String = Path.Combine(temp_out_dir, "ref_reads_count_dict.txt")
                 If File.Exists(filter_file) Then
                     Using sr As New StreamReader(filter_file)
                         While Not sr.EndOfStream
@@ -1943,7 +1996,11 @@ Public Class Main_Form
         For i As Integer = 1 To refsView.Count
             If do_align Then
                 If File.Exists(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta") Then
-                    refsView.Item(i - 1).Item(7) = CalculateMaxDifference(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                    refsView.Item(i - 1).Item(7) = max_distance(i - 1)
+                ElseIf max_distance(i - 1) > 0 Then
+                    refsView.Item(i - 1).Item(7) = max_distance(i - 1)
+                Else
+                    refsView.Item(i - 1).Item(7) = ""
                 End If
             End If
             If seqsView.Count > 0 Then
@@ -1954,15 +2011,65 @@ Public Class Main_Form
                     refsView.Item(i - 1).Item(5) = result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower)
                 End If
                 If result_length_dict.ContainsKey(refsView.Item(i - 1).Item(1).ToString.ToLower) Then
-                    refsView.Item(i - 1).Item(6) = CInt(result_length_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) / refsView.Item(i - 1).Item(5))
+                    If IsNumeric(refsView.Item(i - 1).Item(5)) AndAlso CInt(refsView.Item(i - 1).Item(5)) > 0 Then
+                        refsView.Item(i - 1).Item(6) = CInt(result_length_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) / CInt(refsView.Item(i - 1).Item(5)))
+                    Else
+                        refsView.Item(i - 1).Item(6) = ""
+                    End If
                 End If
             End If
         Next
+        For i As Integer = 1 To refsView.Count
+            DataGridView1.Rows(i - 1).Cells(0).Value = passed_genes(i - 1)
+        Next
+
         PB_value = -1
-        combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "-")
-        combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "-")
+        If form_config_combine.CheckBox1.Checked Then
+            combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "?")
+            If TargetOS = "macos" Then
+                Thread.Sleep(100)
+            End If
+            combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "?")
+        Else
+            combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "?")
+            If TargetOS = "macos" Then
+                Thread.Sleep(100)
+            End If
+            combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "?")
+        End If
+
         DataGridView1.RefreshEdit()
-        MsgBox("Analysis completed! Please check 'combined_*' files in output.", MsgBoxStyle.Information, "Infomation")
+        MsgBox("Analysis completed! Please check 'combined_*' files and folders in output.", MsgBoxStyle.Information, "Infomation")
+    End Sub
+
+    Public Function FilterAndSaveFile(ByVal fileName As String, ByVal lineNumbers As List(Of Integer)) As Integer
+        Dim result = ReadFasta(fileName)
+        Dim sequences As List(Of String) = result.Item1
+        Dim headers As List(Of String) = result.Item2
+        If sequences.Count > 0 Then
+            Dim filteredLines As New List(Of String)
+
+            For Each lineNumber In lineNumbers
+                filteredLines.Add(headers(lineNumber))
+                filteredLines.Add(sequences(lineNumber))
+            Next
+            File.WriteAllLines(fileName, filteredLines)
+        Else
+            safe_delete(fileName)
+        End If
+        Return Math.Min(sequences.Count, lineNumbers.Count)
+    End Function
+
+    Public Sub replace_gap2missing(ByVal fileName As String)
+        If File.Exists(fileName) Then
+            Dim lines As List(Of String) = File.ReadAllLines(fileName).ToList()
+            For i As Integer = 0 To lines.Count - 1
+                If Not lines(i).StartsWith(">") Then
+                    lines(i) = lines(i).Replace("-", "?")
+                End If
+            Next
+            File.WriteAllLines(fileName, lines)
+        End If
     End Sub
 
     Public Sub combine_file_horizontal(ByVal From_dir As String, ByVal exts As String, ByVal new_name As String, ByVal missingchar As String)
@@ -2010,10 +2117,8 @@ Public Class Main_Form
 
 
     Private Sub 合并比对ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 合并比对ToolStripMenuItem.Click
-        timer_id = 4
-        PB_value = 0
-        Dim th1 As New Thread(AddressOf do_combine)
-        th1.Start(True)
+        MenuClicked = "combine_trim"
+        form_config_combine.Show()
     End Sub
 
     Private Sub NumericUpDown10_TextChanged(sender As Object, e As EventArgs) Handles NumericUpDown10.TextChanged
@@ -2021,7 +2126,9 @@ Public Class Main_Form
     End Sub
 
     Private Sub DebugToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DebugToolStripMenuItem.Click
-
+        Dim matrix3 As Double(,) = {{0, 1, 1}, {1, 0, 1}, {1, 1, 0}}
+        Dim v3 As Double = 1
+        FindMaxSubset(matrix3, v3)
         'Dim rowIndex As Integer = -1
 
         '' 首先检查是否有选中的单元格
@@ -2197,6 +2304,9 @@ Public Class Main_Form
         Dim count As Integer = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                  count += 1
                                                                  PB_value = count / refsView.Count * 100
@@ -2259,6 +2369,9 @@ Public Class Main_Form
             Dim count As Integer = 0
             Dim parallelOptions As New ParallelOptions()
             parallelOptions.MaxDegreeOfParallelism = current_thread
+            If TargetOS = "macos" Then
+                parallelOptions.MaxDegreeOfParallelism = 1
+            End If
             Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                      'For i As Integer = 1 To refsView.Count
                                                                      count += 1
@@ -2341,6 +2454,9 @@ Public Class Main_Form
                 Dim count As Integer = 0
                 Dim parallelOptions As New ParallelOptions()
                 parallelOptions.MaxDegreeOfParallelism = current_thread
+                If TargetOS = "macos" Then
+                    parallelOptions.MaxDegreeOfParallelism = 1
+                End If
                 Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                          If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                              Dim in_path_fasta As String = Path.Combine(out_dir, "results", refsView.Item(i - 1).Item(1).ToString + ".fasta")
@@ -2365,6 +2481,9 @@ Public Class Main_Form
                                                                                          End Using
                                                                                          process_minimap2.WaitForExit()
                                                                                      End Using
+                                                                                     If TargetOS = "macos" Then
+                                                                                         Thread.Sleep(100)
+                                                                                     End If
                                                                                      If File.Exists(out_path_file) Then
                                                                                          Dim SI_consensus As New ProcessStartInfo()
                                                                                          SI_consensus.FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe")
@@ -2854,6 +2973,9 @@ Public Class Main_Form
             Dim count As Integer = 0
             Dim parallelOptions As New ParallelOptions()
             parallelOptions.MaxDegreeOfParallelism = current_thread
+            If TargetOS = "macos" Then
+                parallelOptions.MaxDegreeOfParallelism = 1
+            End If
             Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                      'For i As Integer = 1 To refsView.Count
                                                                      count += 1
@@ -2919,6 +3041,9 @@ Public Class Main_Form
                 Dim count As Integer = 0
                 Dim parallelOptions As New ParallelOptions()
                 parallelOptions.MaxDegreeOfParallelism = current_thread
+                If TargetOS = "macos" Then
+                    parallelOptions.MaxDegreeOfParallelism = 1
+                End If
                 Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                          If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
 
@@ -3247,7 +3372,9 @@ Public Class Main_Form
         Dim count As Integer = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
-        'Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
 
         For i As Integer = 1 To refsView.Count
             count += 1
@@ -3262,7 +3389,6 @@ Public Class Main_Form
             End If
         Next
 
-        'End Sub)
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -3595,10 +3721,16 @@ Public Class Main_Form
             Dim count As Integer = 0
             Dim parallelOptions As New ParallelOptions()
             parallelOptions.MaxDegreeOfParallelism = current_thread
+            If TargetOS = "macos" Then
+                parallelOptions.MaxDegreeOfParallelism = 1
+            End If
+            DeleteDir(Path.Combine(TextBox1.Text, "blast"))
+            Directory.CreateDirectory(Path.Combine(TextBox1.Text, "blast"))
             Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                      count += 1
                                                                      PB_value = count / refsView.Count * 100
                                                                      If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" And File.Exists(TextBox1.Text + "\results\" + refsView.Item(i - 1).Item(1).ToString + ".fasta") Then
+                                                                         safe_copy(Path.Combine(TextBox1.Text, "results", refsView.Item(i - 1).Item(1).ToString + ".fasta"), Path.Combine(TextBox1.Text, "blast", refsView.Item(i - 1).Item(1).ToString + ".fasta"))
                                                                          do_trim_blast(ref_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", TextBox1.Text + "\results\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                      End If
                                                                  End Sub)
@@ -3606,6 +3738,11 @@ Public Class Main_Form
             Dim filePath As String = TextBox1.Text + "\result_dict.txt"
             If File.Exists(filePath) Then
                 ref_assemble_result(filePath)
+            End If
+            Dim result As DialogResult = MessageBox.Show("Analysis has been completed. Would you like to view the results file?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            ' 根据用户的选择执行相应的操作
+            If result = DialogResult.Yes Then
+                Process.Start("explorer.exe", """" + TextBox1.Text + "\blast" + """")
             End If
         Else
             MsgBox("Please select at least one reference!", MsgBoxStyle.Information, "Infomation")
@@ -3629,21 +3766,32 @@ Public Class Main_Form
         Dim count As Integer = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = current_thread
-        Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
-                                                                 count += 1
-                                                                 PB_value = count / refsView.Count * 100
-                                                                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                     For batch_i As Integer = 1 To seqsView.Count
-                                                                         If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                             Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
-                                                                             folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                                                                             Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                                                                             Dim result_path As String = temp_out_dir + "\results\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
-                                                                             Dim ref_path As String = (currentDirectory + "temp\temp_refs\").Replace("\", "/") + refsView.Item(i - 1).Item(1).ToString + ".fasta"
-                                                                             do_trim_blast(ref_path, result_path)
-                                                                         End If
-                                                                     Next
-                                                                 End If
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
+        Parallel.For(1, seqsView.Count + 1, parallelOptions, Sub(batch_i)
+                                                                 Try
+                                                                     If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                         Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                                                                         folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                                                                         Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                                                                         DeleteDir(Path.Combine(temp_out_dir, "blast"))
+                                                                         Directory.CreateDirectory(Path.Combine(temp_out_dir, "blast"))
+                                                                         For i As Integer = 1 To refsView.Count
+                                                                             count += 1
+                                                                             PB_value = count / seqsView.Count / refsView.Count * 100
+                                                                             If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                                 safe_copy(Path.Combine(temp_out_dir, "results", refsView.Item(i - 1).Item(1).ToString + ".fasta"), Path.Combine(temp_out_dir, "blast", refsView.Item(i - 1).Item(1).ToString + ".fasta"))
+
+                                                                                 Dim result_path As String = Path.Combine(temp_out_dir, "blast", refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                                 Dim ref_path As String = (currentDirectory + "temp\temp_refs\").Replace("\", "/") + refsView.Item(i - 1).Item(1).ToString + ".fasta"
+                                                                                 do_trim_blast(ref_path, result_path)
+                                                                             End If
+                                                                         Next
+                                                                     End If
+                                                                 Catch ex As Exception
+                                                                     MsgBox(ex.ToString)
+                                                                 End Try
 
                                                              End Sub)
         PB_value = -1
@@ -3657,16 +3805,16 @@ Public Class Main_Form
     Private Sub 参考数量ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 参考数量ToolStripMenuItem.Click
         Dim sel_count As Integer = 0
         Dim my_input As String = InputBox("Select count of reference below:", "Count", "1")
-
         For i As Integer = 1 To refsView.Count
-            If CSng(DataGridView1.Rows(i - 1).Cells(3).Value.ToString) > CSng(my_input) Then
-                DataGridView1.Rows(i - 1).Cells(0).Value = False
-            Else
-                sel_count += 1
-                DataGridView1.Rows(i - 1).Cells(0).Value = True
+            If IsNumeric(DataGridView1.Rows(i - 1).Cells(3).Value) Then
+                If CSng(DataGridView1.Rows(i - 1).Cells(3).Value) <= CSng(my_input) Then
+                    'sel_count += 1
+                    DataGridView1.Rows(i - 1).Cells(0).Value = True
+                End If
             End If
         Next
-        MsgBox(sel_count.ToString + " were selected!", MsgBoxStyle.Information, "Infomation")
+
+        'MsgBox(sel_count.ToString + " were selected!", MsgBoxStyle.Information, "Infomation")
         DataGridView1.RefreshEdit()
     End Sub
 
@@ -3775,6 +3923,10 @@ Public Class Main_Form
             If File.Exists(Path.Combine(fasta_folder, "combined.trees")) Then
                 File.Delete(Path.Combine(fasta_folder, "combined.trees"))
             End If
+            parallelOptions.MaxDegreeOfParallelism = current_thread
+            If TargetOS = "macos" Then
+                parallelOptions.MaxDegreeOfParallelism = 1
+            End If
             Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                      count += 1
                                                                      PB_value = count / refsView.Count * 100
@@ -3868,6 +4020,21 @@ Public Class Main_Form
             Case Else
         End Select
     End Sub
+    Private Sub Combine_ConfirmClickedHandler()
+        Select Case MenuClicked
+            Case "combine_trim"
+                timer_id = 4
+                PB_value = 0
+                Dim th1 As New Thread(AddressOf do_combine)
+                th1.Start(form_config_combine.CheckBox4.Checked)
+            Case "combine"
+                timer_id = 4
+                PB_value = 0
+                Dim th1 As New Thread(AddressOf do_combine)
+                th1.Start(True)
+            Case Else
+        End Select
+    End Sub
     Private Sub Basic_ConfirmClickedHandler()
         Select Case MenuClicked
             Case "filter"
@@ -3948,26 +4115,41 @@ Public Class Main_Form
         my_form.Show()
     End Sub
 
-    Function CalculateMaxDifference(fastaFile As String) As Single
-        Dim sequences As List(Of String) = ReadFasta(fastaFile)
+    Function CalculateMaxDifference(fastaFile As String) As Double(,)
+        Dim result = ReadFasta(fastaFile)
+        Dim sequences As List(Of String) = result.Item1
+        Dim headers As List(Of String) = result.Item2
         Dim maxDifference As Single = -1
-
-        For i As Integer = 0 To sequences.Count - 2
-            For j As Integer = i + 1 To sequences.Count - 1
-                Dim difference_count As Integer = CalculateDifference(sequences(i), sequences(j))
-                If difference_count > 0 Then
-                    Dim difference As Single = Math.Max(difference_count / sequences(i).Replace("-", "").Length, difference_count / sequences(j).Replace("-", "").Length)
-                    If difference > maxDifference Then
-                        maxDifference = difference
+        Dim distanceMatrix As Double(,)
+        If sequences.Count > 1 Then
+            ReDim distanceMatrix(sequences.Count - 1, sequences.Count - 1)
+            For i As Integer = 0 To sequences.Count - 2
+                For j As Integer = i + 1 To sequences.Count - 1
+                    Dim difference_count As Integer = CalculateDifference(sequences(i), sequences(j))
+                    If sequences(i).Replace("-", "").Replace("?", "").Length > 0 Then
+                        Dim difference As Single = difference_count / Math.Max(sequences(i).Replace("-", "").Replace("?", "").Length, sequences(j).Replace("-", "").Replace("?", "").Length)
+                        If difference > maxDifference Then
+                            maxDifference = difference
+                        End If
+                        distanceMatrix(i, j) = difference
+                        distanceMatrix(j, i) = difference
+                    Else
+                        distanceMatrix(i, j) = 1
+                        distanceMatrix(j, i) = 1
                     End If
-                End If
+                Next
             Next
-        Next
-        Return Math.Abs(maxDifference)
+            distanceMatrix(0, 0) = Math.Abs(maxDifference)
+        Else
+            ReDim distanceMatrix(0, 0)
+            distanceMatrix(0, 0) = 0
+        End If
+        Return distanceMatrix
     End Function
 
-    Function ReadFasta(filePath As String) As List(Of String)
+    Function ReadFasta(filePath As String) As (List(Of String), List(Of String))
         Dim sequences As New List(Of String)
+        Dim headers As New List(Of String)
         Dim currentSequence As New Text.StringBuilder()
 
         Dim lines As String() = File.ReadAllLines(filePath)
@@ -3977,6 +4159,7 @@ Public Class Main_Form
                     sequences.Add(currentSequence.ToString())
                     currentSequence.Clear()
                 End If
+                headers.Add(line.Trim())
             Else
                 currentSequence.Append(line.Trim())
             End If
@@ -3986,8 +4169,9 @@ Public Class Main_Form
             sequences.Add(currentSequence.ToString())
         End If
 
-        Return sequences
+        Return (sequences, headers)
     End Function
+
 
 
     Function CalculateDifference(seq1 As String, seq2 As String) As Integer
@@ -4008,14 +4192,14 @@ Public Class Main_Form
         Dim my_input As String = InputBox("Difference equal or below:", "Count", "0.1")
 
         For i As Integer = 1 To refsView.Count
-            If CSng(DataGridView1.Rows(i - 1).Cells(8).Value) > CSng(my_input) Then
-                DataGridView1.Rows(i - 1).Cells(0).Value = False
-            Else
-                sel_count += 1
-                DataGridView1.Rows(i - 1).Cells(0).Value = True
+            If IsNumeric(DataGridView1.Rows(i - 1).Cells(8).Value) Then
+                If CSng(DataGridView1.Rows(i - 1).Cells(8).Value) <= CSng(my_input) Then
+                    'sel_count += 1
+                    DataGridView1.Rows(i - 1).Cells(0).Value = True
+                End If
             End If
         Next
-        MsgBox(sel_count.ToString + " were selected!", MsgBoxStyle.Information, "Infomation")
+        'MsgBox(sel_count.ToString + " were selected!", MsgBoxStyle.Information, "Infomation")
         DataGridView1.RefreshEdit()
     End Sub
 
@@ -4108,6 +4292,9 @@ Public Class Main_Form
         PB_value = 0
         Dim parallelOptions As New ParallelOptions()
         parallelOptions.MaxDegreeOfParallelism = my_current_thread
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
         Parallel.For(1, seqsView.Count + 1, parallelOptions, Sub(batch_i)
                                                                  count += 1
                                                                  PB_value = count / seqsView.Count * 100
@@ -4144,4 +4331,5 @@ Public Class Main_Form
         PB_value = -1
         MsgBox("Analysis completed!", MsgBoxStyle.Information, "Infomation")
     End Sub
+
 End Class

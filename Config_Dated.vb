@@ -1161,7 +1161,10 @@ Public Class Config_Dated
                         Next
                     End If
                     tree_complete = tree_complete.Replace(" ", "")
-                    If tree_sdec.Replace("(", "").Length - tree_sdec.Replace(",", "").Length = 1 Then
+                    If tree_sdec.Replace("(", "").Length - tree_sdec.Replace(",", "").Length > 1 Then
+                        MsgBox("The structure is either an unrooted tree or comprises multiple polytomies")
+                        Return 1
+                    ElseIf tree_sdec.Replace("(", "").Length - tree_sdec.Replace(",", "").Length = 1 Then
                         Dim tree_poly() As Char = tree_sdec
                         ReDim tree_char(taxon_num * 5)
                         tree_sdec = ""
@@ -1902,7 +1905,9 @@ Public Class Config_Dated
                 End If
             Next
             temp_tree = temp_tree.Replace("$%*", "")
-            Using sw As New StreamWriter(Path.Combine(form_main.TextBox1.Text, "MCMC_intree.tree"))
+            DeleteDir(Path.Combine(form_main.TextBox1.Text, "mcmctree"))
+            Directory.CreateDirectory(Path.Combine(form_main.TextBox1.Text, "mcmctree"))
+            Using sw As New StreamWriter(Path.Combine(form_main.TextBox1.Text, "mcmctree", "MCMC_intree.tree"))
                 sw.WriteLine(NumofTaxon.ToString + " 1")
                 sw.WriteLine(temp_tree)
             End Using

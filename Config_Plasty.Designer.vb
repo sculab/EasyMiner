@@ -313,7 +313,7 @@ Partial Class Config_Plasty
         Controls.Add(Label2)
         Controls.Add(ComboBox1)
         Controls.Add(Label1)
-        FormBorderStyle = FormBorderStyle.SizableToolWindow
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_Plasty"
         StartPosition = FormStartPosition.CenterScreen
         Text = "细胞器基因组"

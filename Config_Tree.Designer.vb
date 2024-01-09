@@ -113,11 +113,11 @@ Partial Class Config_Tree
         ' RadioButton4
         ' 
         RadioButton4.AutoSize = True
-        RadioButton4.Location = New Point(6, 54)
+        RadioButton4.Location = New Point(207, 27)
         RadioButton4.Name = "RadioButton4"
-        RadioButton4.Size = New Size(146, 21)
+        RadioButton4.Size = New Size(150, 21)
         RadioButton4.TabIndex = 2
-        RadioButton4.Text = "使用切齐后的数据矩阵"
+        RadioButton4.Text = "Trimmed Data Matrix"
         RadioButton4.UseVisualStyleBackColor = True
         ' 
         ' RadioButton3
@@ -126,10 +126,10 @@ Partial Class Config_Tree
         RadioButton3.Checked = True
         RadioButton3.Location = New Point(6, 27)
         RadioButton3.Name = "RadioButton3"
-        RadioButton3.Size = New Size(122, 21)
+        RadioButton3.Size = New Size(144, 21)
         RadioButton3.TabIndex = 1
         RadioButton3.TabStop = True
-        RadioButton3.Text = "使用原始数据矩阵"
+        RadioButton3.Text = "Original Data Matrix"
         RadioButton3.UseVisualStyleBackColor = True
         ' 
         ' Button2

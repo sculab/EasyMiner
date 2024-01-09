@@ -22,6 +22,7 @@ Partial Class Config_Basic
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Config_Basic))
         CheckBox4 = New CheckBox()
         GroupBox2 = New GroupBox()
         NumericUpDown3 = New NumericUpDown()
@@ -51,6 +52,7 @@ Partial Class Config_Basic
         Label4 = New Label()
         Button2 = New Button()
         Button1 = New Button()
+        TextBox1 = New TextBox()
         GroupBox2.SuspendLayout()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
@@ -271,7 +273,7 @@ Partial Class Config_Basic
         CheckBox1.AutoSize = True
         CheckBox1.Checked = True
         CheckBox1.CheckState = CheckState.Checked
-        CheckBox1.Location = New Point(8, 21)
+        CheckBox1.Location = New Point(8, 20)
         CheckBox1.Name = "CheckBox1"
         CheckBox1.Size = New Size(139, 21)
         CheckBox1.TabIndex = 12
@@ -351,7 +353,7 @@ Partial Class Config_Basic
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(286, 263)
+        Button2.Location = New Point(555, 263)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 62
@@ -360,19 +362,31 @@ Partial Class Config_Basic
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(205, 263)
+        Button1.Location = New Point(474, 263)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 61
         Button1.Text = "确定"
         Button1.UseVisualStyleBackColor = True
         ' 
+        ' TextBox1
+        ' 
+        TextBox1.Location = New Point(367, 21)
+        TextBox1.Multiline = True
+        TextBox1.Name = "TextBox1"
+        TextBox1.ReadOnly = True
+        TextBox1.ScrollBars = ScrollBars.Vertical
+        TextBox1.Size = New Size(263, 236)
+        TextBox1.TabIndex = 63
+        TextBox1.Text = resources.GetString("TextBox1.Text")
+        ' 
         ' Config_Basic
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(372, 324)
+        ClientSize = New Size(642, 324)
         ControlBox = False
+        Controls.Add(TextBox1)
         Controls.Add(CheckBox4)
         Controls.Add(Button2)
         Controls.Add(Button1)
@@ -433,4 +447,5 @@ Partial Class Config_Basic
     Friend WithEvents CheckBox4 As CheckBox
     Friend WithEvents NumericUpDown10 As NumericUpDown
     Friend WithEvents Label9 As Label
+    Friend WithEvents TextBox1 As TextBox
 End Class

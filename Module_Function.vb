@@ -102,6 +102,40 @@ Module Module_Function
             myFileInfo.IsReadOnly = False
         End If
     End Sub
+    Function FindMaxSubset(distanceMatrix As Double(,), v As Double) As List(Of Integer)
+        Dim n As Integer = distanceMatrix.GetLength(0)
+        Dim maxSubset As New List(Of Integer)
+        Dim maxCount As Integer = 0
+
+        ' 尝试每个数据点作为子集的起点
+        For i As Integer = 0 To n - 1
+            Dim subset As New List(Of Integer)
+            subset.Add(i)
+
+            ' 检查其他点是否满足条件并加入子集
+            For j As Integer = 0 To n - 1
+                If i <> j Then
+                    Dim valid As Boolean = True
+                    For Each k In subset
+                        If distanceMatrix(k, j) > v Then
+                            valid = False
+                            Exit For
+                        End If
+                    Next
+                    If valid Then subset.Add(j)
+                End If
+            Next
+
+            ' 更新最大子集
+            If subset.Count > maxCount Then
+                maxCount = subset.Count
+                maxSubset = subset
+            End If
+        Next
+        Return maxSubset
+    End Function
+
+
     Public Sub DeleteDir(ByVal aimPath As String)
         If (aimPath(aimPath.Length - 1) <> Path.DirectorySeparatorChar) Then
             aimPath += Path.DirectorySeparatorChar
@@ -482,4 +516,18 @@ Module Module_Function
         process_filter.WaitForExit()
         process_filter.Close()
     End Sub
+
+    Public Function make_out_name(ByVal fq_1 As String, ByVal fq_2 As String)
+        Dim out_name As String = ""
+        For i As Integer = 1 To fq_1.Length
+            If fq_1.Substring(i - 1, 1) = fq_2.Substring(i - 1, 1) Then
+                out_name += fq_1.Substring(i - 1, 1)
+            End If
+        Next
+        out_name = out_name.Replace(".fasta", "").Replace(".fastq", "").Replace(".fq", "").Replace(".gz", "").Replace(".fas", "").Replace("  ", " ").Replace(".", "_").Replace(" ", "_").Replace("-", "_")
+        Do While out_name.EndsWith("_")
+            out_name = out_name.Substring(0, out_name.Length - 1)
+        Loop
+        Return out_name
+    End Function
 End Module

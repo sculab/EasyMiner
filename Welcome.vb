@@ -24,11 +24,11 @@ Public Class Welcome
         settings = ReadSettings(root_path + "analysis\" + "setting.ini")
 
         ' 读取 language 和 mode 设置
-        TargetOS = settings.GetValueOrDefault("os", "macos")
+        TargetOS = settings.GetValueOrDefault("os", "win64")
         language = settings.GetValueOrDefault("language", "EN")
         exe_mode = settings.GetValueOrDefault("mode", "basic")
         database_url = "https://bbpt.scu.edu.cn/database/;http://life-bioinfo.tpddns.cn:8445/database/"
-        filter_thread = CInt(settings.GetValueOrDefault("filter_thread", "2"))
+        filter_thread = CInt(settings.GetValueOrDefault("filter_thread", "1"))
         align_app = settings.GetValueOrDefault("align_app", "muscle")
 
         If language = "CH" Then
@@ -91,6 +91,7 @@ Public Class Welcome
     End Sub
 
     Private Sub ProgressBar1_Click(sender As Object, e As EventArgs) Handles ProgressBar1.Click
+
 
     End Sub
 End Class

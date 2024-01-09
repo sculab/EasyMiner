@@ -32,6 +32,7 @@ Partial Class Config_Fossil
         Label4 = New Label()
         ComboBox1 = New ComboBox()
         ComboBox2 = New ComboBox()
+        TextBox3 = New TextBox()
         SuspendLayout()
         ' 
         ' Label1
@@ -47,14 +48,14 @@ Partial Class Config_Fossil
         ' 
         TextBox1.Location = New Point(156, 73)
         TextBox1.Name = "TextBox1"
-        TextBox1.Size = New Size(156, 23)
+        TextBox1.Size = New Size(85, 23)
         TextBox1.TabIndex = 3
         ' 
         ' TextBox2
         ' 
         TextBox2.Location = New Point(156, 12)
         TextBox2.Name = "TextBox2"
-        TextBox2.Size = New Size(156, 23)
+        TextBox2.Size = New Size(85, 23)
         TextBox2.TabIndex = 1
         ' 
         ' Label2
@@ -68,7 +69,7 @@ Partial Class Config_Fossil
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(237, 133)
+        Button2.Location = New Point(439, 133)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 46
@@ -77,7 +78,7 @@ Partial Class Config_Fossil
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(156, 133)
+        Button1.Location = New Point(358, 133)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 45
@@ -108,7 +109,7 @@ Partial Class Config_Fossil
         ComboBox1.Items.AddRange(New Object() {"0.025", "1e-300"})
         ComboBox1.Location = New Point(156, 102)
         ComboBox1.Name = "ComboBox1"
-        ComboBox1.Size = New Size(156, 25)
+        ComboBox1.Size = New Size(85, 25)
         ComboBox1.TabIndex = 51
         ' 
         ' ComboBox2
@@ -117,15 +118,26 @@ Partial Class Config_Fossil
         ComboBox2.Items.AddRange(New Object() {"0.025", "1e-300"})
         ComboBox2.Location = New Point(156, 41)
         ComboBox2.Name = "ComboBox2"
-        ComboBox2.Size = New Size(156, 25)
+        ComboBox2.Size = New Size(85, 25)
         ComboBox2.TabIndex = 52
+        ' 
+        ' TextBox3
+        ' 
+        TextBox3.Location = New Point(247, 12)
+        TextBox3.Multiline = True
+        TextBox3.Name = "TextBox3"
+        TextBox3.ReadOnly = True
+        TextBox3.ScrollBars = ScrollBars.Vertical
+        TextBox3.Size = New Size(267, 115)
+        TextBox3.TabIndex = 53
         ' 
         ' Config_Fossil
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(324, 194)
+        ClientSize = New Size(525, 194)
         ControlBox = False
+        Controls.Add(TextBox3)
         Controls.Add(ComboBox2)
         Controls.Add(ComboBox1)
         Controls.Add(Label4)
@@ -136,6 +148,7 @@ Partial Class Config_Fossil
         Controls.Add(Label2)
         Controls.Add(TextBox1)
         Controls.Add(Label1)
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_Fossil"
         StartPosition = FormStartPosition.CenterScreen
         Text = "Calibration Points"
@@ -154,4 +167,5 @@ Partial Class Config_Fossil
     Friend WithEvents Label4 As Label
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents ComboBox2 As ComboBox
+    Friend WithEvents TextBox3 As TextBox
 End Class

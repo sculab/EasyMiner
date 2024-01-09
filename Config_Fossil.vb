@@ -44,6 +44,11 @@ Public Class Config_Fossil
     Private Sub Config_Fossil_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ComboBox1.SelectedIndex = 0
         ComboBox2.SelectedIndex = 0
+        If language = "EN" Then
+            TextBox3.Text = "Set soft boundary calibration for fossil settings. By default, there is a 0.025 probability that it is lower than the lower limit of the time node, a 0.025 probability that it is higher than the upper limit of the time node, and a 0.95 probability that it is between the lower and upper limits. To set hard boundaries, the boundary probability can be adjusted to 1e-300, but do not set it to zero or negative values."
+        Else
+            TextBox3.Text = "设值化石的设置软边界校准。默认以0.025的概率小于时间节点下限, 0.025的概率大于时间节点上限，以0.95的概率在下限到上限之间。如果要设置硬边界，可以将边界概率调整为1e-300，不要设为0或负值。"
+        End If
     End Sub
 
     Private Sub Config_Fossil_VisibleChanged(sender As Object, e As EventArgs) Handles MyBase.VisibleChanged

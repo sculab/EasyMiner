@@ -27,6 +27,7 @@ Partial Class Config_Trim
         NumericUpDown1 = New NumericUpDown()
         Button2 = New Button()
         Button1 = New Button()
+        TextBox1 = New TextBox()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -53,7 +54,7 @@ Partial Class Config_Trim
         ' 
         ' NumericUpDown1
         ' 
-        NumericUpDown1.Location = New Point(215, 7)
+        NumericUpDown1.Location = New Point(224, 7)
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(66, 23)
         NumericUpDown1.TabIndex = 2
@@ -61,7 +62,7 @@ Partial Class Config_Trim
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(215, 64)
+        Button2.Location = New Point(215, 186)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 46
@@ -70,24 +71,37 @@ Partial Class Config_Trim
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(134, 64)
+        Button1.Location = New Point(134, 186)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 45
         Button1.Text = "确定"
         Button1.UseVisualStyleBackColor = True
         ' 
+        ' TextBox1
+        ' 
+        TextBox1.Location = New Point(12, 63)
+        TextBox1.Multiline = True
+        TextBox1.Name = "TextBox1"
+        TextBox1.ReadOnly = True
+        TextBox1.ScrollBars = ScrollBars.Vertical
+        TextBox1.Size = New Size(278, 117)
+        TextBox1.TabIndex = 47
+        TextBox1.Text = "Caution: This feature will overwrite existing assembly results! If the original results are needed, please ensure to save a backup copy independently."
+        ' 
         ' Config_Trim
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(302, 125)
+        ClientSize = New Size(302, 247)
         ControlBox = False
+        Controls.Add(TextBox1)
         Controls.Add(Button2)
         Controls.Add(Button1)
         Controls.Add(NumericUpDown1)
         Controls.Add(Label1)
         Controls.Add(CheckBox1)
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_Trim"
         StartPosition = FormStartPosition.CenterScreen
         Text = "切齐序列"
@@ -102,4 +116,5 @@ Partial Class Config_Trim
     Friend WithEvents NumericUpDown1 As NumericUpDown
     Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
+    Friend WithEvents TextBox1 As TextBox
 End Class

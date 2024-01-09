@@ -2,7 +2,7 @@
 
 Module Module_Var
     Public TargetOS As String = "win64"
-    Public version As String = "2.1 build 20240105"
+    Public version As String = "2.1 build 20240110"
     Public exe_mode As String
     Public database_url As String
     Public settings As Dictionary(Of String, String)
@@ -29,6 +29,7 @@ Module Module_Var
     Public form_config_dated As New config_dated
     Public form_config_fossil As New Config_Fossil
     Public form_config_mcmc As New Config_MCMC
+    Public form_config_combine As New Config_Combine
     Public form_main As New Main_Form
     Public PB_value As Integer = 0
     Public info_text As String = ""

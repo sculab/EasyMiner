@@ -22,6 +22,7 @@ Partial Class Config_MCMC
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Config_MCMC))
         Label1 = New Label()
         TextBox1 = New TextBox()
         Label2 = New Label()
@@ -52,6 +53,7 @@ Partial Class Config_MCMC
         ComboBox3 = New ComboBox()
         Label14 = New Label()
         CheckBox1 = New CheckBox()
+        CheckBox2 = New CheckBox()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown2, ComponentModel.ISupportInitialize).BeginInit()
         CType(NumericUpDown3, ComponentModel.ISupportInitialize).BeginInit()
@@ -174,7 +176,7 @@ Partial Class Config_MCMC
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(555, 223)
+        Button2.Location = New Point(585, 311)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 46
@@ -183,7 +185,7 @@ Partial Class Config_MCMC
         ' 
         ' Button3
         ' 
-        Button3.Location = New Point(474, 223)
+        Button3.Location = New Point(504, 311)
         Button3.Name = "Button3"
         Button3.Size = New Size(75, 30)
         Button3.TabIndex = 45
@@ -219,17 +221,17 @@ Partial Class Config_MCMC
         ' 
         ' TextBox5
         ' 
-        TextBox5.Location = New Point(384, 102)
+        TextBox5.Location = New Point(378, 12)
         TextBox5.Multiline = True
         TextBox5.Name = "TextBox5"
         TextBox5.ReadOnly = True
-        TextBox5.Size = New Size(246, 87)
+        TextBox5.Size = New Size(282, 267)
         TextBox5.TabIndex = 50
-        TextBox5.Text = "Cite: Yang, Z. (2007). PAML 4: phylogenetic analysis by maximum likelihood. Molecular biology and evolution, 24(8), 1586-1591."
+        TextBox5.Text = resources.GetString("TextBox5.Text")
         ' 
         ' NumericUpDown2
         ' 
-        NumericUpDown2.Location = New Point(531, 12)
+        NumericUpDown2.Location = New Point(159, 255)
         NumericUpDown2.Maximum = New Decimal(New Integer() {10000000, 0, 0, 0})
         NumericUpDown2.Name = "NumericUpDown2"
         NumericUpDown2.Size = New Size(99, 23)
@@ -238,7 +240,7 @@ Partial Class Config_MCMC
         ' 
         ' NumericUpDown3
         ' 
-        NumericUpDown3.Location = New Point(531, 41)
+        NumericUpDown3.Location = New Point(159, 284)
         NumericUpDown3.Maximum = New Decimal(New Integer() {10000000, 0, 0, 0})
         NumericUpDown3.Name = "NumericUpDown3"
         NumericUpDown3.Size = New Size(99, 23)
@@ -247,7 +249,7 @@ Partial Class Config_MCMC
         ' 
         ' NumericUpDown4
         ' 
-        NumericUpDown4.Location = New Point(531, 73)
+        NumericUpDown4.Location = New Point(159, 316)
         NumericUpDown4.Maximum = New Decimal(New Integer() {10000000, 0, 0, 0})
         NumericUpDown4.Name = "NumericUpDown4"
         NumericUpDown4.Size = New Size(99, 23)
@@ -257,7 +259,7 @@ Partial Class Config_MCMC
         ' Label10
         ' 
         Label10.AutoSize = True
-        Label10.Location = New Point(384, 14)
+        Label10.Location = New Point(12, 257)
         Label10.Name = "Label10"
         Label10.Size = New Size(50, 17)
         Label10.TabIndex = 54
@@ -266,7 +268,7 @@ Partial Class Config_MCMC
         ' Label11
         ' 
         Label11.AutoSize = True
-        Label11.Location = New Point(384, 43)
+        Label11.Location = New Point(12, 286)
         Label11.Name = "Label11"
         Label11.Size = New Size(115, 17)
         Label11.TabIndex = 55
@@ -275,7 +277,7 @@ Partial Class Config_MCMC
         ' Label12
         ' 
         Label12.AutoSize = True
-        Label12.Location = New Point(384, 75)
+        Label12.Location = New Point(12, 318)
         Label12.Name = "Label12"
         Label12.Size = New Size(119, 17)
         Label12.TabIndex = 56
@@ -324,19 +326,32 @@ Partial Class Config_MCMC
         CheckBox1.AutoSize = True
         CheckBox1.Checked = True
         CheckBox1.CheckState = CheckState.Checked
-        CheckBox1.Location = New Point(384, 198)
+        CheckBox1.Location = New Point(378, 285)
         CheckBox1.Name = "CheckBox1"
         CheckBox1.Size = New Size(156, 21)
         CheckBox1.TabIndex = 61
         CheckBox1.Text = "Delete temporary files"
         CheckBox1.UseVisualStyleBackColor = True
         ' 
+        ' CheckBox2
+        ' 
+        CheckBox2.AutoSize = True
+        CheckBox2.Checked = True
+        CheckBox2.CheckState = CheckState.Checked
+        CheckBox2.Location = New Point(540, 285)
+        CheckBox2.Name = "CheckBox2"
+        CheckBox2.Size = New Size(118, 21)
+        CheckBox2.TabIndex = 62
+        CheckBox2.Text = "Repeat Analysis"
+        CheckBox2.UseVisualStyleBackColor = True
+        ' 
         ' Config_MCMC
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(639, 276)
+        ClientSize = New Size(672, 372)
         ControlBox = False
+        Controls.Add(CheckBox2)
         Controls.Add(CheckBox1)
         Controls.Add(ComboBox3)
         Controls.Add(Label14)
@@ -367,6 +382,7 @@ Partial Class Config_MCMC
         Controls.Add(Label2)
         Controls.Add(TextBox1)
         Controls.Add(Label1)
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_MCMC"
         StartPosition = FormStartPosition.CenterScreen
         Text = "MCMCTREE"
@@ -408,4 +424,5 @@ Partial Class Config_MCMC
     Friend WithEvents ComboBox3 As ComboBox
     Friend WithEvents Label14 As Label
     Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents CheckBox2 As CheckBox
 End Class

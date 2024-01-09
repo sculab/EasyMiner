@@ -157,6 +157,7 @@ Partial Class Config_Split
         Controls.Add(Label3)
         Controls.Add(NumericUpDown2)
         Controls.Add(Label2)
+        FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_Split"
         StartPosition = FormStartPosition.CenterScreen
         Text = "分割序列"
