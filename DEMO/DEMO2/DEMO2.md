@@ -25,7 +25,7 @@ Optionally, expand the left or right intronic regions [Extend Left][Extend Right
 The imported files display details such as reference sequence ID, gene name, number of sequences, and average sequence length.
 
 
-## Obtaining Genes
+### Obtaining Genes
 Click [Analysis > Filter & Assemble] to obtain Genes.
 
 **NOTE:** Do not manually close the command line window; it will close automatically once the process is complete.
