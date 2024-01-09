@@ -12,7 +12,7 @@
 
 ### Loading the data files
 
-Click [File > Load References] select all Transcript Data.
+Click [File > Load References] select all Transcript Data .
 
 Click [Analysis > Find Single Copy Genes] to get SCG reference.
 
