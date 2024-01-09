@@ -1,4 +1,4 @@
-# DEMO4 - For Obtaining Angiosperms353 Genes
+# Tutorial 4 - For Obtaining Angiosperms353 Genes
 
 
 ### Data Preparation

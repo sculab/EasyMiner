@@ -1,4 +1,4 @@
-# DEMO1 - A Quick Tutorial For General Use
+# Tutorial 1 - A Quick Tutorial For General Use
 
 
 ### Data Preparation

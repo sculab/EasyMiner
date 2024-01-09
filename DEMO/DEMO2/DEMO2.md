@@ -1,4 +1,4 @@
-# DEMO2 - For Obtaining Organelle Genes (Genome)
+# Tutorial 2 - For Obtaining Organelle Genes (Genome)
 
 ---
 ## Genes

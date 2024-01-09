@@ -1,4 +1,4 @@
-# DEMO 3 - Obtain Single Copy Genes
+# Tutorial 3 - Obtain Single Copy Genes
 
 
 ### Data Preparation
