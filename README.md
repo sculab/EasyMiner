@@ -1,7 +1,7 @@
 # GeneMiner2: A Comprehensive Toolkit for Phylogenomic Genomics
-# Introduction
-**中文版的使用说明见[此处](README_zh_cn.md)**
+**[查看中文版的使用说明](README_zh_cn.md)**
 
+# Introduction
  ![](images/main_page.jpg)
 
 GeneMiner2 is a comprehensive toolkit designed for phylogenomic genomics. Its main functionalities include:
