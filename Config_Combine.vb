@@ -9,17 +9,20 @@ Public Class Config_Combine
     Public Event CancelClicked()
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        For batch_i As Integer = 1 To seqsView.Count
-            If form_main.DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(form_main.DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(form_main.DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
-                folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                If Directory.Exists(Path.Combine(temp_out_dir, "blast")) = False Then
-                    MsgBox("You need to execute 'Trim With Reference' first.")
-                    Exit Sub
+        If CheckBox2.Checked Then
+            For batch_i As Integer = 1 To seqsView.Count
+                If form_main.DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                    Dim folder_name As String = make_out_name(System.IO.Path.GetFileNameWithoutExtension(form_main.DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), System.IO.Path.GetFileNameWithoutExtension(form_main.DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                    folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                    Dim temp_out_dir = (form_main.TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                    If Directory.Exists(Path.Combine(temp_out_dir, "blast")) = False Then
+                        MsgBox("To use trimed results, you need to execute 'Trim With Reference' first.")
+                        Exit Sub
+                    End If
                 End If
-            End If
-        Next
+            Next
+        End If
+
         Hide()
         RaiseEvent ConfirmClicked()
     End Sub
@@ -104,5 +107,33 @@ Public Class Config_Combine
         Else
             TextBox1.Text = "如果最大子集的序列数量大于等于所设定的值，则用该序列子集中作为结果，否则删除序列。"
         End If
+    End Sub
+
+    Private Sub Label3_MouseHover(sender As Object, e As EventArgs) Handles Label3.MouseHover
+        If language = "EN" Then
+            TextBox1.Text = "The parameters for MAFFT are set to '-auto', while the parameters for MUSCLE are configured as '-align'."
+        Else
+            TextBox1.Text = "MAFFT的参数为-auto，muscle的参数为-align"
+        End If
+    End Sub
+
+    Private Sub TextBox2_MouseHover(sender As Object, e As EventArgs) Handles TextBox2.MouseHover
+        If language = "EN" Then
+            TextBox1.Text = "Retrieve the largest subset from the sequence collection where the pairwise comparison difference rate does not exceed the set value."
+        Else
+            TextBox1.Text = "从序列集合中获取两两比对的差异率不超过所设定的值的最大子集"
+        End If
+    End Sub
+
+    Private Sub NumericUpDown1_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown1.MouseHover
+        If language = "EN" Then
+            TextBox1.Text = "If the number of sequences in the largest subset is greater than or equal to the set value, then the subset is used as the result; otherwise, the alignment is deleted."
+        Else
+            TextBox1.Text = "如果最大子集的序列数量大于等于所设定的值，则用该序列子集中作为结果，否则删除序列。"
+        End If
+    End Sub
+
+    Private Sub CheckBox2_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox2.CheckedChanged
+
     End Sub
 End Class

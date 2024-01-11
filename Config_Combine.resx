@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TextBox1.Text" xml:space="preserve">
-    <value>MAFFT 7: 
+    <value>MAFFT7: 
 Standley, D. M. (2013). Mafft multiple sequence alignment software version 7: improvements in performance and usability. Molecular Biology and Evolution, 30, 772.
-Muscle 5: 
+Muscle5: 
 Edgar, R. C. (2022). Muscle5: High-accuracy alignment ensembles enable unbiased assessments of sequence homology and phylogeny. Nature Communications, 13(1), 6968.
 trimAl:
 Capella-Gutiérrez, S., Silla-Martínez, J. M., &amp; Gabaldón, T. (2009). trimAl: a tool for automated alignment trimming in large-scale phylogenetic analyses. Bioinformatics, 25(15), 1972-1973.</value>

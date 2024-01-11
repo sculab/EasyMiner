@@ -98,8 +98,9 @@ Module Module_Function
                 Directory.CreateDirectory(directoryPath)
             End If
             File.Copy(source, target, overwrite)
-            Dim myFileInfo As FileInfo = New FileInfo(target)
-            myFileInfo.IsReadOnly = False
+            Dim myFileInfo As FileInfo = New FileInfo(target) With {
+                .IsReadOnly = False
+            }
         End If
     End Sub
     Function FindMaxSubset(distanceMatrix As Double(,), v As Double) As List(Of Integer)
@@ -281,8 +282,9 @@ Module Module_Function
 
         Dim retryCount As Integer = 0
         Dim maxRetries As Integer = 1 ' 设置最大重试次数为1
-        Dim httpClient As New HttpClient()
-        httpClient.Timeout = TimeSpan.FromSeconds(10)
+        Dim httpClient As New HttpClient With {
+            .Timeout = TimeSpan.FromSeconds(10)
+        }
 
         While retryCount <= maxRetries
             Try
@@ -318,8 +320,9 @@ Module Module_Function
     Public Async Function TestUrlsAsync(ByVal urls() As String) As Task(Of String)
         Dim fastestUrl As String = urls(0)
         Dim minResponseTime As Long = Long.MaxValue
-        Dim httpClient As HttpClient = New HttpClient()
-        httpClient.Timeout = TimeSpan.FromSeconds(10) ' 设置超时时间为10秒
+        Dim httpClient As HttpClient = New HttpClient With {
+            .Timeout = TimeSpan.FromSeconds(10) ' 设置超时时间为10秒
+            }
 
         For Each url As String In urls
             Try
@@ -350,8 +353,8 @@ Module Module_Function
 
     'Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)
     '    Dim SI_build_ann As New ProcessStartInfo()
-    '    SI_build_ann.FileName = currentDirectory + "analysis\build_ann.exe" ' 替换为实际的命令行程序路径
-    '    SI_build_ann.WorkingDirectory = WorkingDirectory ' 替换为实际的运行文件夹路径
+    '    SI_build_ann.FileName = currentDirectory + "analysis\build_ann.exe" 
+    '    SI_build_ann.WorkingDirectory = WorkingDirectory 
     '    SI_build_ann.CreateNoWindow = False
     '    SI_build_ann.Arguments = "-i1 " + """" + input1 + """" + " -i2 " + """" + input2 + """" + " -gb " + """" + gb_file + """" + " -o " + """" + output_file + """"
     '    Dim process_build_ann As Process = New Process()
@@ -382,13 +385,15 @@ Module Module_Function
         safe_copy(gb_file, Path.Combine(currentDirectory, "temp", random_folder, "reference", "my_ref.gb"))
         safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "target", "my_target.fasta"))
 
-        Dim SI_PGA As New ProcessStartInfo()
-        SI_PGA.FileName = currentDirectory + "analysis\PGA.exe" ' 替换为实际的命令行程序路径
-        SI_PGA.WorkingDirectory = currentDirectory + "analysis" ' 替换为实际的运行文件夹路径
-        SI_PGA.CreateNoWindow = False
-        SI_PGA.Arguments = "-r ..\temp\" + random_folder + "\reference -t ..\temp\" + random_folder + "\target -o  ..\temp\" + random_folder + "\result"
-        Dim process_PGA As Process = New Process()
-        process_PGA.StartInfo = SI_PGA
+        Dim SI_PGA As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\PGA.exe",
+            .WorkingDirectory = currentDirectory + "analysis",
+            .CreateNoWindow = False,
+            .Arguments = "-r ..\temp\" + random_folder + "\reference -t ..\temp\" + random_folder + "\target -o  ..\temp\" + random_folder + "\result"
+        }
+        Dim process_PGA As Process = New Process With {
+            .StartInfo = SI_PGA
+        }
         process_PGA.Start()
         process_PGA.WaitForExit()
         process_PGA.Close()
@@ -405,15 +410,22 @@ Module Module_Function
         safe_copy(taregt_file, Path.Combine(currentDirectory, "temp", random_folder, "my_target.fasta"))
         Dim output_file As String = Path.Combine(currentDirectory, "temp", random_folder, "my_trimed.fasta")
 
-        Dim SI_build_trimed As New ProcessStartInfo()
-        SI_build_trimed.FileName = currentDirectory + "analysis\build_trimed.exe" ' 替换为实际的命令行程序路径
-        SI_build_trimed.WorkingDirectory = currentDirectory + "analysis" ' 替换为实际的运行文件夹路径
-        SI_build_trimed.CreateNoWindow = True
-        SI_build_trimed.Arguments = "-r ..\temp\" + random_folder + "\my_ref.fasta -i ..\temp\" + random_folder + "\my_target.fasta -o  ..\temp\"
-        SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m " + CInt(form_config_trim.CheckBox1.Checked).ToString
+        Dim SI_build_trimed As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\build_trimed.exe",
+            .WorkingDirectory = currentDirectory + "analysis",
+            .CreateNoWindow = True,
+            .Arguments = "-r ..\temp\" + random_folder + "\my_ref.fasta -i ..\temp\" + random_folder + "\my_target.fasta -o  ..\temp\"
+        }
+        If form_config_trim.CheckBox1.Checked Then
+            SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m 1"
+        Else
+            SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m 0"
+
+        End If
         SI_build_trimed.Arguments += " -pec " + form_config_trim.NumericUpDown1.Value.ToString
-        Dim process_build_trimed As Process = New Process()
-        process_build_trimed.StartInfo = SI_build_trimed
+        Dim process_build_trimed As Process = New Process With {
+            .StartInfo = SI_build_trimed
+        }
         process_build_trimed.Start()
         process_build_trimed.WaitForExit()
         process_build_trimed.Close()
@@ -426,11 +438,12 @@ Module Module_Function
     End Sub
 
     Public Function make_ref_dict(ByVal wd As String, ByVal rd As String, ByVal output_dir As String, ByVal lkd As String) As Double
-        Dim SI_filter As New ProcessStartInfo()
-        SI_filter.FileName = currentDirectory + "analysis\main_filter.exe" ' 替换为实际的命令行程序路径
-        SI_filter.WorkingDirectory = wd
-        SI_filter.CreateNoWindow = False
-        SI_filter.Arguments = "-r " + """" + rd + """"
+        Dim SI_filter As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\main_filter.exe",
+            .WorkingDirectory = wd,
+            .CreateNoWindow = False,
+            .Arguments = "-r " + """" + rd + """"
+        }
         SI_filter.Arguments += " -o " + """" + output_dir + """"
         SI_filter.Arguments += " -kf " + k1.ToString
         SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
@@ -507,11 +520,12 @@ Module Module_Function
 
     End Function
     Public Sub do_newick(ByVal args() As String)
-        Dim SI_newick As New ProcessStartInfo()
-        SI_newick.FileName = currentDirectory + "analysis\newick.exe" ' 替换为实际的命令行程序路径
-        SI_newick.WorkingDirectory = args(0) ' 替换为实际的运行文件夹
-        SI_newick.CreateNoWindow = False
-        SI_newick.Arguments = args(1)
+        Dim SI_newick As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\newick.exe",
+            .WorkingDirectory = args(0), ' 替换为实际的运行文件夹
+            .CreateNoWindow = False,
+            .Arguments = args(1)
+        }
         Dim process_filter As Process = Process.Start(SI_newick)
         process_filter.WaitForExit()
         process_filter.Close()

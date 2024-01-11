@@ -28,8 +28,10 @@ Public Class Config_MCMC
         If CheckBox2.Checked Then
             repeat_times = 2
         End If
-        Dim parallelOptions As New ParallelOptions()
-        parallelOptions.MaxDegreeOfParallelism = repeat_times
+
+        Dim parallelOptions As New ParallelOptions With {
+            .MaxDegreeOfParallelism = repeat_times
+        }
         Parallel.For(1, repeat_times + 1, parallelOptions, Sub(i)
                                                                If i = 2 Then
                                                                    Thread.Sleep(100)
@@ -51,11 +53,13 @@ Public Class Config_MCMC
                                                                        sw.Write(temp_config)
                                                                    End Using
                                                                End Using
-                                                               Dim SI_mcmctree As New ProcessStartInfo()
-                                                               SI_mcmctree.FileName = currentDirectory + "analysis\mcmctree.exe" ' 替换为实际的命令行程序路径
-                                                               SI_mcmctree.WorkingDirectory = Path.Combine(form_main.TextBox1.Text, "mcmctree") ' 替换为实际的运行文件夹
-                                                               SI_mcmctree.CreateNoWindow = False
-                                                               SI_mcmctree.Arguments = "MCMC_config_" + i.ToString + ".txt"
+
+                                                               Dim SI_mcmctree As New ProcessStartInfo With {
+                                                                   .FileName = currentDirectory + "analysis\mcmctree.exe",
+                                                                   .WorkingDirectory = Path.Combine(form_main.TextBox1.Text, "mcmctree"), ' 替换为实际的运行文件夹
+                                                                   .CreateNoWindow = False,
+                                                                   .Arguments = "MCMC_config_" + i.ToString + ".txt"
+                                                               }
                                                                Dim process_filter As Process = Process.Start(SI_mcmctree)
                                                                process_filter.WaitForExit()
                                                                process_filter.Close()
@@ -107,13 +111,14 @@ Public Class Config_MCMC
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim opendialog As New OpenFileDialog
-        opendialog.Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa|PHYLIP File|*.phy"
-        opendialog.FileName = ""
-        opendialog.Multiselect = True
-        opendialog.DefaultExt = ".fas"
-        opendialog.CheckFileExists = True
-        opendialog.CheckPathExists = True
+        Dim opendialog As New OpenFileDialog With {
+            .Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa|PHYLIP File|*.phy",
+            .FileName = "",
+            .Multiselect = True,
+            .DefaultExt = ".fas",
+            .CheckFileExists = True,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             TextBox2.Text = opendialog.FileName
@@ -231,4 +236,5 @@ Public Class Config_MCMC
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Hide()
     End Sub
+
 End Class

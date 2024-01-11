@@ -5,13 +5,14 @@ Public Class Tool_TipName
     Public mytree_Dataset As New DataSet
     Public mytree_View As New DataView
     Private Sub LoadTreeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadTreeToolStripMenuItem.Click
-        Dim opendialog As New OpenFileDialog
-        opendialog.Filter = "Trees dataset|*.trees;*.TREES;*.trees.txt;*.t;*.T;*.tre;*.TRE;*.tree;*.TREE;*.nex;*.NEX|Tree (*.tre)|*.tre;*.TRE|Mrbayes Tree Data (*.t)|*.t;*.T|ALL Files(*.*)|*.*"
-        opendialog.FileName = ""
-        opendialog.Multiselect = False
-        opendialog.DefaultExt = ".trees"
-        opendialog.CheckFileExists = True
-        opendialog.CheckPathExists = True
+        Dim opendialog As New OpenFileDialog With {
+            .Filter = "Trees dataset|*.trees;*.TREES;*.trees.txt;*.t;*.T;*.tre;*.TRE;*.tree;*.TREE;*.nex;*.NEX|Tree (*.tre)|*.tre;*.TRE|Mrbayes Tree Data (*.t)|*.t;*.T|ALL Files(*.*)|*.*",
+            .FileName = "",
+            .Multiselect = False,
+            .DefaultExt = ".trees",
+            .CheckFileExists = True,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             safe_delete(Path.Combine(root_path, "temp", "temp_labels.txt"))
@@ -42,8 +43,9 @@ Public Class Tool_TipName
 
 
     Private Sub Tool_TipName_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim data_table As New System.Data.DataTable
-        data_table.TableName = "Name Table"
+        Dim data_table As New System.Data.DataTable With {
+            .TableName = "Name Table"
+        }
         Dim Column_ID1 As New System.Data.DataColumn("ID", System.Type.GetType("System.Int32"))
         Dim Column_1 As New System.Data.DataColumn("Label_1")
         Dim Column_2 As New System.Data.DataColumn("Label_2")
@@ -58,8 +60,9 @@ Public Class Tool_TipName
         mytree_View.AllowDelete = False
         mytree_View.AllowEdit = True
 
-        Dim Column_Select1 As New DataGridViewCheckBoxColumn
-        Column_Select1.HeaderText = "Select"
+        Dim Column_Select1 As New DataGridViewCheckBoxColumn With {
+            .HeaderText = "Select"
+        }
         DataGridView1.Columns.Insert(0, Column_Select1)
         DataGridView1.AllowUserToAddRows = False
         DataGridView1.DataSource = mytree_View
@@ -79,12 +82,13 @@ Public Class Tool_TipName
     End Sub
 
     Private Sub SaveNameTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveNameTableToolStripMenuItem.Click
-        Dim opendialog As New SaveFileDialog
-        opendialog.Filter = "CSV File (*.csv)|*.csv;*.CSV"
-        opendialog.FileName = ""
-        opendialog.DefaultExt = ".csv"
-        opendialog.CheckFileExists = False
-        opendialog.CheckPathExists = True
+        Dim opendialog As New SaveFileDialog With {
+            .Filter = "CSV File (*.csv)|*.csv;*.CSV",
+            .FileName = "",
+            .DefaultExt = ".csv",
+            .CheckFileExists = False,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             If opendialog.FileName.ToLower.EndsWith(".csv") Then
@@ -107,13 +111,14 @@ Public Class Tool_TipName
     End Sub
 
     Private Sub LoadNameTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LoadNameTableToolStripMenuItem.Click
-        Dim opendialog As New OpenFileDialog
-        opendialog.Filter = "CSV File (*.csv)|*.csv;*.CSV|ALL Files(*.*)|*.*"
-        opendialog.FileName = ""
-        opendialog.Multiselect = False
-        opendialog.DefaultExt = ".csv"
-        opendialog.CheckFileExists = True
-        opendialog.CheckPathExists = True
+        Dim opendialog As New OpenFileDialog With {
+            .Filter = "CSV File (*.csv)|*.csv;*.CSV|ALL Files(*.*)|*.*",
+            .FileName = "",
+            .Multiselect = False,
+            .DefaultExt = ".csv",
+            .CheckFileExists = True,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             DataGridView1.EndEdit()
@@ -148,12 +153,14 @@ Public Class Tool_TipName
                 sw.Write(tree_complete)
             End Using
         End Using
-        Dim opendialog As New SaveFileDialog
-        opendialog.Filter = "Tree File (*.tree)|*.tree;*.TREE"
-        opendialog.FileName = ""
-        opendialog.DefaultExt = ".tree"
-        opendialog.CheckFileExists = False
-        opendialog.CheckPathExists = True
+
+        Dim opendialog As New SaveFileDialog With {
+            .Filter = "Tree File (*.tree)|*.tree;*.TREE",
+            .FileName = "",
+            .DefaultExt = ".tree",
+            .CheckFileExists = False,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             safe_copy(Path.Combine(root_path, "temp", "relabeled_tree.tree"), opendialog.FileName)

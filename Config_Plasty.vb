@@ -73,11 +73,12 @@ Public Class Config_Plasty
         If CheckBox1.Checked = False Then
             For i As Integer = 1 To seqsView.Count
                 If form_main.DataGridView2.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                    Dim SI_build_fq As New ProcessStartInfo()
-                    SI_build_fq.FileName = currentDirectory + "analysis\build_fq.exe" ' 替换为实际的命令行程序路径
-                    SI_build_fq.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
-                    SI_build_fq.CreateNoWindow = False
-                    SI_build_fq.Arguments = "-i1 " + """" + form_main.DataGridView2.Rows(i - 1).Cells(2).Value.ToString + """"
+                    Dim SI_build_fq As New ProcessStartInfo With {
+                        .FileName = currentDirectory + "analysis\build_fq.exe", 
+                        .WorkingDirectory = currentDirectory + "analysis\", 
+                        .CreateNoWindow = False,
+                        .Arguments = "-i1 " + """" + form_main.DataGridView2.Rows(i - 1).Cells(2).Value.ToString + """"
+                    }
                     SI_build_fq.Arguments += " -i2 " + """" + form_main.DataGridView2.Rows(i - 1).Cells(3).Value.ToString + """"
                     SI_build_fq.Arguments += " -o " + """" + currentDirectory + "temp" + """"
                     SI_build_fq.Arguments += " -o1 " + "Project" + form_main.DataGridView2.Rows(i - 1).Cells(1).FormattedValue.ToString + ".1"
@@ -94,11 +95,13 @@ Public Class Config_Plasty
                 End If
             Next
         End If
-        Dim SI_build_plasty As New ProcessStartInfo()
-        SI_build_plasty.FileName = currentDirectory + "analysis\NOVOPlasty4.3.4.exe" ' 替换为实际的命令行程序路径
-        SI_build_plasty.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
-        SI_build_plasty.CreateNoWindow = False
-        SI_build_plasty.Arguments = "-c NOVO_config.txt"
+
+        Dim SI_build_plasty As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\NOVOPlasty4.3.4.exe", 
+            .WorkingDirectory = currentDirectory + "temp\", 
+            .CreateNoWindow = False,
+            .Arguments = "-c NOVO_config.txt"
+        }
         Dim process_build_plasty As Process = Process.Start(SI_build_plasty)
         process_build_plasty.WaitForExit()
         process_build_plasty.Close()
@@ -108,13 +111,15 @@ Public Class Config_Plasty
             assemble_file = currentDirectory + "temp\NOVOPlasty\Circularized_assembly_1_Project1.fasta"
         End If
         If File.Exists(currentDirectory + "temp\NOVOPlasty\Option_1_Project1.fasta") Then
-            Dim SI_check_option As New ProcessStartInfo()
-            SI_check_option.FileName = currentDirectory + "analysis\check_option_blast.exe"
-            SI_check_option.WorkingDirectory = currentDirectory + "temp\"
-            SI_check_option.CreateNoWindow = False
-            SI_check_option.Arguments = "-i " + """" + currentDirectory + "temp\NOVOPlasty" + """" + " -r " + """" + TextBox2.Text + """" + " -o " + "best.fasta"
-            Dim process_check_option As Process = New Process()
-            process_check_option.StartInfo = SI_check_option
+            Dim SI_check_option As New ProcessStartInfo With {
+                .FileName = currentDirectory + "analysis\check_option_blast.exe",
+                .WorkingDirectory = currentDirectory + "temp\",
+                .CreateNoWindow = False,
+                .Arguments = "-i " + """" + currentDirectory + "temp\NOVOPlasty" + """" + " -r " + """" + TextBox2.Text + """" + " -o " + "best.fasta"
+            }
+            Dim process_check_option As Process = New Process With {
+                .StartInfo = SI_check_option
+            }
             process_check_option.Start()
             process_check_option.WaitForExit()
             process_check_option.Close()
@@ -181,13 +186,14 @@ Public Class Config_Plasty
 
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Dim opendialog As New OpenFileDialog
-        opendialog.Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa"
-        opendialog.FileName = ""
-        opendialog.Multiselect = True
-        opendialog.DefaultExt = ".fas"
-        opendialog.CheckFileExists = True
-        opendialog.CheckPathExists = True
+        Dim opendialog As New OpenFileDialog With {
+            .Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa",
+            .FileName = "",
+            .Multiselect = True,
+            .DefaultExt = ".fas",
+            .CheckFileExists = True,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             TextBox3.Text = opendialog.FileName
@@ -195,13 +201,14 @@ Public Class Config_Plasty
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim opendialog As New OpenFileDialog
-        opendialog.Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa"
-        opendialog.FileName = ""
-        opendialog.Multiselect = True
-        opendialog.DefaultExt = ".fas"
-        opendialog.CheckFileExists = True
-        opendialog.CheckPathExists = True
+        Dim opendialog As New OpenFileDialog With {
+            .Filter = "Fasta File(*.fasta)|*.fas;*.fasta;*.fa",
+            .FileName = "",
+            .Multiselect = True,
+            .DefaultExt = ".fas",
+            .CheckFileExists = True,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
             TextBox2.Text = opendialog.FileName

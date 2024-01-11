@@ -29,21 +29,23 @@ Public Class Config_Split
 
 
 
-        Dim SI_build_gb As New ProcessStartInfo()
-        SI_build_gb.FileName = currentDirectory + "analysis\build_gb.exe" ' 替换为实际的命令行程序路径
-        SI_build_gb.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
-        SI_build_gb.CreateNoWindow = False
-        SI_build_gb.Arguments = "-input " + """" + current_file + """" + " -outdir " + """" + "out_gb" + """"
+        Dim SI_build_gb As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\build_gb.exe", 
+            .WorkingDirectory = currentDirectory + "temp\", 
+            .CreateNoWindow = False,
+            .Arguments = "-input " + """" + current_file + """" + " -outdir " + """" + "out_gb" + """"
+        }
         Dim process_build_gb As Process = Process.Start(SI_build_gb)
         process_build_gb.WaitForExit()
         process_build_gb.Close()
 
         DeleteDir(root_path + "temp\org_seq")
-        Dim SI_split_genes As New ProcessStartInfo()
-        SI_split_genes.FileName = currentDirectory + "analysis\split_genes.exe" ' 替换为实际的命令行程序路径
-        SI_split_genes.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
-        SI_split_genes.CreateNoWindow = False
-        SI_split_genes.Arguments = "-input out_gb"
+        Dim SI_split_genes As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\split_genes.exe", 
+            .WorkingDirectory = currentDirectory + "temp\", 
+            .CreateNoWindow = False,
+            .Arguments = "-input out_gb"
+        }
         SI_split_genes.Arguments += " -min_seq_length " + NumericUpDown2.Value.ToString + " -max_seq_length " + NumericUpDown3.Value.ToString
         SI_split_genes.Arguments += " -soft_boundary " + NumericUpDown4.Value.ToString + "," + NumericUpDown1.Value.ToString
         If CheckBox1.Checked Then

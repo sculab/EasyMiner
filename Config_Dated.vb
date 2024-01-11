@@ -536,8 +536,9 @@ Public Class Config_Dated
         E_nodes(0) = -1
         G_nodes(0) = -1
         V_nodes(0) = -1
-        Dim taxon_table As New System.Data.DataTable
-        taxon_table.TableName = "Time Table"
+        Dim taxon_table As New System.Data.DataTable With {
+            .TableName = "Time Table"
+        }
         Dim Column_ID As New System.Data.DataColumn("ID")
         Dim Column_Length As New System.Data.DataColumn("SV")
         Dim Column_Time As New System.Data.DataColumn("Calibration")
@@ -566,9 +567,9 @@ Public Class Config_Dated
         Label_font = FontDialog1.Font
         ID_font = FontDialog1.Font
 
-        Dim name_table As New System.Data.DataTable
-
-        name_table.TableName = "Tree Table"
+        Dim name_table As New System.Data.DataTable With {
+            .TableName = "Tree Table"
+        }
         Dim Column_TaxID As New System.Data.DataColumn("ID")
         Dim Column_Name As New System.Data.DataColumn("Name")
         Dim Column_State As New System.Data.DataColumn("State")
@@ -981,13 +982,14 @@ Public Class Config_Dated
     Dim Table_font As Font = New Font("Tahoma", 10, FontStyle.Regular)
     Dim swaping As Boolean = False
     Private Sub 载入树ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 载入树ToolStripMenuItem.Click
-        Dim opendialog As New OpenFileDialog
-        opendialog.Filter = "Trees dataset|*.trees;*.TREES;*.trees.txt;*.t;*.T;*.tre;*.TRE;*.tree;*.TREE;*.nex;*.NEX|Tree (*.tre)|*.tre;*.TRE|Mrbayes Tree Data (*.t)|*.t;*.T|ALL Files(*.*)|*.*"
-        opendialog.FileName = ""
-        opendialog.Multiselect = False
-        opendialog.DefaultExt = ".trees"
-        opendialog.CheckFileExists = True
-        opendialog.CheckPathExists = True
+        Dim opendialog As New OpenFileDialog With {
+            .Filter = "Trees dataset|*.trees;*.TREES;*.trees.txt;*.t;*.T;*.tre;*.TRE;*.tree;*.TREE;*.nex;*.NEX|Tree (*.tre)|*.tre;*.TRE|Mrbayes Tree Data (*.t)|*.t;*.T|ALL Files(*.*)|*.*",
+            .FileName = "",
+            .Multiselect = False,
+            .DefaultExt = ".trees",
+            .CheckFileExists = True,
+            .CheckPathExists = True
+        }
         Dim resultdialog As DialogResult = opendialog.ShowDialog()
         If resultdialog = DialogResult.OK Then
 
@@ -996,8 +998,9 @@ Public Class Config_Dated
             time_Dataset.Tables("Time Table").Clear()
             time_Dataset.Tables("Tree Table").Clear()
             Tree_Num_P = 0
-            Dim l_Tree As New Thread(AddressOf load_trees)
-            l_Tree.CurrentCulture = ci
+            Dim l_Tree As New Thread(AddressOf load_trees) With {
+                .CurrentCulture = ci
+            }
             l_Tree.Start()
         End If
     End Sub
@@ -1630,8 +1633,9 @@ Public Class Config_Dated
         Try
             File.Copy(tree_path, root_path + "temp" + path_char + "T_Tre.tre", True)
 
-            Dim CopyFileInfo As New FileInfo(root_path + "temp" + path_char + "T_Tre.tre")
-            CopyFileInfo.Attributes = FileAttributes.Normal
+            Dim CopyFileInfo As New FileInfo(root_path + "temp" + path_char + "T_Tre.tre") With {
+                .Attributes = FileAttributes.Normal
+            }
 
             tree_path = root_path + "temp" + path_char + "T_Tre.tre"
             Dim line As String = ""
@@ -1932,8 +1936,9 @@ Public Class Config_Dated
                 time_Dataset.Tables("Time Table").Clear()
                 time_Dataset.Tables("Tree Table").Clear()
                 Tree_Num_P = 0
-                Dim l_Tree As New Thread(AddressOf load_trees)
-                l_Tree.CurrentCulture = ci
+                Dim l_Tree As New Thread(AddressOf load_trees) With {
+                    .CurrentCulture = ci
+                }
                 l_Tree.Start()
             End If
         End If

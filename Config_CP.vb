@@ -216,11 +216,12 @@ Public Class Config_CP
             End While
         End Using
 
-        Dim SI_build_database As New ProcessStartInfo()
-        SI_build_database.FileName = currentDirectory + "analysis\build_database.exe" ' 替换为实际的命令行程序路径
-        SI_build_database.WorkingDirectory = currentDirectory + "analysis\" ' 替换为实际的运行文件夹路径
-        SI_build_database.CreateNoWindow = False
-        SI_build_database.Arguments = "-i " + """" + currentDirectory + "temp\AGS353" + """"
+        Dim SI_build_database As New ProcessStartInfo With {
+            .FileName = currentDirectory + "analysis\build_database.exe", 
+            .WorkingDirectory = currentDirectory + "analysis\", 
+            .CreateNoWindow = False,
+            .Arguments = "-i " + """" + currentDirectory + "temp\AGS353" + """"
+        }
         SI_build_database.Arguments += " -o " + """" + currentDirectory + "temp\org_seq" + """"
         'SI_build_database.Arguments += " -exclude " + exclude_txt
         Dim process_build_gb As Process = Process.Start(SI_build_database)
@@ -310,8 +311,8 @@ Public Class Config_CP
         If File.Exists(count_file) Then
             File.Delete(count_file)
         End If
-        SI_filter.FileName = currentDirectory + "analysis\main_filter.exe" ' 替换为实际的命令行程序路径
-        SI_filter.WorkingDirectory = currentDirectory + "temp\" ' 替换为实际的运行文件夹路径
+        SI_filter.FileName = currentDirectory + "analysis\main_filter.exe" 
+        SI_filter.WorkingDirectory = currentDirectory + "temp\" 
         SI_filter.CreateNoWindow = False
         SI_filter.Arguments = "-r " + """" + ref_dir + """"
         SI_filter.Arguments += " -q1" + q1 + " -q2" + q2

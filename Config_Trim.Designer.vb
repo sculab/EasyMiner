@@ -28,6 +28,8 @@ Partial Class Config_Trim
         Button2 = New Button()
         Button1 = New Button()
         TextBox1 = New TextBox()
+        Label2 = New Label()
+        ComboBox1 = New ComboBox()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -36,7 +38,7 @@ Partial Class Config_Trim
         CheckBox1.AutoSize = True
         CheckBox1.Checked = True
         CheckBox1.CheckState = CheckState.Checked
-        CheckBox1.Location = New Point(12, 36)
+        CheckBox1.Location = New Point(12, 66)
         CheckBox1.Name = "CheckBox1"
         CheckBox1.Size = New Size(123, 21)
         CheckBox1.TabIndex = 0
@@ -46,7 +48,7 @@ Partial Class Config_Trim
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Location = New Point(12, 9)
+        Label1.Location = New Point(12, 39)
         Label1.Name = "Label1"
         Label1.Size = New Size(99, 17)
         Label1.TabIndex = 1
@@ -54,7 +56,7 @@ Partial Class Config_Trim
         ' 
         ' NumericUpDown1
         ' 
-        NumericUpDown1.Location = New Point(224, 7)
+        NumericUpDown1.Location = New Point(224, 37)
         NumericUpDown1.Name = "NumericUpDown1"
         NumericUpDown1.Size = New Size(66, 23)
         NumericUpDown1.TabIndex = 2
@@ -62,7 +64,7 @@ Partial Class Config_Trim
         ' 
         ' Button2
         ' 
-        Button2.Location = New Point(215, 186)
+        Button2.Location = New Point(215, 216)
         Button2.Name = "Button2"
         Button2.Size = New Size(75, 30)
         Button2.TabIndex = 46
@@ -71,7 +73,7 @@ Partial Class Config_Trim
         ' 
         ' Button1
         ' 
-        Button1.Location = New Point(134, 186)
+        Button1.Location = New Point(134, 216)
         Button1.Name = "Button1"
         Button1.Size = New Size(75, 30)
         Button1.TabIndex = 45
@@ -80,21 +82,41 @@ Partial Class Config_Trim
         ' 
         ' TextBox1
         ' 
-        TextBox1.Location = New Point(12, 63)
+        TextBox1.Location = New Point(12, 93)
         TextBox1.Multiline = True
         TextBox1.Name = "TextBox1"
         TextBox1.ReadOnly = True
         TextBox1.ScrollBars = ScrollBars.Vertical
         TextBox1.Size = New Size(278, 117)
         TextBox1.TabIndex = 47
-        TextBox1.Text = "Caution: This feature will overwrite existing assembly results! If the original results are needed, please ensure to save a backup copy independently."
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Location = New Point(12, 9)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(56, 17)
+        Label2.TabIndex = 48
+        Label2.Text = "来源序列"
+        ' 
+        ' ComboBox1
+        ' 
+        ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
+        ComboBox1.FormattingEnabled = True
+        ComboBox1.Items.AddRange(New Object() {"Original Results", "Consensus Results"})
+        ComboBox1.Location = New Point(169, 6)
+        ComboBox1.Name = "ComboBox1"
+        ComboBox1.Size = New Size(121, 25)
+        ComboBox1.TabIndex = 49
         ' 
         ' Config_Trim
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(302, 247)
+        ClientSize = New Size(302, 277)
         ControlBox = False
+        Controls.Add(ComboBox1)
+        Controls.Add(Label2)
         Controls.Add(TextBox1)
         Controls.Add(Button2)
         Controls.Add(Button1)
@@ -117,4 +139,6 @@ Partial Class Config_Trim
     Friend WithEvents Button2 As Button
     Friend WithEvents Button1 As Button
     Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents Label2 As Label
+    Friend WithEvents ComboBox1 As ComboBox
 End Class

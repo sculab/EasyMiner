@@ -24,7 +24,6 @@ Partial Class Config_Combine
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Config_Combine))
         CheckBox1 = New CheckBox()
-        CheckBox2 = New CheckBox()
         CheckBox3 = New CheckBox()
         TextBox1 = New TextBox()
         Label1 = New Label()
@@ -37,6 +36,7 @@ Partial Class Config_Combine
         ComboBox1 = New ComboBox()
         Label3 = New Label()
         CheckBox4 = New CheckBox()
+        CheckBox2 = New CheckBox()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox1.SuspendLayout()
         SuspendLayout()
@@ -52,18 +52,6 @@ Partial Class Config_Combine
         CheckBox1.TabIndex = 0
         CheckBox1.Text = "使用missing(?)代替gap(-) "
         CheckBox1.UseVisualStyleBackColor = True
-        ' 
-        ' CheckBox2
-        ' 
-        CheckBox2.AutoSize = True
-        CheckBox2.Checked = True
-        CheckBox2.CheckState = CheckState.Checked
-        CheckBox2.Location = New Point(18, 12)
-        CheckBox2.Name = "CheckBox2"
-        CheckBox2.Size = New Size(183, 21)
-        CheckBox2.TabIndex = 1
-        CheckBox2.Text = "使用基于参考序列切齐的结果"
-        CheckBox2.UseVisualStyleBackColor = True
         ' 
         ' CheckBox3
         ' 
@@ -189,6 +177,18 @@ Partial Class Config_Combine
         CheckBox4.Text = "比对并切齐结果"
         CheckBox4.UseVisualStyleBackColor = True
         ' 
+        ' CheckBox2
+        ' 
+        CheckBox2.AutoSize = True
+        CheckBox2.Checked = True
+        CheckBox2.CheckState = CheckState.Checked
+        CheckBox2.Location = New Point(18, 12)
+        CheckBox2.Name = "CheckBox2"
+        CheckBox2.Size = New Size(183, 21)
+        CheckBox2.TabIndex = 1
+        CheckBox2.Text = "使用基于参考序列切齐的结果"
+        CheckBox2.UseVisualStyleBackColor = True
+        ' 
         ' Config_Combine
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
@@ -214,7 +214,6 @@ Partial Class Config_Combine
     End Sub
 
     Friend WithEvents CheckBox1 As CheckBox
-    Friend WithEvents CheckBox2 As CheckBox
     Friend WithEvents CheckBox3 As CheckBox
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents Label1 As Label
@@ -227,4 +226,5 @@ Partial Class Config_Combine
     Friend WithEvents CheckBox4 As CheckBox
     Friend WithEvents ComboBox1 As ComboBox
     Friend WithEvents Label3 As Label
+    Friend WithEvents CheckBox2 As CheckBox
 End Class

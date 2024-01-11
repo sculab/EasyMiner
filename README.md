@@ -1,19 +1,16 @@
 
+# GeneMiner2: A Comprehensive Toolkit for Phylogenomic Genomics
 # Introduction
 **中文版的使用说明见[此处](chinese_README.md)**
 
  ![](images/main_page.jpg)
 
 GeneMiner2 is a comprehensive toolkit designed for phylogenomic genomics. Its main functionalities include:
+- Mining single-copy nuclear genes, plastid genes/genomes, and other molecular markers from next-generation sequencing data.
+- Aligning and trimming multiple molecular markers, constructing concatenated and coalescent-based phylogenetic trees, and calibrating tree time.
+- Identifying paralogs/multicopy genes.
 
-- Mining single-copy nuclear genes, plastid genes, and other molecular markers from next-generation sequencing data.
-- Aligning multiple molecular markers, sequencing, constructing concatenated and ancestral phylogenetic trees.
-- Assembling and annotating animal and plant plastid genomes.
 Users can complete all tasks from obtaining NGS data to establishing phylogenetic trees within GeneMiner2.
-
-
-GeneMiner2 efficiently and precisely extracts molecular markers from second-generation sequencing data, leveraging reference genes from closely related species. Additionally, it offers functionalities for plastid genome assembly, gene sequence decomposition in GenBank files, and the identification of paralogs.
-
 # Citations
 GeneMiner2 is based on our previously developed GeneMiner and Easy353 software and integrates excellent tools such as Blast, Minimap2, Fasttree, Muscle5, Mafft, Astral, PDD, PGA, NOVOPlasty, and OrthoFinder. Please cite the literature prompted by the software when using the corresponding functionalities.
 
@@ -28,11 +25,11 @@ If mining angiosperm 353 genes, please cite our paper on Easy353:
 # Install
 You could download from [SourceForge](https://sourceforge.net/projects/geneminer/files/) or [our site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
 
-**Note: Avoid installing the software on a portable hard drive.**
+**Note: Avoid installing the software on a portable drive.**
 
-**For macOS**: MATO is packaged with Wineskin to run on macOS. Please try to use the latest version of MacOS. Due to limited conditions, MATO has not been tested on all macOS versions. If you meet error like "XXX is damaged" You can type this in terminal:
-- xattr -cr /location_of_MATO.app
-- Example: xattr -cr /Applications/MATO.app
+**For macOS**: GeneMiner is packaged with Wineskin to run on macOS. Please try to use the latest version of MacOS. Due to limited conditions, GeneMiner has not been tested on all macOS versions. If you meet error like "XXX is damaged" You can type this in terminal:
+- xattr -cr /location_of_GeneMinerO.app
+- Example: xattr -cr /Applications/GeneMiner.app
 
 # Tutorials
 
