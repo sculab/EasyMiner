@@ -1,4 +1,3 @@
-
 # GeneMiner2: A Comprehensive Toolkit for Phylogenomic Genomics
 # Introduction
 **中文版的使用说明见[此处](README_zh_cn.md)**

@@ -1,8 +1,12 @@
+# GeneMiner2: A Comprehensive Toolkit for Phylogenomic Genomics
 # 介绍
+** [To View README in English](README.md)**
+
 GeneMiner2是一款为系统发育基因组学设计的全功能工具包，软件主要功能包括：
 - 从二代测序数据中挖掘单拷贝核基因、质体基因等分子标记
 - 将多个分子标记切齐、排序、建立串联和溯祖系统发育树
 - 拼接注释动植物质体基因组
+
 用户能够在GeneMiner2中完成从NGS数据获取到系统发育树建立的所有工作。
 
 ## 引用
