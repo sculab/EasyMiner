@@ -31,7 +31,7 @@ If you require the command-line version of gene mining tools, please visit:
 
 You can also use the Python scripts in the scripts folder of GeneMiner2. These scripts offer all the core functionalities of GeneMiner2 and can be deployed on Windows, macOS, or Linux.
 
-**For macOS**: GeneMiner is packaged with Wineskin to run on macOS. Please try to use the latest version of MacOS. Due to limited conditions, GeneMiner has not been tested on all macOS versions. If you meet error like "XXX is damaged" You can type this in terminal:
+**For macOS**: GeneMiner is packaged with Wineskin to run on macOS. Please try to use the latest version of macOS. Due to limited conditions, GeneMiner has not been tested on all macOS versions. If you meet error like "XXX is damaged" You can type this in terminal:
 - xattr -cr /location_of_GeneMinerO.app
 - Example: xattr -cr /Applications/GeneMiner.app
 
