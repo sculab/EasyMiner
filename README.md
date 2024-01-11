@@ -39,6 +39,9 @@ Due to GeneMiner2 operating on macOS through Wine technology, its running effici
 
 **Note:** Avoid installing the software on a portable drive.
 
+---
+
+
 # Tutorials
 
 [Tutorial 1 - A Quick Tutorial For General Use](/DEMO/DEMO1/DEMO1.md)
@@ -60,7 +63,6 @@ For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.md)
 # Command Line (cmd)
 
 For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
-
 
 
 # Questions

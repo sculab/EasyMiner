@@ -40,7 +40,6 @@ GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地�
 ---
 
 
-
 # 示例演示
 
 [Tutorial 1 - 快速掌握使用方法](/DEMO/DEMO1/DEMO1.md)
@@ -55,17 +54,13 @@ GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地�
 [Tutorial 4 - 获取被子植物353基因集](DEMO/DEMO4/DEMO4.md)
 
 
-
 # 详细说明
 
-有关软件的详细说明以及输出目录解释。请见： [here](manual/ZH_CN/readmeall.md)
-
+有关软件的详细说明以及输出目录解释[请见此处](manual/ZH_CN/readmeall.md)
 
 
 # 常见问题
-[解答](questions_chinese.md)
-
-
+[常见问题解答](questions_chinese.md)
 
 
 # 联系方式
