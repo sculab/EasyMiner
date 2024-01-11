@@ -65,7 +65,7 @@ GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地�
 
 
 # 常见问题
-[常见问题解答](FAQ_zh_cn.md)
+[常见问题解答](manual/ZH_CN/FAQ.md)
 
 
 # 联系方式

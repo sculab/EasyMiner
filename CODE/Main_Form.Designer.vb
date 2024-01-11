@@ -27,6 +27,7 @@ Partial Class Main_Form
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle4 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main_Form))
         MenuStrip1 = New MenuStrip()
         文件ToolStripMenuItem = New ToolStripMenuItem()
         载入参考序列ToolStripMenuItem = New ToolStripMenuItem()
@@ -164,37 +165,37 @@ Partial Class Main_Form
         ' 载入参考序列ToolStripMenuItem
         ' 
         载入参考序列ToolStripMenuItem.Name = "载入参考序列ToolStripMenuItem"
-        载入参考序列ToolStripMenuItem.Size = New Size(180, 22)
+        载入参考序列ToolStripMenuItem.Size = New Size(148, 22)
         载入参考序列ToolStripMenuItem.Text = "载入参考序列"
         ' 
         ' 测序文件ToolStripMenuItem
         ' 
         测序文件ToolStripMenuItem.Name = "测序文件ToolStripMenuItem"
-        测序文件ToolStripMenuItem.Size = New Size(180, 22)
+        测序文件ToolStripMenuItem.Size = New Size(148, 22)
         测序文件ToolStripMenuItem.Text = "载入测序文件"
         ' 
         ' 导入列表信息ToolStripMenuItem
         ' 
         导入列表信息ToolStripMenuItem.Name = "导入列表信息ToolStripMenuItem"
-        导入列表信息ToolStripMenuItem.Size = New Size(180, 22)
+        导入列表信息ToolStripMenuItem.Size = New Size(148, 22)
         导入列表信息ToolStripMenuItem.Text = "载入列表信息"
         ' 
         ' 载入项目文件ToolStripMenuItem
         ' 
         载入项目文件ToolStripMenuItem.Name = "载入项目文件ToolStripMenuItem"
-        载入项目文件ToolStripMenuItem.Size = New Size(180, 22)
+        载入项目文件ToolStripMenuItem.Size = New Size(148, 22)
         载入项目文件ToolStripMenuItem.Text = "载入项目文件"
         ' 
         ' ToolStripSeparator11
         ' 
         ToolStripSeparator11.Name = "ToolStripSeparator11"
-        ToolStripSeparator11.Size = New Size(177, 6)
+        ToolStripSeparator11.Size = New Size(145, 6)
         ' 
         ' 下载序列ToolStripMenuItem
         ' 
         下载序列ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {下载叶绿体基因组ToolStripMenuItem, 下载植物线粒体ToolStripMenuItem, 哺乳动物线粒体基因组ToolStripMenuItem, ToolStripSeparator1, 下载ToolStripMenuItem})
         下载序列ToolStripMenuItem.Name = "下载序列ToolStripMenuItem"
-        下载序列ToolStripMenuItem.Size = New Size(180, 22)
+        下载序列ToolStripMenuItem.Size = New Size(148, 22)
         下载序列ToolStripMenuItem.Text = "下载序列"
         ' 
         ' 下载叶绿体基因组ToolStripMenuItem
@@ -229,30 +230,30 @@ Partial Class Main_Form
         ' ToolStripSeparator3
         ' 
         ToolStripSeparator3.Name = "ToolStripSeparator3"
-        ToolStripSeparator3.Size = New Size(177, 6)
+        ToolStripSeparator3.Size = New Size(145, 6)
         ' 
         ' 导出参考序列ToolStripMenuItem
         ' 
         导出参考序列ToolStripMenuItem.Name = "导出参考序列ToolStripMenuItem"
-        导出参考序列ToolStripMenuItem.Size = New Size(180, 22)
+        导出参考序列ToolStripMenuItem.Size = New Size(148, 22)
         导出参考序列ToolStripMenuItem.Text = "导出参考序列"
         ' 
         ' 导出测序文件ToolStripMenuItem
         ' 
         导出测序文件ToolStripMenuItem.Name = "导出测序文件ToolStripMenuItem"
-        导出测序文件ToolStripMenuItem.Size = New Size(180, 22)
+        导出测序文件ToolStripMenuItem.Size = New Size(148, 22)
         导出测序文件ToolStripMenuItem.Text = "导出测序文件"
         ' 
         ' 导出ToolStripMenuItem
         ' 
         导出ToolStripMenuItem.Name = "导出ToolStripMenuItem"
-        导出ToolStripMenuItem.Size = New Size(180, 22)
+        导出ToolStripMenuItem.Size = New Size(148, 22)
         导出ToolStripMenuItem.Text = "导出列表信息"
         ' 
         ' 保存项目文件ToolStripMenuItem
         ' 
         保存项目文件ToolStripMenuItem.Name = "保存项目文件ToolStripMenuItem"
-        保存项目文件ToolStripMenuItem.Size = New Size(180, 22)
+        保存项目文件ToolStripMenuItem.Size = New Size(148, 22)
         保存项目文件ToolStripMenuItem.Text = "保存项目文件"
         ' 
         ' 分析ToolStripMenuItem
@@ -869,6 +870,7 @@ Partial Class Main_Form
         Controls.Add(RichTextBox1)
         Controls.Add(GroupBox1)
         Controls.Add(MenuStrip1)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
         MainMenuStrip = MenuStrip1
         Name = "Main_Form"
         StartPosition = FormStartPosition.CenterScreen

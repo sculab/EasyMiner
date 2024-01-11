@@ -61,7 +61,7 @@ For users interested in the command line version, please refer to our [Easy353](
 
 
 # Questions
-[Answer](FAQ.md)
+[Answer](manual/EN_US/FAQ.md)
 
 
 # Contact

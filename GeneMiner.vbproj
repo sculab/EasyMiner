@@ -6,7 +6,7 @@
     <StartupObject>GeneMiner.My.MyApplication</StartupObject>
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
-    <ApplicationIcon>GeneMiner.ico</ApplicationIcon>
+    <ApplicationIcon>CODE\GeneMiner.ico</ApplicationIcon>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="GeneMiner.ico" />
+    <Content Include="CODE\GeneMiner.ico" />
   </ItemGroup>
 
   <ItemGroup>
