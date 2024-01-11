@@ -25,11 +25,19 @@ If mining angiosperm 353 genes, please cite our paper on Easy353:
 # Install
 You could download from [SourceForge](https://sourceforge.net/projects/geneminer/files/) or [our site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
 
-**Note: Avoid installing the software on a portable drive.**
+If you require the command-line version of gene mining tools, please visit:
+- GeneMiner: https://github.com/sculab/GeneMiner
+- Easy353: https://github.com/plant720/Easy353
+
+You can also use the Python scripts in the scripts folder of GeneMiner2. These scripts offer all the core functionalities of GeneMiner2 and can be deployed on Windows, macOS, or Linux.
 
 **For macOS**: GeneMiner is packaged with Wineskin to run on macOS. Please try to use the latest version of MacOS. Due to limited conditions, GeneMiner has not been tested on all macOS versions. If you meet error like "XXX is damaged" You can type this in terminal:
 - xattr -cr /location_of_GeneMinerO.app
 - Example: xattr -cr /Applications/GeneMiner.app
+
+Due to GeneMiner2 operating on macOS through Wine technology, its running efficiency is significantly lower compared to Windows. Therefore, it is not recommended to use GeneMiner2 on macOS for large-scale analyses.
+
+**Note:** Avoid installing the software on a portable drive.
 
 # Tutorials
 

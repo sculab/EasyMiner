@@ -8,7 +8,7 @@ GeneMiner2是一款为系统发育基因组学设计的全功能工具包，软�
 ## 引用
 GeneMiner2基于我们之前开发的GeneMiner和Easy353软件，并整合了Blast、Minimap2、Fasttree、Muscle5、Mafft、Astral、PDD、PGA、NOVOPlasty、OrthoFinder等优秀工具，请在使用对应功能时引用软件提示的文献。
 
-GeneMiner2的工作尚未发表，目前请引用我们关于GeneMiner的论文：
+GeneMiner2的工作尚未正式发表，目前请引用我们关于GeneMiner的论文：
 - Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. DOI: 10.1111/1755-0998.13924
 如果挖掘被子植物353基因，请引用我们关于Easy353的论文：
 - Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
@@ -19,25 +19,25 @@ GeneMiner2的工作尚未发表，目前请引用我们关于GeneMiner的论文�
 
 ![](images/main_page_chin.jpg)
 
-软件基于.net平台开发，仅提供x64版本，需要在计算机上安装有.NET 6.0 Desktop Runtime x64。如果不满足需求，软件会在第一次运行时提醒您下载。您也可以从此处获取.NET 6.0 Desktop Runtime x64的安装包: 
+GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地址获取最新的安装包: 
 
-https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/runtime-desktop-6.0.21-windows-x64-installer
+[SourceForge](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/) 或 [本地镜像](https://sourceforge.net/projects/geneminer/files/)
 
-GeneMiner的源代码均保存在github和Gitee上，您可以从下面的地址获取最新的安装包: 
-
-[Index of /database/app/EasyMiner (tpddns.cn)](http://life-bioinfo.tpddns.cn:8445/database/app/EasyMiner/)
-
-或
-
-[EasyMiner download | SourceForge.net](https://sourceforge.net/projects/scueasyminer/)
-
-如果您需要在macOS或Linux上使用命令行版本的基因挖掘工具，请访问: 
+如果您需要使用命令行版本的基因挖掘工具，请访问: 
 
 - GeneMiner: https://github.com/sculab/GeneMiner
 
 - Easy353: https://github.com/plant720/Easy353
 
-您也可以使用GeneMiner2上scripts文件夹中的python脚本，这些脚本提供了GeneMiner的所有核心功能，并可以在macOS或Linux上部署。
+您也可以使用GeneMiner2上scripts文件夹中的python脚本，这些脚本提供了GeneMiner2的所有核心功能，并可以在Windows、macOS或Linux上部署。
+
+**macOS用户**: 在macOS上运行GeneMiner2时，如果遇到 "XXX 已损坏"之类的错误，请打开终端，运行类似下面的命令:
+- xattr -cr **把GeneMinerO.app拖放到此处**
+- 例如: xattr -cr /Applications/GeneMiner.app
+
+由于GeneMiner2通过wine技术运行在macOS上，运行效率远低于Windows，因此不建议用GeneMiner2在macOS进行大规模的分析。
+
+**Note:** 请勿在移动磁盘上运行GeneMiner2。请勿将GeneMiner2安装到带有中文的文件夹中。
 
 ---
 
