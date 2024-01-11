@@ -13,8 +13,6 @@ GeneMiner2的工作尚未正式发表，目前请引用我们关于GeneMiner的�
 如果挖掘被子植物353基因，请引用我们关于Easy353的论文：
 - Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
 
-
-
 # 安装和需求
 
 ![](images/main_page_chin.jpg)
