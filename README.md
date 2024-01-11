@@ -1,7 +1,7 @@
 
 # GeneMiner2: A Comprehensive Toolkit for Phylogenomic Genomics
 # Introduction
-**中文版的使用说明见[此处](chinese_README.md)**
+**中文版的使用说明见[此处](README_zh_cn.md)**
 
  ![](images/main_page.jpg)
 
@@ -23,7 +23,7 @@ If mining angiosperm 353 genes, please cite our paper on Easy353:
 
 
 # Install
-You could download from [SourceForge](https://sourceforge.net/projects/geneminer/files/) or [our site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).
+**You could download GeneMiner from [SourceForge](https://sourceforge.net/projects/geneminer/files/) or [our site](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/).**
 
 If you require the command-line version of gene mining tools, please visit:
 - GeneMiner: https://github.com/sculab/GeneMiner
@@ -56,17 +56,13 @@ Due to GeneMiner2 operating on macOS through Wine technology, its running effici
 [Tutorial 4 - For Obtaining Angiosperms353 Genes](DEMO/DEMO4/DEMO4.md)
 
 
-# More Details
-For detailed instructions and tutorials, visit [here](manual/ZH_CN/readmeall.md).
-
-
 # Command Line (cmd)
 
-For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) and [GeneMiner](https://github.com/sculab/GeneMiner)
+For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) or [GeneMiner](https://github.com/sculab/GeneMiner)
 
 
 # Questions
-[Answer](questions.md)
+[Answer](FAQ.md)
 
 
 # Contact
