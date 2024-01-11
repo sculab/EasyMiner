@@ -32,7 +32,7 @@ GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地�
 您也可以使用GeneMiner2上scripts文件夹中的python脚本，这些脚本提供了GeneMiner2的所有核心功能，并可以在Windows、macOS或Linux上部署。
 
 **macOS用户**: 在macOS上运行GeneMiner2时，如果遇到 "XXX 已损坏"之类的错误，请打开终端，运行类似下面的命令:
-- xattr -cr **把GeneMinerO.app拖放到此处**
+- xattr -cr **把GeneMiner.app拖放到此处**
 - 例如: xattr -cr /Applications/GeneMiner.app
 
 由于GeneMiner2通过wine技术运行在macOS上，运行效率远低于Windows，因此不建议用GeneMiner2在macOS进行大规模的分析。
