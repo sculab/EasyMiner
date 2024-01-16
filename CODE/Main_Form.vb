@@ -406,6 +406,18 @@ Public Class Main_Form
         DataGridView2.RefreshEdit()
         GC.Collect()
     End Sub
+    Public Sub refresh_DG3()
+        form_config_tree.DataGridView1.DataSource = taxonView
+        taxonView.AllowNew = False
+        taxonView.AllowEdit = True
+        form_config_tree.DataGridView1.Columns(1).ReadOnly = True
+        form_config_tree.DataGridView1.Columns(0).Width = 50
+        form_config_tree.DataGridView1.Columns(1).Width = 350
+        form_config_tree.DataGridView1.Columns(0).SortMode = DataGridViewColumnSortMode.NotSortable
+        form_config_tree.DataGridView1.Columns(1).SortMode = DataGridViewColumnSortMode.NotSortable
+        form_config_tree.DataGridView1.RefreshEdit()
+        GC.Collect()
+    End Sub
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Select Case timer_id
             Case 0
@@ -2072,11 +2084,11 @@ Public Class Main_Form
             End If
             combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "?")
         Else
-            combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "?")
+            combine_file_horizontal(TextBox1.Text + "\combined_results\aligned", ".fasta", TextBox1.Text + "\combined_results.fasta", "-")
             If TargetOS = "macos" Then
                 Thread.Sleep(100)
             End If
-            combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "?")
+            combine_file_horizontal(TextBox1.Text + "\combined_trimed", ".fasta", TextBox1.Text + "\combined_trimed.fasta", "-")
         End If
 
         DataGridView1.RefreshEdit()
@@ -3674,7 +3686,13 @@ Public Class Main_Form
                     safe_copy(currentDirectory + "temp\org_seq\" + refsView.Item(i - 1).Item(1).ToString + ".fasta", ref_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", True)
                 End If
             Next
-            combine_file_horizontal(ref_dir, ".fasta", opendialog.FileName, "-")
+            Dim result As DialogResult = MessageBox.Show("Use '?' for 'Yes' and '-' for 'No' to mark missing samples.", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            ' 根据用户的选择执行相应的操作
+            If result = DialogResult.Yes Then
+                combine_file_horizontal(ref_dir, ".fasta", opendialog.FileName, "?")
+            Else
+                combine_file_horizontal(ref_dir, ".fasta", opendialog.FileName, "-")
+            End If
             MsgBox("Analysis complete!", MsgBoxStyle.Information, "Infomation")
         End If
     End Sub
@@ -3885,14 +3903,17 @@ Public Class Main_Form
     Private Sub 参考数量ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 参考数量ToolStripMenuItem.Click
         Dim sel_count As Integer = 0
         Dim my_input As String = InputBox("Select count of reference below:", "Count", "1")
-        For i As Integer = 1 To refsView.Count
-            If IsNumeric(DataGridView1.Rows(i - 1).Cells(3).Value) Then
-                If CSng(DataGridView1.Rows(i - 1).Cells(3).Value) <= CSng(my_input) Then
-                    'sel_count += 1
-                    DataGridView1.Rows(i - 1).Cells(0).Value = True
+        If IsNumeric(my_input) Then
+            For i As Integer = 1 To refsView.Count
+                If IsNumeric(DataGridView1.Rows(i - 1).Cells(3).Value) Then
+                    If CSng(DataGridView1.Rows(i - 1).Cells(3).Value) <= CSng(my_input) Then
+                        'sel_count += 1
+                        DataGridView1.Rows(i - 1).Cells(0).Value = True
+                    End If
                 End If
-            End If
-        Next
+            Next
+        End If
+
 
         'MsgBox(sel_count.ToString + " were selected!", MsgBoxStyle.Information, "Infomation")
         DataGridView1.RefreshEdit()
@@ -4273,15 +4294,16 @@ Public Class Main_Form
     Private Sub 最大差异度ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 最大差异度ToolStripMenuItem.Click
         Dim sel_count As Integer = 0
         Dim my_input As String = InputBox("Difference equal or below:", "Count", "0.1")
-
-        For i As Integer = 1 To refsView.Count
-            If IsNumeric(DataGridView1.Rows(i - 1).Cells(8).Value) Then
-                If CSng(DataGridView1.Rows(i - 1).Cells(8).Value) <= CSng(my_input) Then
-                    'sel_count += 1
-                    DataGridView1.Rows(i - 1).Cells(0).Value = True
+        If IsNumeric(my_input) Then
+            For i As Integer = 1 To refsView.Count
+                If IsNumeric(DataGridView1.Rows(i - 1).Cells(8).Value) Then
+                    If CSng(DataGridView1.Rows(i - 1).Cells(8).Value) <= CSng(my_input) Then
+                        'sel_count += 1
+                        DataGridView1.Rows(i - 1).Cells(0).Value = True
+                    End If
                 End If
-            End If
-        Next
+            Next
+        End If
         'MsgBox(sel_count.ToString + " were selected!", MsgBoxStyle.Information, "Infomation")
         DataGridView1.RefreshEdit()
     End Sub
@@ -4419,6 +4441,7 @@ Public Class Main_Form
         Next
         dw.Close()
     End Sub
+
     Private Sub 保存项目文件ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 保存项目文件ToolStripMenuItem.Click
         Dim opendialog As New SaveFileDialog With {
             .Filter = "GeneMiner Project File (*.geneminer)|*.geneminer;*.GENEMINER",
@@ -4433,6 +4456,7 @@ Public Class Main_Form
             Directory.CreateDirectory(files_save_path)
             save_datagrid1(Path.Combine(files_save_path, "datagrid1.csv"))
             save_datagrid2(Path.Combine(files_save_path, "datagrid2.csv"))
+
             For i As Integer = 1 To refsView.Count
                 safe_copy(currentDirectory + "temp\org_seq\" + refsView.Item(i - 1).Item(1).ToString + ".fasta", Path.Combine(files_save_path, "refs", refsView.Item(i - 1).Item(1).ToString + ".fasta"), True)
             Next
@@ -4475,12 +4499,43 @@ Public Class Main_Form
                 seqsView.AddNew()
                 seqsView.Item(seqsView.Count - 1).Row.ItemArray = newrow.Skip(1).ToArray()
                 selectrow.Add(Boolean.Parse(newrow(0)))
+
+                Dim newrow_taxon(0) As String
+                taxonView.AllowNew = True
+                taxonView.AddNew()
+                newrow_taxon(0) = newrow(1) + "_" + make_out_name(Path.GetFileNameWithoutExtension(newrow(2)), Path.GetFileNameWithoutExtension(newrow(3)))
+                taxonView.Item(taxonView.Count - 1).Row.ItemArray = newrow_taxon
+
             End While
         End Using
         refresh_DG2()
+        refresh_DG3()
         DataGridView2.Update()
         For i As Integer = 0 To seqsView.Count - 1
             DataGridView2.Rows(i).Cells(0).Value = selectrow(i)
+        Next
+
+
+    End Sub
+
+    Public Sub load_datagrid3(ByVal file_path As String)
+        form_config_tree.DataGridView1.EndEdit()
+        mydata_Dataset.Tables("Taxon Table").Clear()
+        Dim selectrow As New List(Of Boolean)()
+        Using sr As New StreamReader(file_path)
+            sr.ReadLine()
+            While (Not sr.EndOfStream)
+                Dim newrow() As String = sr.ReadLine().Split(",")
+                seqsView.AllowNew = True
+                seqsView.AddNew()
+                seqsView.Item(seqsView.Count - 1).Row.ItemArray = newrow.Skip(1).ToArray()
+                selectrow.Add(Boolean.Parse(newrow(0)))
+            End While
+        End Using
+        refresh_DG3()
+        form_config_tree.DataGridView1.Update()
+        For i As Integer = 0 To taxonView.Count - 1
+            form_config_tree.DataGridView1.Rows(i).Cells(0).Value = selectrow(i)
         Next
     End Sub
 

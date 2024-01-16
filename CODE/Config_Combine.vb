@@ -89,7 +89,7 @@ Public Class Config_Combine
         If language = "EN" Then
             TextBox1.Text = "Selecting this option enables automatic cleanup. The program calculates the difference rate between each pair of sequences (the number of base differences divided by the length of the shorter sequence in the pair). It then extracts the largest subset of sequence pairs from the collection, ensuring that their pairwise difference rates do not exceed the 'Maximum Difference' threshold. If the number of sequences in this largest subset is greater than or equal to the 'Number of sequences' specified, this subset is used as the result. Otherwise, the alignment will be removed."
         Else
-            TextBox1.Text = "勾选表示执行自动清理。程序将计算两两序列间的差异率（碱基差异的数量除以两条序列中较短序列的长度），然后从序列集合中获取两两比对的差异率不超过所设定的‘最大差异’的最大子集，如果最大子集的序列数量大于等于所设定的‘序列数量’，则用该序列子集中作为结果，否则删除序列。"
+            TextBox1.Text = "勾选表示执行自动清理。程序将计算两两序列间的差异率（碱基差异的数量除以两条序列中较短序列的长度），然后从序列集合中获取两两比对的差异率不超过所设定的‘最大差异’的最大子集，如果最大子集的序列数量大于等于所设定的‘序列数量’，则用该子集作为结果，否则删除该基因。"
         End If
     End Sub
 
@@ -105,7 +105,7 @@ Public Class Config_Combine
         If language = "EN" Then
             TextBox1.Text = "If the number of sequences in the largest subset is greater than or equal to the set value, then the subset is used as the result; otherwise, the alignment is deleted."
         Else
-            TextBox1.Text = "如果最大子集的序列数量大于等于所设定的值，则用该序列子集中作为结果，否则删除序列。"
+            TextBox1.Text = "如果最大子集的序列数量大于等于所设定的值，则用该序列子集中作为结果，否则删除该基因。"
         End If
     End Sub
 

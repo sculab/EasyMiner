@@ -24,7 +24,7 @@ GeneMiner2的工作尚未正式发表，目前请引用我们关于GeneMiner的�
 
 GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地址获取最新的安装包: 
 
-**[SourceForge](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/) 或 [本地镜像](https://sourceforge.net/projects/geneminer/files/)**
+**[本地镜像](http://life-bioinfo.tpddns.cn:8445/database/app/GeneMiner/) 或 [SourceForge](https://sourceforge.net/projects/geneminer/files/)**
 
 如果您需要使用命令行版本的基因挖掘工具，请访问: 
 

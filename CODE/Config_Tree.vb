@@ -53,4 +53,7 @@ Public Class Config_Tree
         TextBox2.Enabled = CheckBox1.Checked
     End Sub
 
+    Private Sub Config_Tree_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class
