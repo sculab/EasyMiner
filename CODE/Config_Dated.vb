@@ -1521,7 +1521,19 @@ Public Class Config_Dated
                                     End If
                                     tree_Temp = tree_Temp + Val(Temp_line).ToString("F4")
                                 End If
+                                Try
+                                    If Temp_line.IndexOf("label=") >= 0 Then
+                                        Temp_line = Temp_line.Remove(0, Temp_line.IndexOf("label="))
+                                        If Temp_line.Contains(",") Then
+                                            Temp_line = Temp_line.Substring(Temp_line.IndexOf("=") + 1, Temp_line.IndexOf(",") - Temp_line.IndexOf("=") - 1)
+                                        Else
+                                            Temp_line = Temp_line.Replace("label=", "")
+                                        End If
+                                        tree_Temp = tree_Temp + Val(Temp_line).ToString("F4")
+                                    End If
+                                Catch ex As Exception
 
+                                End Try
                             End If
                             If is_sym Then
                                 Temp_line = Temp_line + tree_chr

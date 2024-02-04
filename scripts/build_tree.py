@@ -39,8 +39,8 @@ def process_bootstrap_sample(input_file, bootstrap_output_dir, sequence_length, 
 
 def fasttree_warpper(input_file, output_tree, model, boot):
     cmd = f"..\\analysis\\FastTree.exe -nt -{model} -boot {boot} < {input_file} > {output_tree}"
-    # print(cmd,"\n")
-    subprocess.run(cmd, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print(cmd,"\n")
+    subprocess.run(cmd, shell=True, check=True)
 
 def main(input_file, output_file, bootstrap_output_dir, model, outgroup, num_bootstraps, num_processes):
     records = list(SeqIO.parse(input_file, "fasta"))

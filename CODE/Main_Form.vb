@@ -451,6 +451,10 @@ Public Class Main_Form
             Case 2
                 Timer1.Enabled = False
                 refresh_DG1()
+                DataGridView1.Update()
+                For i As Integer = 0 To refsView.Count - 1
+                    DataGridView1.Rows(i).Cells(0).Value = True
+                Next
 
                 data_loaded = True
                 timer_id = 0
@@ -459,6 +463,10 @@ Public Class Main_Form
             Case 3
                 Timer1.Enabled = False
                 refresh_DG2()
+                DataGridView2.Update()
+                For i As Integer = 0 To seqsView.Count - 1
+                    DataGridView2.Rows(i).Cells(0).Value = True
+                Next
                 form_config_tree.DataGridView1.DataSource = taxonView
                 taxonView.AllowNew = False
                 taxonView.AllowEdit = True
@@ -838,11 +846,11 @@ Public Class Main_Form
     End Sub
 
     Private Sub DataGridView1_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles DataGridView1.DataBindingComplete
-        If data_loaded = False And refsView.Count > 0 Then
-            For i As Integer = 1 To refsView.Count
-                DataGridView1.Rows(i - 1).Cells(0).Value = True
-            Next
-        End If
+        'If data_loaded = False And refsView.Count > 0 Then
+        '    For i As Integer = 1 To refsView.Count
+        '        DataGridView1.Rows(i - 1).Cells(0).Value = True
+        '    Next
+        'End If
     End Sub
 
     Private Sub DataGridView2_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView2.CellContentClick
@@ -850,11 +858,11 @@ Public Class Main_Form
     End Sub
 
     Private Sub DataGridView2_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles DataGridView2.DataBindingComplete
-        If data_loaded = False And seqsView.Count > 0 Then
-            For i As Integer = 1 To seqsView.Count
-                DataGridView2.Rows(i - 1).Cells(0).Value = True
-            Next
-        End If
+        'If data_loaded = False And seqsView.Count > 0 Then
+        '    For i As Integer = 1 To seqsView.Count
+        '        DataGridView2.Rows(i - 1).Cells(0).Value = True
+        '    Next
+        'End If
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
@@ -1924,8 +1932,8 @@ Public Class Main_Form
         End If
         Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
 
-                                                                 If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                     Dim sw_res As New StreamWriter(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", False, utf8WithoutBom)
+                                                                 'If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                 Dim sw_res As New StreamWriter(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", False, utf8WithoutBom)
                                                                      For batch_i As Integer = 1 To seqsView.Count
                                                                          If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                              Interlocked.Add(count, 1)
@@ -2014,7 +2022,7 @@ Public Class Main_Form
                                                                          End If
 
                                                                      End If
-                                                                 End If
+                                                                 'End If
 
                                                              End Sub)
 
@@ -3983,13 +3991,17 @@ Public Class Main_Form
                 current_thread.ToString()
                 }
             If form_config_tree.CheckBox1.Checked Then
-                my_args(4) = Path.Combine(TextBox1.Text, "og.txt")
+                my_args(4) = """" + Path.Combine(TextBox1.Text, "og.txt") + """"
             End If
 
             do_build_tree(my_args)
 
             If File.Exists(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree")) Then
-                safe_copy(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"), Path.Combine(TextBox1.Text, "Concatenation.tree"))
+                Dim temp_tree As String = File.ReadAllText(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree")).Replace("):", ")1:")
+                Using sw As New StreamWriter(Path.Combine(TextBox1.Text, "Concatenation.tree"))
+                    sw.Write(temp_tree)
+                End Using
+                'safe_copy(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"), Path.Combine(TextBox1.Text, "Concatenation.tree"))
                 'safe_copy(Path.Combine(currentDirectory, "temp", random_folder, "bootstrap.trees"), Path.Combine(TextBox1.Text, "bootstrap.trees"))
                 DeleteDir(Path.Combine(currentDirectory, "temp", random_folder))
                 File.Delete(Path.Combine(currentDirectory, "temp", random_folder + "_coa.tree"))
@@ -4077,6 +4089,10 @@ Public Class Main_Form
                 File.Delete(Path.Combine(TextBox1.Text, "og.txt"))
             End If
             do_newick({TextBox1.Text, "-ladderize Coalescent.tree -output Coalescent.tree"})
+            Dim temp_tree As String = File.ReadAllText(Path.Combine(TextBox1.Text, "Coalescent.tree")).Replace("):", ")1:")
+            Using sw As New StreamWriter(Path.Combine(TextBox1.Text, "Coalescent.tree"))
+                sw.Write(temp_tree)
+            End Using
             If MenuClicked = "build_tree" And form_config_tree.CheckBox2.Checked Then
                 form_config_dated.tree_path = Path.Combine(form_main.TextBox1.Text, "Coalescent.tree")
                 timer_id = 10
@@ -4489,7 +4505,10 @@ Public Class Main_Form
     End Sub
     Public Sub load_datagrid2(ByVal file_path As String)
         DataGridView2.EndEdit()
+        form_config_tree.DataGridView1.EndEdit()
         mydata_Dataset.Tables("Data Table").Clear()
+        mydata_Dataset.Tables("Taxon Table").Clear()
+
         Dim selectrow As New List(Of Boolean)()
         Using sr As New StreamReader(file_path)
             sr.ReadLine()

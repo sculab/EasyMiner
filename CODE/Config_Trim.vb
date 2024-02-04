@@ -28,18 +28,17 @@ Public Class Config_Trim
         RaiseEvent CancelClicked()
     End Sub
 
-
-
-
-
-    Private Sub CheckBox1_MouseHover(sender As Object, e As EventArgs) Handles CheckBox1.MouseHover
+    Private Sub ComboBox2_MouseHover(sender As Object, e As EventArgs) Handles ComboBox2.MouseHover
         If language = "EN" Then
-            TextBox1.Text = "Activate this option to trim using only the longest fragment matching the reference sequence. If deactivated, it combines all matched fragments. Avoid using this feature when sequencing and reference sources differ, like genomic data versus transcriptomes, to prevent over-trimming."
+            TextBox1.Text = "This method involves combining all fragments that match the reference sequence to align the target sequence.
+Longest Fragments: This approach uses only the longest matching fragments of the reference sequence to align the target sequence.
+Trim Terminal: This method aligns the target sequence based solely on trimming the termini according to the reference sequence."
         Else
-            TextBox1.Text = "启用选项表示只使用与参考序列匹配最长的片段进行切齐，否则使用所有匹配上的片段组合。如果测序数据和参考序列的来源不同，例如测序文件为基因组，参考序列来自转录组，请勿启用该选项，以免过度切割。"
+            TextBox1.Text = "All Fragments: 使用所有与参考序列匹配上的片段进行组合切齐。
+Longest Fragments: 只使用与参考序列匹配最长的片段进行切齐。
+Trim Terminal: 只使用参考序列切齐两端。"
         End If
     End Sub
-
 
     Private Sub Label1_MouseHover(sender As Object, e As EventArgs) Handles Label1.MouseHover
         If language = "EN" Then
@@ -59,6 +58,7 @@ Public Class Config_Trim
     End Sub
     Private Sub Config_Trim_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ComboBox1.SelectedIndex = 0
+        ComboBox2.SelectedIndex = 1
         If language = "EN" Then
             TextBox1.Text = "Refine the results to align with the reference sequences. It is essential to modify parameters in accordance with the specific types of sequencing data and reference sequences utilized. The refined results will be stored in the 'blast' folder located in the output directory."
         Else

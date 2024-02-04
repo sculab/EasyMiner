@@ -7,20 +7,20 @@ Public Class Config_Tree
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         DataGridView1.EndEdit()
         DataGridView1.Refresh()
-        If taxonView.Count > 0 Then
-            If CheckBox1.Checked Then
-                Dim og_count As Integer = 0
-                Select Case MenuClicked
-                    Case "build_tree_refs"
-                        Using ogwriter As StreamWriter = New StreamWriter(Path.Combine(form_main.TextBox1.Text, "og.txt"))
-                            If TextBox2.Text <> "" Then
-                                For batch_i As Integer = 1 To TextBox2.Text.Split(Chr(13)).Length
-                                    og_count += 1
-                                    ogwriter.WriteLine(TextBox2.Text.Split(Chr(13))(batch_i))
-                                Next
-                            End If
-                        End Using
-                    Case "build_tree"
+        If CheckBox1.Checked Then
+            Dim og_count As Integer = 0
+            Select Case MenuClicked
+                Case "build_tree_refs"
+                    Using ogwriter As StreamWriter = New StreamWriter(Path.Combine(form_main.TextBox1.Text, "og.txt"))
+                        If TextBox2.Text <> "" Then
+                            For batch_i As Integer = 1 To TextBox2.Text.Split(Chr(13)).Length
+                                og_count += 1
+                                ogwriter.WriteLine(TextBox2.Text.Split(Chr(13))(batch_i - 1))
+                            Next
+                        End If
+                    End Using
+                Case "build_tree"
+                    If taxonView.Count > 0 Then
                         Using ogwriter As StreamWriter = New StreamWriter(Path.Combine(form_main.TextBox1.Text, "og.txt"))
                             For batch_i As Integer = 1 To seqsView.Count
                                 If DataGridView1.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -29,12 +29,11 @@ Public Class Config_Tree
                                 End If
                             Next
                         End Using
-                End Select
-
-                If og_count = 0 Then
-                    MsgBox("You must designate outgroup for rooted tree.")
-                    Exit Sub
-                End If
+                    End If
+            End Select
+            If og_count = 0 Then
+                MsgBox("You must designate outgroup for rooted tree.")
+                Exit Sub
             End If
         End If
         Me.Hide()

@@ -7,12 +7,12 @@ import shutil
 
 def main():
     parser = argparse.ArgumentParser(description="基于Blast筛选Novoplasty产生的几个option中哪个是最佳序列")
-    parser.add_argument("-i", "--input", required=False, default=r"..\temp\my_target.fasta", help="选项文件夹的路径")
-    parser.add_argument("-r", "--ref", required=False, default=r"..\temp\my_ref.fasta", help="参考序列的路径")
+    parser.add_argument("-i", "--input", required=False, default=r"..\temp\ITS.fasta", help="选项文件夹的路径")
+    parser.add_argument("-r", "--ref", required=False, default=r"..\temp\ITSref.fasta", help="参考序列的路径")
     parser.add_argument("-o", "--output", required=False, default=r"..\temp\trimed.fasta", help="结果文件的路径")
     parser.add_argument("-b", "--output_blast", required=False, default=r"..\temp", help="结果文件的路径")
-    parser.add_argument("-m", "--mode", metavar='<int>', type=int, required=False, default=1, help="0:使用匹配上的所有片段，只使用最长匹配片段")
-    parser.add_argument("-pec", "--pec", metavar='<int>', type=int, required=False, default=0, help="只保留大于某个值的片段")
+    parser.add_argument("-m", "--mode", metavar='<int>', type=int, required=False, default=2, help="0:使用匹配上的所有片段，1:只使用最长匹配片段，2:只trim两端")
+    parser.add_argument("-pec", "--pec", metavar='<int>', type=int, required=False, default=50, help="只保留大于某个值的片段")
 
     args = parser.parse_args()
     subject_file = args.ref
@@ -40,12 +40,16 @@ def main():
     blastn_cmd = [r"..\analysis\blastn.exe", "-query", query_file, "-db", output_db, "-out", output_blast, "-outfmt", "6", "-evalue", "10"]
     subprocess.run(blastn_cmd, check=True)
     if os.path.exists(output_blast):
-        fragments = merge_fragments(get_fragments(output_blast)) if args.mode == 0 else get_fragments(output_blast)
+        fragments = get_fragments(output_blast) if args.mode == 1 else merge_fragments(get_fragments(output_blast))
         with open(query_file, 'r') as file:
             header = next(file)
             sequence = file.read().replace('\n', '')
         if len(fragments) >= 1:
-            if args.mode: fragments = [fragments[0]]
+            if args.mode == 1: fragments = [fragments[0]]
+            if args.mode == 2:
+                min_first = min([t[0] for t in fragments])
+                max_second = max([t[1] for t in fragments])
+                fragments = [[min_first, max_second]]
             combined_sequence = extract_and_combine_fragments(sequence, fragments)
             if len(combined_sequence) / median_length * 100 > args.pec:
                 with open(output_file, 'w') as file:

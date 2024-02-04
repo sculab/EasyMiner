@@ -106,6 +106,7 @@ Module Module_Language
         form_config_tree.Button1.Text = "OK"
         form_config_tree.CheckBox1.Text = "Build Rotted Tree"
         form_config_tree.CheckBox2.Text = "Do Calibration"
+        form_config_tree.Label2.Text = "Enter the names of the outgroup, one per line:"
 
 
         form_config_dated.FileToolStripMenuItem.Text = "Analysis"
@@ -152,7 +153,6 @@ Module Module_Language
         form_config_barcode.Label5.Text = "Accuracy:"
 
         form_config_trim.Text = "Trimming Results"
-        form_config_trim.CheckBox1.Text = "Keep Only the Longest Match"
         form_config_trim.Label1.Text = "Retention Length Threshold (%)"
         form_config_trim.Button2.Text = "Cancel"
         form_config_trim.Button1.Text = "OK"
@@ -304,6 +304,7 @@ Module Module_Language
         form_config_tree.Button1.Text = "确定"
         form_config_tree.CheckBox1.Text = "构建有根树"
         form_config_tree.CheckBox2.Text = "完成后修订时间"
+        form_config_tree.Label2.Text = "手动输入外类群，每行一个样本名:"
 
         form_config_combine.CheckBox1.Text = "使用missing(?)代替gap(-) "
         form_config_combine.CheckBox2.Text = "使用基于参考序列切齐的结果"
@@ -385,7 +386,6 @@ Module Module_Language
         form_config_basic.CheckBox4.Text = "隐藏命令行窗口"
 
         form_config_trim.Text = "切齐结果"
-        form_config_trim.CheckBox1.Text = "只保留最长的匹配"
         form_config_trim.Label1.Text = "保留长度阈值(%)"
         form_config_trim.Button2.Text = "取消"
         form_config_trim.Button1.Text = "确定"

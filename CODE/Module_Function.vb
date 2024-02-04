@@ -416,12 +416,8 @@ Module Module_Function
             .CreateNoWindow = True,
             .Arguments = "-r ..\temp\" + random_folder + "\my_ref.fasta -i ..\temp\" + random_folder + "\my_target.fasta -o  ..\temp\"
         }
-        If form_config_trim.CheckBox1.Checked Then
-            SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m 1"
-        Else
-            SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m 0"
+        SI_build_trimed.Arguments += random_folder + "\my_trimed.fasta -b ..\temp\" + random_folder + " -m " + form_config_trim.ComboBox2.SelectedIndex.ToString
 
-        End If
         SI_build_trimed.Arguments += " -pec " + form_config_trim.NumericUpDown1.Value.ToString
         Dim process_build_trimed As Process = New Process With {
             .StartInfo = SI_build_trimed

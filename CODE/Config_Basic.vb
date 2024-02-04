@@ -33,7 +33,7 @@
     Private Sub Config_Basic_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ComboBox1.SelectedIndex = 0
     End Sub
-    Private Sub NumericUpDown3_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown3.MouseHover
+    Private Sub NumericUpDown3_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown3.GotFocus
         If language = "EN" Then
             TextBox1.Text = "Activating this option will limit the analysis to a portion of the sequencing data (M reads). When analyzing high-copy number genes, such as organellar genes, it is unnecessary to utilize the entire dataset. Engaging this option can significantly enhance the speed of the analysis. However, in cases of low sequencing depth or when dealing with low-copy number genes, it is advisable to deactivate this option."
         Else
@@ -41,7 +41,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown1_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown1.MouseHover
+    Private Sub NumericUpDown1_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown1.GotFocus
         If language = "EN" Then
             TextBox1.Text = "The Filter K Value (kf) depends on three factors: acquisition rate (p) of gene-specific reads, read length (r), and variation degree (v) between reference and target sequences. Typically, with p at 0.99, r at 150, and v at 0.1, kf is around 31, our default setting. If p is 0.95 and v increases to 0.2 (r stays at 150), kf drops to 17, the proposed minimum threshold."
         Else
@@ -67,7 +67,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown2_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown2.MouseHover
+    Private Sub NumericUpDown2_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown2.GotFocus
         If language = "EN" Then
             TextBox1.Text = "Sets the interval of base numbers in the filtering process. Increasing this value can speed up the filtering process but may also reduce the recovery rate of reads. In cases of low sequencing depth or significant differences between the reference and target sequences, it is recommended to reduce this value to 1; otherwise, keep the default setting."
         Else
@@ -75,7 +75,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown4_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown4.MouseHover
+    Private Sub NumericUpDown4_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown4.GotFocus
         If language = "EN" Then
             TextBox1.Text = "When the software processes a large amount of filtering data, it initiates a secondary filtering process aimed at enhancing the efficiency and accuracy of sequence assembly. GeneMiner increases the filtering K value (kf) by 2 each time when the product of read length and read count divided by the average reference length exceeds this value, with an upper limit of 63."
         Else
@@ -83,7 +83,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown9_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown9.MouseHover
+    Private Sub NumericUpDown9_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown9.GotFocus
         If language = "EN" Then
             TextBox1.Text = "When the software processes a large amount of filtering data, it initiates a secondary filtering process aimed at enhancing the efficiency and accuracy of sequence assembly. GeneMiner increases the filtering K value (kf) by 2 each time when the size of the filtering file exceeds this value (measured in MB), with an upper limit of 63."
         Else
@@ -91,7 +91,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown6_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown6.MouseHover
+    Private Sub NumericUpDown6_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown6.GotFocus
         If language = "EN" Then
             TextBox1.Text = "Sets the starting value for the automatic estimation process of the assembly K-mer (ka)."
         Else
@@ -99,7 +99,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown7_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown7.MouseHover
+    Private Sub NumericUpDown7_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown7.GotFocus
         If language = "EN" Then
             TextBox1.Text = "Sets the terminal value for the automatic estimation process of the assembly K-mer (ka)."
         Else
@@ -109,7 +109,7 @@
 
 
 
-    Private Sub NumericUpDown5_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown5.MouseHover
+    Private Sub NumericUpDown5_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown5.GotFocus
         If language = "EN" Then
             TextBox1.Text = "Utilize a fixed assembly K-mer (ka) value for sequence assembly."
         Else
@@ -117,7 +117,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown8_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown8.MouseHover
+    Private Sub NumericUpDown8_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown8.GotFocus
         If language = "EN" Then
             TextBox1.Text = "Within the generated Kmers from reads, only Kmers with a count exceeding this specified value will be used for sequence assembly."
         Else
@@ -125,7 +125,7 @@
         End If
     End Sub
 
-    Private Sub ComboBox1_MouseHover(sender As Object, e As EventArgs) Handles ComboBox1.MouseHover
+    Private Sub ComboBox1_GotFocus(sender As Object, e As EventArgs) Handles ComboBox1.GotFocus
         If language = "EN" Then
             TextBox1.Text = "In GeneMiner, the soft boundary is the maximum extension outside sequence edges during target sequence recovery. 'Auto' limits this to half the read length. Setting it to '0' disables it, while 'Unlimited' imposes no boundary length restriction."
         Else
@@ -133,7 +133,7 @@
         End If
     End Sub
 
-    Private Sub NumericUpDown10_MouseHover(sender As Object, e As EventArgs) Handles NumericUpDown10.MouseHover
+    Private Sub NumericUpDown10_GotFocus(sender As Object, e As EventArgs) Handles NumericUpDown10.GotFocus
         If language = "EN" Then
             TextBox1.Text = "This option specifies the maximum number of distinct candidate sequences retained during assembly, which typically requires no modification. For target sequences exceeding 5k in length, a higher value may be set."
         Else

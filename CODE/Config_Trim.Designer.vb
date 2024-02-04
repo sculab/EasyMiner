@@ -22,7 +22,6 @@ Partial Class Config_Trim
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        CheckBox1 = New CheckBox()
         Label1 = New Label()
         NumericUpDown1 = New NumericUpDown()
         Button2 = New Button()
@@ -30,20 +29,10 @@ Partial Class Config_Trim
         TextBox1 = New TextBox()
         Label2 = New Label()
         ComboBox1 = New ComboBox()
+        Label3 = New Label()
+        ComboBox2 = New ComboBox()
         CType(NumericUpDown1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
-        ' 
-        ' CheckBox1
-        ' 
-        CheckBox1.AutoSize = True
-        CheckBox1.Checked = True
-        CheckBox1.CheckState = CheckState.Checked
-        CheckBox1.Location = New Point(12, 66)
-        CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(123, 21)
-        CheckBox1.TabIndex = 0
-        CheckBox1.Text = "只保留最长的匹配"
-        CheckBox1.UseVisualStyleBackColor = True
         ' 
         ' Label1
         ' 
@@ -82,12 +71,12 @@ Partial Class Config_Trim
         ' 
         ' TextBox1
         ' 
-        TextBox1.Location = New Point(12, 93)
+        TextBox1.Location = New Point(12, 101)
         TextBox1.Multiline = True
         TextBox1.Name = "TextBox1"
         TextBox1.ReadOnly = True
         TextBox1.ScrollBars = ScrollBars.Vertical
-        TextBox1.Size = New Size(278, 117)
+        TextBox1.Size = New Size(278, 109)
         TextBox1.TabIndex = 47
         ' 
         ' Label2
@@ -109,12 +98,33 @@ Partial Class Config_Trim
         ComboBox1.Size = New Size(121, 25)
         ComboBox1.TabIndex = 49
         ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Location = New Point(12, 73)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(68, 17)
+        Label3.TabIndex = 50
+        Label3.Text = "切齐的方式"
+        ' 
+        ' ComboBox2
+        ' 
+        ComboBox2.DropDownStyle = ComboBoxStyle.DropDownList
+        ComboBox2.FormattingEnabled = True
+        ComboBox2.Items.AddRange(New Object() {"All Fragments", "Longest Fragments", "Trim Terminal"})
+        ComboBox2.Location = New Point(169, 70)
+        ComboBox2.Name = "ComboBox2"
+        ComboBox2.Size = New Size(121, 25)
+        ComboBox2.TabIndex = 51
+        ' 
         ' Config_Trim
         ' 
         AutoScaleDimensions = New SizeF(7F, 17F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(302, 277)
         ControlBox = False
+        Controls.Add(ComboBox2)
+        Controls.Add(Label3)
         Controls.Add(ComboBox1)
         Controls.Add(Label2)
         Controls.Add(TextBox1)
@@ -122,7 +132,6 @@ Partial Class Config_Trim
         Controls.Add(Button1)
         Controls.Add(NumericUpDown1)
         Controls.Add(Label1)
-        Controls.Add(CheckBox1)
         FormBorderStyle = FormBorderStyle.FixedToolWindow
         Name = "Config_Trim"
         StartPosition = FormStartPosition.CenterScreen
@@ -132,8 +141,6 @@ Partial Class Config_Trim
         ResumeLayout(False)
         PerformLayout()
     End Sub
-
-    Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents Label1 As Label
     Friend WithEvents NumericUpDown1 As NumericUpDown
     Friend WithEvents Button2 As Button
@@ -141,4 +148,6 @@ Partial Class Config_Trim
     Friend WithEvents TextBox1 As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents ComboBox1 As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents ComboBox2 As ComboBox
 End Class
