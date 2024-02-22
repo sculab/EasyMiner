@@ -59,6 +59,7 @@ Partial Class Main_Form
         用迭代覆盖ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripMenuItem5 = New ToolStripMenuItem()
         ToolStripSeparator4 = New ToolStripSeparator()
+        获取最佳参考序列ToolStripMenuItem = New ToolStripMenuItem()
         重构ToolStripMenuItem = New ToolStripMenuItem()
         多拷贝检测ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator9 = New ToolStripSeparator()
@@ -82,6 +83,7 @@ Partial Class Main_Form
         合并比对ToolStripMenuItem = New ToolStripMenuItem()
         构建系统发育树ToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator8 = New ToolStripSeparator()
+        获取最佳参考序列ToolStripMenuItem1 = New ToolStripMenuItem()
         旁系同源检测ToolStripMenuItem = New ToolStripMenuItem()
         重构序列ToolStripMenuItem = New ToolStripMenuItem()
         PPDToolStripMenuItem = New ToolStripMenuItem()
@@ -258,7 +260,7 @@ Partial Class Main_Form
         ' 
         ' 分析ToolStripMenuItem
         ' 
-        分析ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem, 拼接ToolStripMenuItem, 全自动ToolStripMenuItem, 对齐参考ToolStripMenuItem, ToolStripSeparator14, 迭代ToolStripMenuItem, ToolStripSeparator4, 重构ToolStripMenuItem, 多拷贝检测ToolStripMenuItem, ToolStripSeparator9, 植物叶绿体基因组ToolStripMenuItem, 植物线粒体基因组ToolStripMenuItem, 哺乳动物线粒体基因组ToolStripMenuItem1, ToolStripSeparator13, 获取单拷贝基因ToolStripMenuItem})
+        分析ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem, 拼接ToolStripMenuItem, 全自动ToolStripMenuItem, 对齐参考ToolStripMenuItem, ToolStripSeparator14, 迭代ToolStripMenuItem, ToolStripSeparator4, 获取最佳参考序列ToolStripMenuItem, 重构ToolStripMenuItem, 多拷贝检测ToolStripMenuItem, ToolStripSeparator9, 植物叶绿体基因组ToolStripMenuItem, 植物线粒体基因组ToolStripMenuItem, 哺乳动物线粒体基因组ToolStripMenuItem1, ToolStripSeparator13, 获取单拷贝基因ToolStripMenuItem})
         分析ToolStripMenuItem.Name = "分析ToolStripMenuItem"
         分析ToolStripMenuItem.Size = New Size(68, 21)
         分析ToolStripMenuItem.Text = "短读分析"
@@ -267,7 +269,7 @@ Partial Class Main_Form
         ' 
         过滤ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {从头过滤ToolStripMenuItem, 进一步过滤ToolStripMenuItem})
         过滤ToolStripMenuItem.Name = "过滤ToolStripMenuItem"
-        过滤ToolStripMenuItem.Size = New Size(172, 22)
+        过滤ToolStripMenuItem.Size = New Size(180, 22)
         过滤ToolStripMenuItem.Text = "过滤"
         ' 
         ' 从头过滤ToolStripMenuItem
@@ -285,31 +287,31 @@ Partial Class Main_Form
         ' 拼接ToolStripMenuItem
         ' 
         拼接ToolStripMenuItem.Name = "拼接ToolStripMenuItem"
-        拼接ToolStripMenuItem.Size = New Size(172, 22)
+        拼接ToolStripMenuItem.Size = New Size(180, 22)
         拼接ToolStripMenuItem.Text = "拼接"
         ' 
         ' 全自动ToolStripMenuItem
         ' 
         全自动ToolStripMenuItem.Name = "全自动ToolStripMenuItem"
-        全自动ToolStripMenuItem.Size = New Size(172, 22)
+        全自动ToolStripMenuItem.Size = New Size(180, 22)
         全自动ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' 对齐参考ToolStripMenuItem
         ' 
         对齐参考ToolStripMenuItem.Name = "对齐参考ToolStripMenuItem"
-        对齐参考ToolStripMenuItem.Size = New Size(172, 22)
+        对齐参考ToolStripMenuItem.Size = New Size(180, 22)
         对齐参考ToolStripMenuItem.Text = "基于参考切齐"
         ' 
         ' ToolStripSeparator14
         ' 
         ToolStripSeparator14.Name = "ToolStripSeparator14"
-        ToolStripSeparator14.Size = New Size(169, 6)
+        ToolStripSeparator14.Size = New Size(177, 6)
         ' 
         ' 迭代ToolStripMenuItem
         ' 
         迭代ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {迭代ToolStripMenuItem1, 用迭代覆盖ToolStripMenuItem, ToolStripMenuItem5})
         迭代ToolStripMenuItem.Name = "迭代ToolStripMenuItem"
-        迭代ToolStripMenuItem.Size = New Size(172, 22)
+        迭代ToolStripMenuItem.Size = New Size(180, 22)
         迭代ToolStripMenuItem.Text = "迭代"
         ' 
         ' 迭代ToolStripMenuItem1
@@ -333,52 +335,58 @@ Partial Class Main_Form
         ' ToolStripSeparator4
         ' 
         ToolStripSeparator4.Name = "ToolStripSeparator4"
-        ToolStripSeparator4.Size = New Size(169, 6)
+        ToolStripSeparator4.Size = New Size(177, 6)
+        ' 
+        ' 获取最佳参考序列ToolStripMenuItem
+        ' 
+        获取最佳参考序列ToolStripMenuItem.Name = "获取最佳参考序列ToolStripMenuItem"
+        获取最佳参考序列ToolStripMenuItem.Size = New Size(180, 22)
+        获取最佳参考序列ToolStripMenuItem.Text = "获取最佳参考序列"
         ' 
         ' 重构ToolStripMenuItem
         ' 
         重构ToolStripMenuItem.Name = "重构ToolStripMenuItem"
-        重构ToolStripMenuItem.Size = New Size(172, 22)
+        重构ToolStripMenuItem.Size = New Size(180, 22)
         重构ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' 多拷贝检测ToolStripMenuItem
         ' 
         多拷贝检测ToolStripMenuItem.Name = "多拷贝检测ToolStripMenuItem"
-        多拷贝检测ToolStripMenuItem.Size = New Size(172, 22)
+        多拷贝检测ToolStripMenuItem.Size = New Size(180, 22)
         多拷贝检测ToolStripMenuItem.Text = "多拷贝检测"
         ' 
         ' ToolStripSeparator9
         ' 
         ToolStripSeparator9.Name = "ToolStripSeparator9"
-        ToolStripSeparator9.Size = New Size(169, 6)
+        ToolStripSeparator9.Size = New Size(177, 6)
         ' 
         ' 植物叶绿体基因组ToolStripMenuItem
         ' 
         植物叶绿体基因组ToolStripMenuItem.Name = "植物叶绿体基因组ToolStripMenuItem"
-        植物叶绿体基因组ToolStripMenuItem.Size = New Size(172, 22)
+        植物叶绿体基因组ToolStripMenuItem.Size = New Size(180, 22)
         植物叶绿体基因组ToolStripMenuItem.Text = "植物叶绿体基因组"
         ' 
         ' 植物线粒体基因组ToolStripMenuItem
         ' 
         植物线粒体基因组ToolStripMenuItem.Name = "植物线粒体基因组ToolStripMenuItem"
-        植物线粒体基因组ToolStripMenuItem.Size = New Size(172, 22)
+        植物线粒体基因组ToolStripMenuItem.Size = New Size(180, 22)
         植物线粒体基因组ToolStripMenuItem.Text = "植物线粒体基因组"
         ' 
         ' 哺乳动物线粒体基因组ToolStripMenuItem1
         ' 
         哺乳动物线粒体基因组ToolStripMenuItem1.Name = "哺乳动物线粒体基因组ToolStripMenuItem1"
-        哺乳动物线粒体基因组ToolStripMenuItem1.Size = New Size(172, 22)
+        哺乳动物线粒体基因组ToolStripMenuItem1.Size = New Size(180, 22)
         哺乳动物线粒体基因组ToolStripMenuItem1.Text = "动物线粒体基因组"
         ' 
         ' ToolStripSeparator13
         ' 
         ToolStripSeparator13.Name = "ToolStripSeparator13"
-        ToolStripSeparator13.Size = New Size(169, 6)
+        ToolStripSeparator13.Size = New Size(177, 6)
         ' 
         ' 获取单拷贝基因ToolStripMenuItem
         ' 
         获取单拷贝基因ToolStripMenuItem.Name = "获取单拷贝基因ToolStripMenuItem"
-        获取单拷贝基因ToolStripMenuItem.Size = New Size(172, 22)
+        获取单拷贝基因ToolStripMenuItem.Size = New Size(180, 22)
         获取单拷贝基因ToolStripMenuItem.Text = "获取单拷贝基因"
         ' 
         ' 长读条码ToolStripMenuItem
@@ -419,7 +427,7 @@ Partial Class Main_Form
         ' 
         ' 批量ToolStripMenuItem1
         ' 
-        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem1, ToolStripMenuItem4, 过滤拼接ToolStripMenuItem, ToolStripSeparator16, 对齐参考ToolStripMenuItem1, 合并比对ToolStripMenuItem, 构建系统发育树ToolStripMenuItem, ToolStripSeparator8, 旁系同源检测ToolStripMenuItem, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
+        批量ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {过滤ToolStripMenuItem1, ToolStripMenuItem4, 过滤拼接ToolStripMenuItem, ToolStripSeparator16, 对齐参考ToolStripMenuItem1, 合并比对ToolStripMenuItem, 构建系统发育树ToolStripMenuItem, ToolStripSeparator8, 获取最佳参考序列ToolStripMenuItem1, 旁系同源检测ToolStripMenuItem, 重构序列ToolStripMenuItem, PPDToolStripMenuItem, ToolStripSeparator7, ToolStripMenuItem2, ToolStripMenuItem3, 哺乳动物线粒体基因组ToolStripMenuItem2, ToolStripSeparator10, 统计结果ToolStripMenuItem})
         批量ToolStripMenuItem1.Name = "批量ToolStripMenuItem1"
         批量ToolStripMenuItem1.Size = New Size(44, 21)
         批量ToolStripMenuItem1.Text = "批量"
@@ -427,99 +435,105 @@ Partial Class Main_Form
         ' 过滤ToolStripMenuItem1
         ' 
         过滤ToolStripMenuItem1.Name = "过滤ToolStripMenuItem1"
-        过滤ToolStripMenuItem1.Size = New Size(179, 22)
+        过滤ToolStripMenuItem1.Size = New Size(180, 22)
         过滤ToolStripMenuItem1.Text = "批量过滤"
         ' 
         ' ToolStripMenuItem4
         ' 
         ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        ToolStripMenuItem4.Size = New Size(179, 22)
+        ToolStripMenuItem4.Size = New Size(180, 22)
         ToolStripMenuItem4.Text = "重新拼接"
         ' 
         ' 过滤拼接ToolStripMenuItem
         ' 
         过滤拼接ToolStripMenuItem.Name = "过滤拼接ToolStripMenuItem"
-        过滤拼接ToolStripMenuItem.Size = New Size(179, 22)
+        过滤拼接ToolStripMenuItem.Size = New Size(180, 22)
         过滤拼接ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' ToolStripSeparator16
         ' 
         ToolStripSeparator16.Name = "ToolStripSeparator16"
-        ToolStripSeparator16.Size = New Size(176, 6)
+        ToolStripSeparator16.Size = New Size(177, 6)
         ' 
         ' 对齐参考ToolStripMenuItem1
         ' 
         对齐参考ToolStripMenuItem1.Name = "对齐参考ToolStripMenuItem1"
-        对齐参考ToolStripMenuItem1.Size = New Size(179, 22)
+        对齐参考ToolStripMenuItem1.Size = New Size(180, 22)
         对齐参考ToolStripMenuItem1.Text = "基于参考切齐"
         ' 
         ' 合并比对ToolStripMenuItem
         ' 
         合并比对ToolStripMenuItem.Name = "合并比对ToolStripMenuItem"
-        合并比对ToolStripMenuItem.Size = New Size(179, 22)
+        合并比对ToolStripMenuItem.Size = New Size(180, 22)
         合并比对ToolStripMenuItem.Text = "合并结果"
         ' 
         ' 构建系统发育树ToolStripMenuItem
         ' 
         构建系统发育树ToolStripMenuItem.Name = "构建系统发育树ToolStripMenuItem"
-        构建系统发育树ToolStripMenuItem.Size = New Size(179, 22)
+        构建系统发育树ToolStripMenuItem.Size = New Size(180, 22)
         构建系统发育树ToolStripMenuItem.Text = "构建系统发育树"
         ' 
         ' ToolStripSeparator8
         ' 
         ToolStripSeparator8.Name = "ToolStripSeparator8"
-        ToolStripSeparator8.Size = New Size(176, 6)
+        ToolStripSeparator8.Size = New Size(177, 6)
+        ' 
+        ' 获取最佳参考序列ToolStripMenuItem1
+        ' 
+        获取最佳参考序列ToolStripMenuItem1.Name = "获取最佳参考序列ToolStripMenuItem1"
+        获取最佳参考序列ToolStripMenuItem1.Size = New Size(180, 22)
+        获取最佳参考序列ToolStripMenuItem1.Text = "获取最佳参考序列"
         ' 
         ' 旁系同源检测ToolStripMenuItem
         ' 
         旁系同源检测ToolStripMenuItem.Name = "旁系同源检测ToolStripMenuItem"
-        旁系同源检测ToolStripMenuItem.Size = New Size(179, 22)
+        旁系同源检测ToolStripMenuItem.Size = New Size(180, 22)
         旁系同源检测ToolStripMenuItem.Text = "多拷贝检测"
         ' 
         ' 重构序列ToolStripMenuItem
         ' 
         重构序列ToolStripMenuItem.Name = "重构序列ToolStripMenuItem"
-        重构序列ToolStripMenuItem.Size = New Size(179, 22)
+        重构序列ToolStripMenuItem.Size = New Size(180, 22)
         重构序列ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' PPDToolStripMenuItem
         ' 
         PPDToolStripMenuItem.Name = "PPDToolStripMenuItem"
-        PPDToolStripMenuItem.Size = New Size(179, 22)
+        PPDToolStripMenuItem.Size = New Size(180, 22)
         PPDToolStripMenuItem.Text = "旁系同源检测(PPD)"
         ' 
         ' ToolStripSeparator7
         ' 
         ToolStripSeparator7.Name = "ToolStripSeparator7"
-        ToolStripSeparator7.Size = New Size(176, 6)
+        ToolStripSeparator7.Size = New Size(177, 6)
         ' 
         ' ToolStripMenuItem2
         ' 
         ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        ToolStripMenuItem2.Size = New Size(179, 22)
+        ToolStripMenuItem2.Size = New Size(180, 22)
         ToolStripMenuItem2.Text = "植物叶绿体基因组"
         ' 
         ' ToolStripMenuItem3
         ' 
         ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        ToolStripMenuItem3.Size = New Size(179, 22)
+        ToolStripMenuItem3.Size = New Size(180, 22)
         ToolStripMenuItem3.Text = "植物线粒体基因组"
         ' 
         ' 哺乳动物线粒体基因组ToolStripMenuItem2
         ' 
         哺乳动物线粒体基因组ToolStripMenuItem2.Name = "哺乳动物线粒体基因组ToolStripMenuItem2"
-        哺乳动物线粒体基因组ToolStripMenuItem2.Size = New Size(179, 22)
+        哺乳动物线粒体基因组ToolStripMenuItem2.Size = New Size(180, 22)
         哺乳动物线粒体基因组ToolStripMenuItem2.Text = "动物线粒体基因组"
         ' 
         ' ToolStripSeparator10
         ' 
         ToolStripSeparator10.Name = "ToolStripSeparator10"
-        ToolStripSeparator10.Size = New Size(176, 6)
+        ToolStripSeparator10.Size = New Size(177, 6)
         ' 
         ' 统计结果ToolStripMenuItem
         ' 
         统计结果ToolStripMenuItem.Name = "统计结果ToolStripMenuItem"
-        统计结果ToolStripMenuItem.Size = New Size(179, 22)
+        统计结果ToolStripMenuItem.Size = New Size(180, 22)
         统计结果ToolStripMenuItem.Text = "统计汇总结果"
         ' 
         ' 三方工具ToolStripMenuItem
@@ -1007,4 +1021,6 @@ Partial Class Main_Form
     Friend WithEvents 过滤ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents 载入项目文件ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 保存项目文件ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 获取最佳参考序列ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents 获取最佳参考序列ToolStripMenuItem1 As ToolStripMenuItem
 End Class

@@ -13,7 +13,7 @@ GeneMiner2是一款为系统发育基因组学设计的全功能工具包，软�
 GeneMiner2基于我们之前开发的GeneMiner和Easy353软件，并整合了Blast、Minimap2、Fasttree、Muscle5、Mafft、Astral、PDD、PGA、NOVOPlasty、OrthoFinder等优秀工具，请在使用对应功能时引用软件提示的文献。
 
 GeneMiner2的工作尚未正式发表，目前请引用我们关于GeneMiner的论文：
-- Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. DOI: 10.1111/1755-0998.13924
+- Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. [DOI: 10.1111/1755-0998.13924] (https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13924)
 
 如果挖掘被子植物353基因，请引用我们关于Easy353的论文：
 - Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.

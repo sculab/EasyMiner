@@ -25,7 +25,7 @@ def filter_files(args, key, ref_reads_count_dict, ref_length_dict, ref_path_dict
                 # 安全的文件替代
                 # Write_Log(os.path.join(args.o, 'log.csv'), 'filter', key, ref_reads_count_dict[key], ref_length_dict[key], round(ref_reads_count_dict[key]/ref_length_dict[key]*reads_length, 2), args.kf + add_k)
                 # k大于64或者达成任意条件
-                if ref_reads_count_dict[key]/ref_length_dict[key]*reads_length < args.max_depth or os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 < args.max_size or args.kf + add_k > 64:
+                if (ref_reads_count_dict[key]/ref_length_dict[key]*reads_length < args.max_depth and os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= 4) or os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 < args.max_size or args.kf + add_k > 64:
                     if os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= args.max_size:
                         # 超大的文件直接按比例缩小，缩小比率为文件大小（M）除以args.max_size
                         get_mark = int((os.path.getsize(large_files_path)  >> 20) / args.max_size) + 1
@@ -77,7 +77,7 @@ if __name__ == '__main__':
                             reads_length = len(fq_reader.readline().strip())
                     except:
                         pass
-                if ((ref_reads_count_dict.get(key, 0)/ref_length_dict[key] * reads_length > args.max_depth * 2) and os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= 4) or os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= args.max_size:
+                if ((ref_reads_count_dict.get(key, 0)/ref_length_dict[key] * reads_length > args.max_depth) and os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= 4) or os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20 >= args.max_size:
                     Write_Print(os.path.join(args.o,  "log.txt"), "gene:" ,key, "depth:" ,ref_reads_count_dict.get(key, 0)/ref_length_dict[key] * reads_length, "size:", os.path.getsize(os.path.join(args.o, "filtered", key + ".fq" )) >> 20)
                     shutil.move(os.path.join(args.o, "filtered",  key + ".fq" ), os.path.join(args.o, 'large_files', key + ".fq" )) 
         results = []                     

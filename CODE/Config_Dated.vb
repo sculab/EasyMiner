@@ -1900,7 +1900,7 @@ Public Class Config_Dated
                 temp_tree += my_char
                 If my_char = ")" Then
                     temp_node_id += 1
-                    Dim temp_date As String = time_view.Item(temp_node_id).Item(2).ToString.Replace("(", "$%*($%*").Replace(")", "$%*)$%*")
+                    Dim temp_date As String = time_view.Item(temp_node_id).Item(2).ToString.Replace("(", "$%*($%*").Replace(")", "$%*)$%*").Replace(",", "$%*,$%*")
                     If temp_date.Contains(",") Then
                         temp_tree += "'" + temp_date + "'"
                         fossil_count += 1

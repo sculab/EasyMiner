@@ -45,6 +45,9 @@ Module Module_Language
         form_main.ToolStripMenuItem2.Text = "Plant Chloroplast Genome"
         form_main.ToolStripMenuItem3.Text = "Plant Mitochondrial Genome"
         form_main.哺乳动物线粒体基因组ToolStripMenuItem2.Text = "Animal Mitochondrial Genome"
+        form_main.获取最佳参考序列ToolStripMenuItem.Text = "Get Best Reference"
+        form_main.获取最佳参考序列ToolStripMenuItem1.Text = "Get Best Reference"
+
         form_main.构建系统发育树ToolStripMenuItem.Text = "Build Phylogenetic Tree"
         form_main.参考序列建树ToolStripMenuItem.Text = "Build Tree with Reference"
         form_main.统计结果ToolStripMenuItem.Text = "Summary Statistics"
@@ -137,6 +140,7 @@ Module Module_Language
         form_config_mcmc.Label11.Text = "Sample Frequence"
         form_config_mcmc.Label12.Text = "Number of Sample"
         form_config_mcmc.CheckBox1.Text = "Delete Temporary Files"
+        form_config_mcmc.CheckBox2.Text = "Repeat Analysis"
         form_config_mcmc.Label13.Text = "Alpha"
 
         form_config_barcode.Text = "Barcode"
@@ -154,6 +158,8 @@ Module Module_Language
 
         form_config_trim.Text = "Trimming Results"
         form_config_trim.Label1.Text = "Retention Length Threshold (%)"
+        form_config_trim.Label2.Text = "Source Sequence"
+        form_config_trim.Label3.Text = "Trim Method"
         form_config_trim.Button2.Text = "Cancel"
         form_config_trim.Button1.Text = "OK"
 
@@ -248,6 +254,8 @@ Module Module_Language
         form_main.植物叶绿体基因组ToolStripMenuItem.Text = "植物叶绿体基因组"
         form_main.植物线粒体基因组ToolStripMenuItem.Text = "植物线粒体基因组"
         form_main.哺乳动物线粒体基因组ToolStripMenuItem1.Text = "动物线粒体基因组"
+        form_main.获取最佳参考序列ToolStripMenuItem.Text = "获取最佳参考序列"
+        form_main.获取最佳参考序列ToolStripMenuItem1.Text = "获取最佳参考序列"
         form_main.长读条码ToolStripMenuItem.Text = "长读分析"
         form_main.分离序列ToolStripMenuItem.Text = "分离条码"
         form_main.合并结果ToolStripMenuItem1.Text = "合并结果"
@@ -342,6 +350,7 @@ Module Module_Language
         form_config_mcmc.Label12.Text = "抽样次数"
         form_config_mcmc.Label13.Text = "位点变异模式"
         form_config_mcmc.CheckBox1.Text = "删除临时文件"
+        form_config_mcmc.CheckBox2.Text = "二次验证"
 
         form_main.序列比对ToolStripMenuItem1.Text = "结果加入参考"
         form_main.切齐ToolStripMenuItem.Text = "切齐"

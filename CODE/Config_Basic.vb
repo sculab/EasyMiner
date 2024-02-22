@@ -9,7 +9,6 @@
         NumericUpDown3.Enabled = CheckBox3.Checked Xor False
     End Sub
 
-    ' 假设这是你要执行的操作
     Public Event ConfirmClicked()
     Public Event CancelClicked()
 

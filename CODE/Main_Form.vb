@@ -126,12 +126,12 @@ Public Class Main_Form
             process_filter.WaitForExit()
             process_filter.Close()
         Else
-            If form_config_basic.CheckBox3.Checked And refs_type = "353" Then
-                Dim result As DialogResult = MessageBox.Show("Should all reads be used?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                If result = DialogResult.Yes Then
-                    form_config_basic.CheckBox3.Checked = False
-                End If
-            End If
+            'If form_config_basic.CheckBox3.Checked And refs_type = "353" Then
+            '    Dim result As DialogResult = MessageBox.Show("Should all reads be used?", "Confirm Operation", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            '    If result = DialogResult.Yes Then
+            '        form_config_basic.CheckBox3.Checked = False
+            '    End If
+            'End If
             SI_filter.FileName = currentDirectory + "analysis\main_filter.exe"
             SI_filter.WorkingDirectory = currentDirectory + "temp\"
             SI_filter.CreateNoWindow = (options(9) = 1)
@@ -337,6 +337,8 @@ Public Class Main_Form
         AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
         AddHandler form_config_combine.ConfirmClicked, AddressOf Combine_ConfirmClickedHandler
         AddHandler form_config_combine.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_consensus.ConfirmClicked, AddressOf Consensus_ConfirmClickedHandler
+        AddHandler form_config_consensus.CancelClicked, AddressOf SubCancel
         init_output_folder = True
     End Sub
 
@@ -424,17 +426,7 @@ Public Class Main_Form
                 ProgressBar1.Value = PB_value
                 If init_output_folder Then
                     Timer1.Enabled = False
-                    If TargetOS = "win64" Then
-                        Dim my_message As String = "Current output directory:" + vbCrLf + TextBox1.Text + vbCrLf + "Change required?"
-                        If language = "CH" Then
-                            my_message = "当前输出目录为:" + vbCrLf + TextBox1.Text + vbCrLf + "是否需要变更?"
-                        End If
-                        Dim result As DialogResult = MessageBox.Show(my_message, "Setting", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                        ' 根据用户的选择执行相应的操作
-                        If result = DialogResult.Yes Then
-                            Button1_Click(sender, e)
-                        End If
-                    Else
+                    If TargetOS = "macos" Then
                         MsgBox("Output directory: GeneMiner folder on desktop.", MsgBoxStyle.Information, "Infomation")
                         form_config_basic.CheckBox4.Checked = True
                     End If
@@ -759,7 +751,7 @@ Public Class Main_Form
     End Sub
     Private Sub 测序文件ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 测序文件ToolStripMenuItem.Click
         Dim opendialog As New OpenFileDialog With {
-            .Filter = "FastQ File(*.fq;*.fq.gz)|*.fq;*.fastq;*.FQ;*.fq.gz;*.gz",
+            .Filter = "FastQ File(*.fq;*.fq.gz)|*.fq;*.fastq;*.FQ;*.fq.gz;*.gz|Fasta File(*.fasta)|*.fas;*.fasta;*.fa",
             .FileName = "",
             .Multiselect = True,
             .DefaultExt = ".fq",
@@ -1934,94 +1926,94 @@ Public Class Main_Form
 
                                                                  'If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
                                                                  Dim sw_res As New StreamWriter(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", False, utf8WithoutBom)
-                                                                     For batch_i As Integer = 1 To seqsView.Count
-                                                                         If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                             Interlocked.Add(count, 1)
-                                                                             PB_value = count / refsView.Count / seqsView.Count * 100
-                                                                             Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
-                                                                             folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                                                                             Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                                                                             Dim result_path As String = Path.Combine(temp_out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                             Dim trimed_path As String = Path.Combine(temp_out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                             Dim sr_line As String = ""
-                                                                             If File.Exists(result_path) Then
-                                                                                 Dim sr_res As New StreamReader(result_path)
-                                                                                 sr_line = sr_res.ReadLine
-                                                                                 sr_line = sr_res.ReadLine
-                                                                                 If sr_line IsNot Nothing Then
-                                                                                     If sr_line <> "" Then
-                                                                                         sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name)
-                                                                                         sw_res.WriteLine(sr_line)
-                                                                                         result_length_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += sr_line.Length
-                                                                                         result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += 1
-                                                                                     End If
+                                                                 For batch_i As Integer = 1 To seqsView.Count
+                                                                     If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                         Interlocked.Add(count, 1)
+                                                                         PB_value = count / refsView.Count / seqsView.Count * 100
+                                                                         Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                                                                         folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                                                                         Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                                                                         Dim result_path As String = Path.Combine(temp_out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                         Dim trimed_path As String = Path.Combine(temp_out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                         Dim sr_line As String = ""
+                                                                         If File.Exists(result_path) Then
+                                                                             Dim sr_res As New StreamReader(result_path)
+                                                                             sr_line = sr_res.ReadLine
+                                                                             sr_line = sr_res.ReadLine
+                                                                             If sr_line IsNot Nothing Then
+                                                                                 If sr_line <> "" Then
+                                                                                     sw_res.WriteLine(">" + batch_i.ToString + "_" + folder_name)
+                                                                                     sw_res.WriteLine(sr_line)
+                                                                                     result_length_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += sr_line.Length
+                                                                                     result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) += 1
                                                                                  End If
-                                                                                 sr_res.Close()
                                                                              End If
+                                                                             sr_res.Close()
                                                                          End If
-                                                                     Next
-                                                                     sw_res.Close()
-                                                                     If result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = 0 Then
-                                                                         safe_delete(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                      End If
-                                                                     If do_align Then
-                                                                         If form_config_combine.ComboBox1.Text = "muscle" Then
-                                                                             do_muscle_align(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                         Else
-                                                                             do_mafft_align(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                         End If
-                                                                         Dim passed As Boolean = True
-                                                                         If File.Exists(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta") Then
-                                                                             Dim distanceMatrix As Double(,) = CalculateMaxDifference(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                             max_distance(i - 1) = distanceMatrix(0, 0)
-                                                                             If form_config_combine.CheckBox3.Checked Then
-                                                                                 Dim mysubset As List(Of Integer) = FindMaxSubset(distanceMatrix, CDbl(form_config_combine.TextBox2.Text))
+                                                                 Next
+                                                                 sw_res.Close()
+                                                                 If result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = 0 Then
+                                                                     safe_delete(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                 End If
+                                                                 If do_align Then
+                                                                     If form_config_combine.ComboBox1.Text = "muscle" Then
+                                                                         do_muscle_align(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                     Else
+                                                                         do_mafft_align(combine_res_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta", combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                     End If
+                                                                     Dim passed As Boolean = True
+                                                                     If File.Exists(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta") Then
+                                                                         Dim distanceMatrix As Double(,) = CalculateMaxDifference(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                         max_distance(i - 1) = distanceMatrix(0, 0)
+                                                                         If form_config_combine.CheckBox3.Checked Then
+                                                                             Dim mysubset As List(Of Integer) = FindMaxSubset(distanceMatrix, CDbl(form_config_combine.TextBox2.Text))
 
-                                                                                 If mysubset.Count >= form_config_combine.NumericUpDown1.Value Then
-                                                                                     Dim temp_count As Integer = FilterAndSaveFile(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta", mysubset)
-                                                                                     result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = temp_count
-                                                                                     If result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = 0 Then
-                                                                                         passed = False
-                                                                                     Else
-                                                                                         max_distance(i - 1) = 0
-                                                                                         For m As Integer = 1 To mysubset.Count
-                                                                                             For n As Integer = m + 1 To mysubset.Count
-                                                                                                 If max_distance(i - 1) < distanceMatrix(mysubset(m - 1), mysubset(n - 1)) Then
-                                                                                                     max_distance(i - 1) = distanceMatrix(mysubset(m - 1), mysubset(n - 1))
-                                                                                                 End If
-                                                                                             Next
-                                                                                         Next
-                                                                                     End If
-                                                                                 Else
-                                                                                     result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = mysubset.Count
+                                                                             If mysubset.Count >= form_config_combine.NumericUpDown1.Value Then
+                                                                                 Dim temp_count As Integer = FilterAndSaveFile(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta", mysubset)
+                                                                                 result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = temp_count
+                                                                                 If result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = 0 Then
                                                                                      passed = False
+                                                                                 Else
+                                                                                     max_distance(i - 1) = 0
+                                                                                     For m As Integer = 1 To mysubset.Count
+                                                                                         For n As Integer = m + 1 To mysubset.Count
+                                                                                             If max_distance(i - 1) < distanceMatrix(mysubset(m - 1), mysubset(n - 1)) Then
+                                                                                                 max_distance(i - 1) = distanceMatrix(mysubset(m - 1), mysubset(n - 1))
+                                                                                             End If
+                                                                                         Next
+                                                                                     Next
                                                                                  End If
+                                                                             Else
+                                                                                 result_count_dict(refsView.Item(i - 1).Item(1).ToString.ToLower) = mysubset.Count
+                                                                                 passed = False
                                                                              End If
-                                                                         Else
-                                                                             passed = False
                                                                          End If
-                                                                         passed_genes(i - 1) = passed
-                                                                         If passed Then
-                                                                             Dim SI_trimed As New ProcessStartInfo With {
-                                                                                 .FileName = currentDirectory + "analysis\trimal.exe",
-                                                                                 .WorkingDirectory = currentDirectory + "analysis\",
-                                                                                 .CreateNoWindow = True,
-                                                                                 .Arguments = "-in " + """" + combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
-                                                                             }
-                                                                             SI_trimed.Arguments += " -out " + """" + combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
-                                                                             SI_trimed.Arguments += " -automated1"
-                                                                             Dim process_trimed As Process = Process.Start(SI_trimed)
-                                                                             process_trimed.WaitForExit()
-                                                                             process_trimed.Close()
-                                                                             If form_config_combine.CheckBox1.Checked Then
-                                                                                 replace_gap2missing(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                                 replace_gap2missing(combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                             End If
-                                                                         Else
-                                                                             safe_delete(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
-                                                                         End If
-
+                                                                     Else
+                                                                         passed = False
                                                                      End If
+                                                                     passed_genes(i - 1) = passed
+                                                                     If passed Then
+                                                                         Dim SI_trimed As New ProcessStartInfo With {
+                                                                             .FileName = currentDirectory + "analysis\trimal.exe",
+                                                                             .WorkingDirectory = currentDirectory + "analysis\",
+                                                                             .CreateNoWindow = True,
+                                                                             .Arguments = "-in " + """" + combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
+                                                                         }
+                                                                         SI_trimed.Arguments += " -out " + """" + combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta" + """"
+                                                                         SI_trimed.Arguments += " -automated1"
+                                                                         Dim process_trimed As Process = Process.Start(SI_trimed)
+                                                                         process_trimed.WaitForExit()
+                                                                         process_trimed.Close()
+                                                                         If form_config_combine.CheckBox1.Checked Then
+                                                                             replace_gap2missing(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                             replace_gap2missing(combine_trimed_dir + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                         End If
+                                                                     Else
+                                                                         safe_delete(combine_res_dir + "\aligned\" + refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                     End If
+
+                                                                 End If
                                                                  'End If
 
                                                              End Sub)
@@ -2185,34 +2177,6 @@ Public Class Main_Form
 
     Private Sub NumericUpDown10_TextChanged(sender As Object, e As EventArgs) Handles NumericUpDown10.TextChanged
         current_thread = NumericUpDown10.Value
-    End Sub
-
-    Private Sub DebugToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DebugToolStripMenuItem.Click
-        Dim matrix3 As Double(,) = {{0, 1, 1}, {1, 0, 1}, {1, 1, 0}}
-        Dim v3 As Double = 1
-        FindMaxSubset(matrix3, v3)
-        'Dim rowIndex As Integer = -1
-
-        '' 首先检查是否有选中的单元格
-        'If Not IsNothing(DataGridView1.CurrentCell) Then
-        '    rowIndex = DataGridView1.CurrentCell.RowIndex
-        '    ' 如果没有选中的单元格，检查是否有选中的行
-        'ElseIf DataGridView1.SelectedRows.Count > 0 Then
-        '    rowIndex = DataGridView1.SelectedRows(0).Index
-        'End If
-
-        'If rowIndex >= 0 Then
-        '    MessageBox.Show("Selected row index: " & rowIndex.ToString())
-        'Else
-        '    MessageBox.Show("No cell or row selected")
-        'End If
-
-    End Sub
-
-
-
-    Private Sub 叶绿体基因组ToolStripMenuItem_Click(sender As Object, e As EventArgs)
-
     End Sub
 
     Private Sub 手动提取ToolStripMenuItem_Click(sender As Object, e As EventArgs)
@@ -2412,22 +2376,17 @@ Public Class Main_Form
             DataGridView2.EndEdit()
             DataGridView1.Refresh()
             DataGridView2.Refresh()
-            out_dir = TextBox1.Text
-            timer_id = 4
-            PB_value = 0
-            Dim my_input As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
-            Dim con_level As Single
-            If Not Single.TryParse(my_input, con_level) Then
-                Exit Sub
-            End If
-            Dim th1 As New Thread(AddressOf do_consensus)
-            th1.Start(con_level)
+            MenuClicked = "consensus"
+            form_config_consensus.Show()
+
         Else
             MsgBox("Please select an output folder!", MsgBoxStyle.Information, "Infomation")
         End If
     End Sub
-    Public Sub do_consensus(ByVal con_level As Single)
-        If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, "results")) Then
+    Public Sub do_consensus(ByVal options() As Single)
+        Dim source_folder As String = options(1)
+
+        If My.Computer.FileSystem.DirectoryExists(Path.Combine(out_dir, source_folder)) Then
             Dim consensus_dir As String = Path.Combine(out_dir, "consensus")
             Directory.CreateDirectory(consensus_dir)
             Dim count As Integer = 0
@@ -2442,7 +2401,7 @@ Public Class Main_Form
                                                                      Interlocked.Add(count, 1)
                                                                      PB_value = count / refsView.Count * 100
                                                                      If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                         Dim in_path_fasta As String = Path.Combine(out_dir, "results", refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                         Dim in_path_fasta As String = Path.Combine(out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                          Dim in_path_fq As String = Path.Combine(out_dir, "filtered", refsView.Item(i - 1).Item(1).ToString + ".fq")
                                                                          Dim out_path As String = consensus_dir
                                                                          Dim out_path_file As String = Path.Combine(consensus_dir, refsView.Item(i - 1).Item(1).ToString + ".sam")
@@ -2469,7 +2428,7 @@ Public Class Main_Form
                                                                                          .FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe"),
                                                                                          .WorkingDirectory = out_path,
                                                                                          .CreateNoWindow = True,
-                                                                                         .Arguments = "-i " + """" + refsView.Item(i - 1).Item(1).ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
+                                                                                         .Arguments = "-i " + """" + refsView.Item(i - 1).Item(1).ToString + ".sam" + """" + " -c " + options(0) + " -o " + """" + out_path + """" + " -s 0"
                                                                                      }
                                                                                      Dim process_consensus As Process = Process.Start(SI_consensus)
                                                                                      process_consensus.WaitForExit()
@@ -2494,22 +2453,23 @@ Public Class Main_Form
     End Sub
 
     Private Sub 重构序列ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 重构序列ToolStripMenuItem.Click
-        DataGridView1.EndEdit()
-        DataGridView2.EndEdit()
-        DataGridView1.Refresh()
-        DataGridView2.Refresh()
-        timer_id = 4
-        PB_value = 0
-        Dim my_input As String = InputBox("Input threshold value: 0.01-0.99. Increasing the threshold value results in a greater number of ambiguities.", "Input", 0.75)
-        Dim con_level As Single
-        If Not Single.TryParse(my_input, con_level) Then
-            Exit Sub
+        If TextBox1.Text <> "" Then
+            DataGridView1.EndEdit()
+            DataGridView2.EndEdit()
+            DataGridView1.Refresh()
+            DataGridView2.Refresh()
+            MenuClicked = "batch_consensus"
+            form_config_consensus.Show()
+
+        Else
+            MsgBox("Please select an output folder!", MsgBoxStyle.Information, "Infomation")
         End If
-        Dim th1 As New Thread(AddressOf batch_consensus)
-        th1.Start(con_level)
+
+
     End Sub
 
-    Public Sub batch_consensus(ByVal con_level As Single)
+    Public Sub batch_consensus(ByVal options() As String)
+        Dim source_folder As String = options(1)
         For batch_i As Integer = 1 To seqsView.Count
             PB_value = batch_i / seqsView.Count * 100
             If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
@@ -2527,7 +2487,7 @@ Public Class Main_Form
                 End If
                 Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
                                                                          If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                                                                             Dim in_path_fasta As String = Path.Combine(out_dir, "results", refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                                                                             Dim in_path_fasta As String = Path.Combine(out_dir, source_folder, refsView.Item(i - 1).Item(1).ToString + ".fasta")
                                                                              Dim in_path_fq As String = Path.Combine(out_dir, "filtered", refsView.Item(i - 1).Item(1).ToString + ".fq")
                                                                              Dim out_path As String = consensus_dir
                                                                              Dim out_path_file As String = Path.Combine(consensus_dir, refsView.Item(i - 1).Item(1).ToString + ".sam")
@@ -2558,7 +2518,7 @@ Public Class Main_Form
                                                                                              .FileName = Path.Combine(currentDirectory, "analysis", "build_consensus.exe"),
                                                                                              .WorkingDirectory = out_path,
                                                                                              .CreateNoWindow = True,
-                                                                                             .Arguments = "-i " + """" + refsView.Item(i - 1).Item(1).ToString + ".sam" + """" + " -c " + con_level.ToString + " -o " + """" + out_path + """" + " -s 0"
+                                                                                             .Arguments = "-i " + """" + refsView.Item(i - 1).Item(1).ToString + ".sam" + """" + " -c " + options(0) + " -o " + """" + out_path + """" + " -s 0"
                                                                                          }
                                                                                          Dim process_consensus As Process = Process.Start(SI_consensus)
                                                                                          process_consensus.WaitForExit()
@@ -2576,90 +2536,92 @@ Public Class Main_Form
             End If
         Next
 
-
-        Dim supercontigs_dir As String = TextBox1.Text + "\supercontigs\"
-        Directory.CreateDirectory(supercontigs_dir)
-        Dim sw_namelist As New StreamWriter(Path.Combine(TextBox1.Text, "namelist.txt"), False, utf8WithoutBom)
-        For batch_i As Integer = 1 To seqsView.Count
-            PB_value = batch_i / seqsView.Count * 100
-            If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
-                Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                Dim sw_res As New StreamWriter(Path.Combine(supercontigs_dir, folder_name + ".degenerated.fasta"), False, utf8WithoutBom)
-                sw_namelist.WriteLine(folder_name)
-                For i As Integer = 1 To refsView.Count
-                    If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                        Dim consensus_path As String = temp_out_dir + "\consensus\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
-                        Dim sr_line As String = ""
-                        If File.Exists(consensus_path) Then
-                            Dim sr_res As New StreamReader(consensus_path)
-                            sr_line = sr_res.ReadLine
-                            sr_line = sr_res.ReadLine
-                            If sr_line IsNot Nothing Then
-                                If sr_line <> "" Then
-                                    sw_res.WriteLine(">" + batch_i.ToString + " " + folder_name + "-" + refsView.Item(i - 1).Item(1).ToString)
-                                    sw_res.WriteLine(sr_line)
+        If options(2) = "1" Then
+            Dim supercontigs_dir As String = TextBox1.Text + "\supercontigs\"
+            Directory.CreateDirectory(supercontigs_dir)
+            Dim sw_namelist As New StreamWriter(Path.Combine(TextBox1.Text, "namelist.txt"), False, utf8WithoutBom)
+            For batch_i As Integer = 1 To seqsView.Count
+                PB_value = batch_i / seqsView.Count * 100
+                If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                    Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                    Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                    folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                    Dim sw_res As New StreamWriter(Path.Combine(supercontigs_dir, folder_name + ".degenerated.fasta"), False, utf8WithoutBom)
+                    sw_namelist.WriteLine(folder_name)
+                    For i As Integer = 1 To refsView.Count
+                        If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                            Dim consensus_path As String = temp_out_dir + "\consensus\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
+                            Dim sr_line As String = ""
+                            If File.Exists(consensus_path) Then
+                                Dim sr_res As New StreamReader(consensus_path)
+                                sr_line = sr_res.ReadLine
+                                sr_line = sr_res.ReadLine
+                                If sr_line IsNot Nothing Then
+                                    If sr_line <> "" Then
+                                        sw_res.WriteLine(">" + batch_i.ToString + " " + folder_name + "-" + refsView.Item(i - 1).Item(1).ToString)
+                                        sw_res.WriteLine(sr_line)
+                                    End If
                                 End If
+                                sr_res.Close()
                             End If
-                            sr_res.Close()
                         End If
-                    End If
-                Next
+                    Next
+                    sw_res.Close()
+                End If
+            Next
+            sw_namelist.Close()
+
+            Dim combine_consensus_dir As String = TextBox1.Text + "\consensus\"
+            Directory.CreateDirectory(combine_consensus_dir)
+            For i As Integer = 1 To refsView.Count
+                PB_value = i / refsView.Count * 100
+                Dim sw_res As New StreamWriter(Path.Combine(combine_consensus_dir, refsView.Item(i - 1).Item(1).ToString + ".fasta"), False, utf8WithoutBom)
+                If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                    For batch_i As Integer = 1 To seqsView.Count
+                        If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                            Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                            Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                            folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                            Dim consensus_path As String = temp_out_dir + "\consensus\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
+                            Dim sr_line As String = ""
+                            If File.Exists(consensus_path) Then
+                                Dim sr_res As New StreamReader(consensus_path)
+                                sr_line = sr_res.ReadLine
+                                sr_line = sr_res.ReadLine
+                                If sr_line IsNot Nothing Then
+                                    If sr_line <> "" Then
+                                        sw_res.WriteLine(">" + folder_name + "-" + refsView.Item(i - 1).Item(1).ToString)
+                                        sw_res.WriteLine(sr_line)
+                                    End If
+                                End If
+                                sr_res.Close()
+                            End If
+                        End If
+                    Next
+                End If
                 sw_res.Close()
-            End If
-        Next
-        sw_namelist.Close()
+            Next
 
-        Dim combine_consensus_dir As String = TextBox1.Text + "\consensus\"
-        Directory.CreateDirectory(combine_consensus_dir)
-        For i As Integer = 1 To refsView.Count
-            PB_value = i / refsView.Count * 100
-            Dim sw_res As New StreamWriter(Path.Combine(combine_consensus_dir, refsView.Item(i - 1).Item(1).ToString + ".fasta"), False, utf8WithoutBom)
-            If DataGridView1.Rows(i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                For batch_i As Integer = 1 To seqsView.Count
-                    If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
-                        Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
-                        Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
-                        folder_name = folder_name.Replace("-", "_").Replace(":", "_")
-                        Dim consensus_path As String = temp_out_dir + "\consensus\" + refsView.Item(i - 1).Item(1).ToString + ".fasta"
-                        Dim sr_line As String = ""
-                        If File.Exists(consensus_path) Then
-                            Dim sr_res As New StreamReader(consensus_path)
-                            sr_line = sr_res.ReadLine
-                            sr_line = sr_res.ReadLine
-                            If sr_line IsNot Nothing Then
-                                If sr_line <> "" Then
-                                    sw_res.WriteLine(">" + folder_name + "-" + refsView.Item(i - 1).Item(1).ToString)
-                                    sw_res.WriteLine(sr_line)
-                                End If
-                            End If
-                            sr_res.Close()
+            Dim sw_tg As New StreamWriter(Path.Combine(TextBox1.Text, "TargetSequences.fasta"), False, utf8WithoutBom)
+            For i As Integer = 1 To refsView.Count
+                Dim ref_file As String = Path.Combine(currentDirectory, "temp", "org_seq", refsView.Item(i - 1).Item(1).ToString + ".fasta")
+                Using sr As New StreamReader(ref_file)
+                    While Not sr.EndOfStream
+                        Dim line As String = sr.ReadLine()
+                        If line.StartsWith(">") Then
+                            line = line.Replace(refsView.Item(i - 1).Item(1).ToString, "").Replace("-", "_").Replace(" ", "_")
+                            Do While line.EndsWith("_")
+                                line = line.Substring(0, line.Length - 1)
+                            Loop
+                            line = line + "-" + refsView.Item(i - 1).Item(1).ToString
                         End If
-                    End If
-                Next
-            End If
-            sw_res.Close()
-        Next
+                        sw_tg.WriteLine(line)
+                    End While
+                End Using
+            Next
+            sw_tg.Close()
+        End If
 
-        Dim sw_tg As New StreamWriter(Path.Combine(TextBox1.Text, "TargetSequences.fasta"), False, utf8WithoutBom)
-        For i As Integer = 1 To refsView.Count
-            Dim ref_file As String = Path.Combine(currentDirectory, "temp", "org_seq", refsView.Item(i - 1).Item(1).ToString + ".fasta")
-            Using sr As New StreamReader(ref_file)
-                While Not sr.EndOfStream
-                    Dim line As String = sr.ReadLine()
-                    If line.StartsWith(">") Then
-                        line = line.Replace(refsView.Item(i - 1).Item(1).ToString, "").Replace("-", "_").Replace(" ", "_")
-                        Do While line.EndsWith("_")
-                            line = line.Substring(0, line.Length - 1)
-                        Loop
-                        line = line + "-" + refsView.Item(i - 1).Item(1).ToString
-                    End If
-                    sw_tg.WriteLine(line)
-                End While
-            End Using
-        Next
-        sw_tg.Close()
         PB_value = -1
         MsgBox("Analysis completed!", MsgBoxStyle.Information, "Infomation")
     End Sub
@@ -4140,6 +4102,41 @@ Public Class Main_Form
             Case Else
         End Select
     End Sub
+    Private Sub Consensus_ConfirmClickedHandler()
+        Select Case MenuClicked
+            Case "consensus"
+                out_dir = TextBox1.Text
+                timer_id = 4
+                PB_value = 0
+                Dim th1 As New Thread(AddressOf do_consensus)
+                Dim my_options(1) As String
+                If form_config_consensus.ComboBox1.SelectedIndex = 0 Then
+                    my_options(1) = "results"
+                Else
+                    my_options(1) = "best_refs"
+                End If
+                my_options(0) = form_config_consensus.NumericUpDown1.Value / 100
+                th1.Start(my_options)
+            Case "batch_consensus"
+                timer_id = 4
+                PB_value = 0
+                Dim th1 As New Thread(AddressOf batch_consensus)
+                Dim my_options(2) As String
+                If form_config_consensus.ComboBox1.SelectedIndex = 0 Then
+                    my_options(1) = "results"
+                    my_options(2) = "0"
+
+                Else
+                    my_options(1) = "best_refs"
+                    my_options(2) = "0"
+
+                End If
+
+                my_options(0) = form_config_consensus.NumericUpDown1.Value / 100
+                th1.Start(my_options)
+            Case Else
+        End Select
+    End Sub
     Private Sub Combine_ConfirmClickedHandler()
         Select Case MenuClicked
             Case "combine_trim"
@@ -4596,5 +4593,118 @@ Public Class Main_Form
                 MsgBox("Could not find Path.GetFileNameWithoutExtension(opendialog.FileName)" + "_files")
             End If
         End If
+    End Sub
+
+    Private Sub 获取最佳参考序列ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 获取最佳参考序列ToolStripMenuItem.Click
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
+        out_dir = TextBox1.Text
+        If Directory.Exists(Path.Combine(out_dir, "best_refs")) = False Then
+            Directory.CreateDirectory(Path.Combine(out_dir, "best_refs"))
+        End If
+        Dim th1 As New Thread(AddressOf make_best_ref)
+        th1.Start()
+    End Sub
+
+    Private Sub 获取最佳参考序列ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 获取最佳参考序列ToolStripMenuItem1.Click
+        DataGridView1.EndEdit()
+        DataGridView2.EndEdit()
+        DataGridView1.Refresh()
+        DataGridView2.Refresh()
+
+        timer_id = 4
+        PB_value = 0
+        Dim th1 As New Thread(AddressOf batch_make_best_ref)
+        th1.Start()
+    End Sub
+    Public Sub make_best_ref()
+        Dim count As Integer = 0
+        Dim parallelOptions As New ParallelOptions With {
+            .MaxDegreeOfParallelism = current_thread
+        }
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
+        Parallel.For(1, refsView.Count + 1, parallelOptions, Sub(i)
+                                                                 Interlocked.Add(count, 1)
+                                                                 PB_value = count / refsView.Count * 100
+                                                                 Dim in_path_fq As String = Path.Combine(out_dir, "filtered", refsView.Item(i - 1).Item(1).ToString + ".fq")
+                                                                 If File.Exists(in_path_fq) Then
+                                                                     Dim random_folder As String = Path.Combine(currentDirectory, "temp", GenerateRandomString(8))
+                                                                     Directory.CreateDirectory(random_folder)
+                                                                     SplitFastaFile(Path.Combine(currentDirectory, "temp", "org_seq", refsView.Item(i - 1).Item(1).ToString + ".fasta"), random_folder)
+                                                                     'options = (0:kf,1:kr,2:q1,3:q2,4:ref,5:out_dir,6:lkd,7:rl,8:refilter,9:no_window,10:thread,11,random_folder,ref_name )
+                                                                     Dim my_options() As String = {31, 31, in_path_fq, in_path_fq, random_folder, random_folder, "kmer_dict.dict", 0, "-1", "1", current_thread, random_folder, refsView.Item(i - 1).Item(1).ToString}
+                                                                     find_best_ref(my_options)
+                                                                 End If
+                                                             End Sub)
+        PB_value = 0
+    End Sub
+    Public Sub batch_make_best_ref()
+        Dim count As Integer = 0
+        Dim parallelOptions As New ParallelOptions With {
+            .MaxDegreeOfParallelism = current_thread
+        }
+        If TargetOS = "macos" Then
+            parallelOptions.MaxDegreeOfParallelism = 1
+        End If
+        Parallel.For(1, seqsView.Count + 1, parallelOptions, Sub(batch_i)
+                                                                 Try
+                                                                     If DataGridView2.Rows(batch_i - 1).Cells(0).FormattedValue.ToString = "True" Then
+                                                                         Dim folder_name As String = make_out_name(Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(2).Value.ToString), Path.GetFileNameWithoutExtension(DataGridView2.Rows(batch_i - 1).Cells(3).Value.ToString))
+                                                                         folder_name = folder_name.Replace("-", "_").Replace(":", "_")
+                                                                         Dim temp_out_dir = (TextBox1.Text + "\" + batch_i.ToString + "_" + folder_name).Replace("\", "/")
+                                                                         If Directory.Exists(Path.Combine(temp_out_dir, "best_refs")) = False Then
+                                                                             Directory.CreateDirectory(Path.Combine(temp_out_dir, "best_refs"))
+                                                                         End If
+                                                                         For i As Integer = 1 To refsView.Count
+                                                                             Interlocked.Add(count, 1)
+                                                                             PB_value = count / seqsView.Count / refsView.Count * 100
+                                                                             Dim in_path_fq As String = Path.Combine(temp_out_dir, "filtered", refsView.Item(i - 1).Item(1).ToString + ".fq")
+                                                                             If File.Exists(in_path_fq) Then
+                                                                                 Dim random_folder As String = Path.Combine(currentDirectory, "temp", GenerateRandomString(8))
+                                                                                 Directory.CreateDirectory(random_folder)
+                                                                                 SplitFastaFile(Path.Combine(currentDirectory, "temp", "org_seq", refsView.Item(i - 1).Item(1).ToString + ".fasta"), random_folder)
+                                                                                 'options = (0:kf,1:kr,2:q1,3:q2,4:ref,5:out_dir,6:lkd,7:rl,8:refilter,9:no_window,10:thread,11,random_folder,ref_name )
+                                                                                 Dim my_options() As String = {0, 0, in_path_fq, in_path_fq, random_folder, random_folder, "kmer_dict.dict", 0, "-1", "1", current_thread, random_folder, refsView.Item(i - 1).Item(1).ToString, temp_out_dir}
+                                                                                 find_best_ref(my_options)
+                                                                             End If
+                                                                         Next
+                                                                     End If
+                                                                 Catch ex As Exception
+                                                                 End Try
+                                                             End Sub)
+        PB_value = -1
+        MsgBox("Analysis completed! Please check muticopy foler in output.", MsgBoxStyle.Information, "Infomation")
+    End Sub
+
+    Public Sub find_best_ref(ByVal options() As String)
+        Dim SI_filter As New ProcessStartInfo()
+        Dim filePath As String = options(5) + "\ref_reads_count_dict.txt"
+        SI_filter.FileName = currentDirectory + "analysis\main_filter.exe"
+        SI_filter.WorkingDirectory = currentDirectory + "temp\"
+        SI_filter.CreateNoWindow = (options(9) = 1)
+        SI_filter.Arguments = "-r " + """" + options(4) + """"
+        SI_filter.Arguments += " -q1 " + """" + options(2) + """" + " -q2 " + """" + options(3) + """"
+        SI_filter.Arguments += " -o " + """" + options(5) + """"
+        SI_filter.Arguments += " -kf " + form_config_basic.NumericUpDown1.Value.ToString
+        SI_filter.Arguments += " -s " + form_config_basic.NumericUpDown2.Value.ToString
+        SI_filter.Arguments += " -gr " + form_config_basic.CheckBox2.Checked.ToString
+        SI_filter.Arguments += " -lkd " + options(6)
+        SI_filter.Arguments += " -m -1"
+        SI_filter.Arguments += " -m_reads 1000000000"
+        Dim process_filter As Process = Process.Start(SI_filter)
+        process_filter.WaitForExit()
+        process_filter.Close()
+        Dim best_ref As String = ""
+        If File.Exists(filePath) Then
+            best_ref = GetMaxValueRecord(filePath)
+        End If
+        If best_ref <> "" Then
+            safe_copy(Path.Combine(options(11), best_ref + ".fasta"), Path.Combine(options(13), "best_refs", options(12) + ".fasta"))
+        End If
+        DeleteDir(options(11))
     End Sub
 End Class

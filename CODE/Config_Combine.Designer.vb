@@ -96,19 +96,19 @@ Partial Class Config_Combine
         ' 
         ' NumericUpDown1
         ' 
-        NumericUpDown1.Location = New Point(148, 133)
+        NumericUpDown1.Location = New Point(160, 133)
         NumericUpDown1.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         NumericUpDown1.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         NumericUpDown1.Name = "NumericUpDown1"
-        NumericUpDown1.Size = New Size(77, 23)
+        NumericUpDown1.Size = New Size(65, 23)
         NumericUpDown1.TabIndex = 7
         NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         ' 
         ' TextBox2
         ' 
-        TextBox2.Location = New Point(148, 103)
+        TextBox2.Location = New Point(160, 103)
         TextBox2.Name = "TextBox2"
-        TextBox2.Size = New Size(77, 23)
+        TextBox2.Size = New Size(65, 23)
         TextBox2.TabIndex = 8
         TextBox2.Text = "0.1"
         ' 
@@ -151,9 +151,9 @@ Partial Class Config_Combine
         ComboBox1.DropDownStyle = ComboBoxStyle.DropDownList
         ComboBox1.FormattingEnabled = True
         ComboBox1.Items.AddRange(New Object() {"mafft", "muscle"})
-        ComboBox1.Location = New Point(148, 16)
+        ComboBox1.Location = New Point(160, 16)
         ComboBox1.Name = "ComboBox1"
-        ComboBox1.Size = New Size(77, 25)
+        ComboBox1.Size = New Size(65, 25)
         ComboBox1.TabIndex = 10
         ' 
         ' Label3

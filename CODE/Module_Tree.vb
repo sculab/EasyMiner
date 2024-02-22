@@ -20,12 +20,12 @@ Module Module_Tree
     Public Label_font As System.Drawing.Font
     Public ID_font As System.Drawing.Font
     Public ID_color As System.Drawing.Color = Color.DarkBlue
-    Public Display_node_frequency As Boolean = False
+    Public Display_node_frequency As Boolean = True
     Public Low_frequency As Single = 0.01
     Public Hide_pie As Single = 1
     Public Display_lines As Boolean = True
-    Public frequency_h As Integer = 10
-    Public frequency_v As Integer = 10
+    Public frequency_h As Integer = 4
+    Public frequency_v As Integer = 4
     Public Display_node_ID As Boolean = True
     Public node_h As Integer = -8
     Public node_v As Integer = -8

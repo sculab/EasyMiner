@@ -349,7 +349,59 @@ Module Module_Function
         Return fastestUrl
     End Function
 
+    Public Sub SplitFastaFile(ref_file As String, outputDir As String)
+        If Not Directory.Exists(outputDir) Then
+            Directory.CreateDirectory(outputDir)
+        End If
 
+        Dim sequenceCounter As Integer = 1
+        Dim currentSequence As New List(Of String)
+        Dim sequenceStarted As Boolean = False
+
+        For Each line As String In File.ReadLines(ref_file)
+            If line.StartsWith(">") Then
+                If sequenceStarted Then
+                    SaveSequence(currentSequence, outputDir, sequenceCounter)
+                    sequenceCounter += 1
+                    currentSequence.Clear()
+                End If
+                sequenceStarted = True
+            End If
+
+            If sequenceStarted Then
+                currentSequence.Add(line)
+            End If
+        Next
+
+        ' Save the last sequence
+        If sequenceStarted Then
+            SaveSequence(currentSequence, outputDir, sequenceCounter)
+        End If
+    End Sub
+
+    Private Sub SaveSequence(sequence As List(Of String), outputDir As String, sequenceNumber As Integer)
+        Dim filePath As String = Path.Combine(outputDir, $"ref_{sequenceNumber}.fasta")
+        File.WriteAllLines(filePath, sequence)
+    End Sub
+
+    Public Function GetMaxValueRecord(inputPath As String) As String
+        Dim maxRecord As String = String.Empty
+        Dim maxValue As Integer = Integer.MinValue
+
+        For Each line As String In File.ReadLines(inputPath)
+            Dim parts As String() = line.Split(","c)
+            If parts.Length >= 2 Then
+                Dim value As Integer
+                If Integer.TryParse(parts(1), value) Then
+                    If value > maxValue Then
+                        maxValue = value
+                        maxRecord = parts(0)
+                    End If
+                End If
+            End If
+        Next
+        Return maxRecord
+    End Function
 
     'Public Sub build_ann(ByVal input1 As String, ByVal input2 As String, ByVal gb_file As String, ByVal output_file As String, ByVal WorkingDirectory As String)
     '    Dim SI_build_ann As New ProcessStartInfo()

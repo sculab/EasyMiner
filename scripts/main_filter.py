@@ -17,7 +17,7 @@ def STR2BOOL(v):  # 在参数中使用逻辑值
     else:
         raise argparse.ArgumentTypeError('Unsupported value encountered.')
 
-pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\temp\temp_refs")
+pars.add_argument('-r', metavar='<str>', type=str, help='''input ref file or dir.''', required=False, default=r"D:\Develop\GeneMiner Develop\GeneMiner\bin\Debug\net6.0-windows\temp\temp_refs")
 pars.add_argument('-q1', metavar='<str>', type=str, help='''input fq/gz -1 files.''', required=False,
                     default=[r"E:\SRR26767001_1.fastq.gz"], nargs="+")
 pars.add_argument('-q2', metavar='<str>', type=str, help='''input fq/gz -2 files.''', required=False,
@@ -27,7 +27,7 @@ pars.add_argument('-kf', metavar='<int>', type=int,
 pars.add_argument('-s', metavar='<int>', type=int, help='''length of the sliding window on the reads''', default=4)
 pars.add_argument('-m_reads', metavar='<int>', type=int, help='''Maximum number of reads used''', default=1e9)
 pars.add_argument('-o', metavar='<str>', type=str,
-                    help='''out dir.''', required=False, default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results")
+                    help='''out dir.''', required=False, default=r"D:\Develop\GeneMiner Develop\GeneMiner\bin\Debug\net6.0-windows\results")
 pars.add_argument('-lkd', metavar='<str>', type=str,
                     help='''load kmer dict''', required=False, default='')
 pars.add_argument('-gr', type=STR2BOOL, nargs='?', const=True,

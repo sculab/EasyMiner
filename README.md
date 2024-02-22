@@ -15,7 +15,7 @@ GeneMiner2 is based on our previously developed GeneMiner and Easy353 software a
 
 The work on GeneMiner2 has not yet been published. Currently, please cite our paper on GeneMiner:
 
-- Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. DOI: 10.1111/1755-0998.13924
+- Pulin Xie, Yongling Guo, Yue Teng, Wenbin Zhou, Yan Yu. 2024. GeneMiner: a tool for extracting phylogenetic markers from next-generation sequencing data. Molecular Ecology Resources. [DOI: 10.1111/1755-0998.13924] (https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13924)
 
 If mining angiosperm 353 genes, please cite our paper on Easy353:
 - Zhang Z, Xie P, Guo Y, Zhou W, Liu E, Yu Y. 2022. Easy353: A tool to get Angiosperms353 genes for phylogenomic research. Molecular Biology and Evolution 39(12): msac261.
