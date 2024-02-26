@@ -15,8 +15,14 @@ Public Class Welcome
         Timer1.Enabled = True
         format_path()
         load_main()
+        Dim th1 As New Thread(AddressOf load_url)
+        th1.Start()
         form_main.Show()
     End Sub
+    Public Sub load_url()
+        database_url = TestUrlsAsync(database_url.Split(";")).Result
+    End Sub
+
     Public Sub load_main()
         Directory.CreateDirectory(root_path + "results")
         Directory.CreateDirectory(root_path + "temp")
@@ -67,7 +73,6 @@ Public Class Welcome
         Else
             Timer1.Enabled = False
             Me.Hide()
-            database_url = TestUrlsAsync(database_url.Split(";")).Result
         End If
     End Sub
     Public Sub DeleteTemp(ByVal aimPath As String)

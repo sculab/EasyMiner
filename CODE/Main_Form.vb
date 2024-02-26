@@ -1,18 +1,6 @@
-﻿Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-Imports System.IO
+﻿Imports System.IO
 Imports System.Threading
-Imports System.Threading.Tasks
-Imports System.Text
-Imports System.Globalization
-Imports System.Reflection.Emit
 Imports System.Text.RegularExpressions
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
-Imports System.Runtime.CompilerServices
-Imports Microsoft.VisualBasic.Devices
-Imports System.DirectoryServices
-Imports System.Windows.Forms.VisualStyles
-Imports System.Windows.Forms.Design.AxImporter
-Imports System.Net.Http
 Imports System.Collections.Concurrent
 
 
@@ -329,16 +317,16 @@ Public Class Main_Form
 
         NumericUpDown10.Maximum = Math.Max(System.Environment.ProcessorCount - 2, 1)
         NumericUpDown10.Value = Math.Max(NumericUpDown10.Maximum / 2, 1)
-        AddHandler form_config_basic.ConfirmClicked, AddressOf Basic_ConfirmClickedHandler
-        AddHandler form_config_basic.CancelClicked, AddressOf SubCancel
-        AddHandler form_config_trim.ConfirmClicked, AddressOf Trim_ConfirmClickedHandler
-        AddHandler form_config_trim.CancelClicked, AddressOf SubCancel
-        AddHandler form_config_tree.ConfirmClicked, AddressOf Tree_ConfirmClickedHandler
-        AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
-        AddHandler form_config_combine.ConfirmClicked, AddressOf Combine_ConfirmClickedHandler
-        AddHandler form_config_combine.CancelClicked, AddressOf SubCancel
-        AddHandler form_config_consensus.ConfirmClicked, AddressOf Consensus_ConfirmClickedHandler
-        AddHandler form_config_consensus.CancelClicked, AddressOf SubCancel
+        'AddHandler form_config_basic.ConfirmClicked, AddressOf Basic_ConfirmClickedHandler
+        'AddHandler form_config_basic.CancelClicked, AddressOf SubCancel
+        'AddHandler form_config_trim.ConfirmClicked, AddressOf Trim_ConfirmClickedHandler
+        'AddHandler form_config_trim.CancelClicked, AddressOf SubCancel
+        'AddHandler form_config_tree.ConfirmClicked, AddressOf Tree_ConfirmClickedHandler
+        'AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
+        'AddHandler form_config_combine.ConfirmClicked, AddressOf Combine_ConfirmClickedHandler
+        'AddHandler form_config_combine.CancelClicked, AddressOf SubCancel
+        'AddHandler form_config_consensus.ConfirmClicked, AddressOf Consensus_ConfirmClickedHandler
+        'AddHandler form_config_consensus.CancelClicked, AddressOf SubCancel
         init_output_folder = True
     End Sub
 
