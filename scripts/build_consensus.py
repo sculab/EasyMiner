@@ -40,16 +40,16 @@ def parse_cigar(cigarstring, seq, pos_ref):
     return seqout, insert
 
 def parse_args():
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''基于SAM文件构建一致性序列''')
-    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\1_RAPiD_Genomics_F088_UFL_394803_P005_WC12_i5_515_i7_132_S988_L002_R_001\muticopy\g6660_mft.sam",
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''Constructing Consensus Sequences Based on SAM Files''')
+    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\Develop\GeneMiner Develop\GeneMiner\bin\Debug\net6.0-windows\results\Barcode_adapter_BA1.sam",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
-    parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75",
+    parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25",
                         help="List of consensus threshold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.75")
     parser.add_argument("-n", action="store", dest="n", type=int, default=0,
                         help="Split FASTA output sequences every n nucleotides, default=do not split sequence")
-    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"D:\Working\Develop\EasyMiner Develop\EasyMiner\bin\Debug\net6.0-windows\results\1_RAPiD_Genomics_F088_UFL_394803_P005_WC12_i5_515_i7_132_S988_L002_R_001\muticopy",
+    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"D:\Develop\GeneMiner Develop\GeneMiner\bin\Debug\net6.0-windows\results",
                         help="Name of output folder, default=same folder as input")
-    parser.add_argument("-p", "--prefix", action="store", dest="prefix", default="",
+    parser.add_argument("-p", "--prefix", action="store", dest="prefix", default="Barcode_adapter_BA1_tmp",
                         help="Prefix for output file name, default=input filename without .sam extension")
     parser.add_argument("-m", "--min-depth", action="store", dest="min_depth", type=int, default=2,
                         help="Minimum read depth at each site to report the nucleotide in the consensus, default=1")
@@ -58,7 +58,7 @@ def parse_args():
     parser.add_argument("-d", "--maxdel", action="store", dest="maxdel", default=150,
                         help="Ignore deletions longer than this value, default=150")
     parser.add_argument("-s", "--save_mutations", action="store", type=int, dest="save_mutations", default=1,
-                        help="保存每个位点碱基比例")
+                        help="Save the Base Composition for Each Locus")
     return parser.parse_args()
 
 def process_sam_header(mapfile):
@@ -90,25 +90,26 @@ def parse_sam_file(mapfile, sequences, coverages, insertions, refname, maxdel):
 
         for line in mapfile_chunk:
             reads_total += 1
-            if line[0] != "@" and line.split("\t")[5] != "*":
-                reads_mapped += 1
-                sam_record = line.split("\t")
-                refname = sam_record[2].split()[0]
-                pos_ref = int(sam_record[3]) - 1
-                seqout, insert = parse_cigar(sam_record[5], sam_record[9], pos_ref)
-                if seqout.count("-") <= maxdel:
-                    for nuc in seqout:
-                        try:
-                            sequences[refname][pos_ref][nuc] += 1
+            if line[0] != "\t":
+                if line[0] != "@" and line.split("\t")[5] != "*":
+                    reads_mapped += 1
+                    sam_record = line.split("\t")
+                    refname = sam_record[2].split()[0]
+                    pos_ref = int(sam_record[3]) - 1
+                    seqout, insert = parse_cigar(sam_record[5], sam_record[9], pos_ref)
+                    if seqout.count("-") <= maxdel:
+                        for nuc in seqout:
+                            try:
+                                sequences[refname][pos_ref][nuc] += 1
+                                pos_ref += 1
+                            except:
+                                print(refname, pos_ref, nuc, sam_record)
+                    else:
+                        for nuc in seqout:
+                            if nuc != "-" and nuc != "*":
+                                sequences[refname][pos_ref][nuc] += 1
                             pos_ref += 1
-                        except:
-                            print(refname, pos_ref, nuc, sam_record)
-                else:
-                    for nuc in seqout:
-                        if nuc != "-" and nuc != "*":
-                            sequences[refname][pos_ref][nuc] += 1
-                        pos_ref += 1
-                        # Show progress
+                            # Show progress
             if reads_total % 500000 == 0:
                 print((str(reads_total)+" reads processed.\r"))
     mapfile.close()

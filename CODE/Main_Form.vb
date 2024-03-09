@@ -4112,8 +4112,7 @@ Public Class Main_Form
                 Dim my_options(2) As String
                 If form_config_consensus.ComboBox1.SelectedIndex = 0 Then
                     my_options(1) = "results"
-                    my_options(2) = "0"
-
+                    my_options(1) = "1"
                 Else
                     my_options(1) = "best_refs"
                     my_options(2) = "0"

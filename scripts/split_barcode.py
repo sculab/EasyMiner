@@ -114,7 +114,7 @@ def main():
     if os.path.isdir(args.input):
         files_to_process = []
         for filename in os.listdir(args.input):
-            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") or filename.endswith(".fq"):
+            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") or filename.endswith(".fq") or filename.endswith(".fastq"):
                 query_file = fq_to_fasta(os.path.join(args.input, filename))
                 out_folder = os.path.join(args.output, os.path.splitext(filename)[0])
                 if os.path.exists(out_folder):
@@ -129,7 +129,7 @@ def main():
             shutil.rmtree(combine_folder)
         os.makedirs(combine_folder, exist_ok=True)
         for filename in os.listdir(args.input):
-            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") or filename.endswith(".fq"):
+            if filename.endswith(".fa") or filename.endswith(".fas") or filename.endswith(".fasta") or filename.endswith(".fq") or filename.endswith(".fastq"):
                 query_file = fq_to_fasta(os.path.join(args.input, filename))
                 seq_file_name = os.path.basename(os.path.splitext(query_file)[0])
                 out_folder = os.path.join(args.output, seq_file_name)
@@ -181,6 +181,12 @@ def fq_to_fasta(input_file):
     elif input_file.endswith('.fq'):
         open_func = open
         output_file = './' + input_file.replace("\\","/").split('/')[-1].replace('.fq', '.fasta')
+    elif input_file.endswith('.fastq.gz'):
+        open_func = gzip.open
+        output_file = './' + input_file.replace("\\","/").split('/')[-1].replace('.fastq.gz', '.fasta')
+    elif input_file.endswith('.fastq'):
+        open_func = open
+        output_file = './' + input_file.replace("\\","/").split('/')[-1].replace('.fastq', '.fasta')
     else:
         return input_file
 
@@ -231,7 +237,6 @@ def split_subreads(query_file, subject_file, word_size, seq_file_name, out_folde
             else:
                 splited_file.write(record)
     splited_file.close()
-
 def get_subreads_dict(blast_output_file, _subreads_dict):
     with open(blast_output_file, "r") as blast_output:
         lines = blast_output.readlines()
