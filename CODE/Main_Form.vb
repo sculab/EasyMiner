@@ -317,16 +317,16 @@ Public Class Main_Form
 
         NumericUpDown10.Maximum = Math.Max(System.Environment.ProcessorCount - 2, 1)
         NumericUpDown10.Value = Math.Max(NumericUpDown10.Maximum / 2, 1)
-        'AddHandler form_config_basic.ConfirmClicked, AddressOf Basic_ConfirmClickedHandler
-        'AddHandler form_config_basic.CancelClicked, AddressOf SubCancel
-        'AddHandler form_config_trim.ConfirmClicked, AddressOf Trim_ConfirmClickedHandler
-        'AddHandler form_config_trim.CancelClicked, AddressOf SubCancel
-        'AddHandler form_config_tree.ConfirmClicked, AddressOf Tree_ConfirmClickedHandler
-        'AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
-        'AddHandler form_config_combine.ConfirmClicked, AddressOf Combine_ConfirmClickedHandler
-        'AddHandler form_config_combine.CancelClicked, AddressOf SubCancel
-        'AddHandler form_config_consensus.ConfirmClicked, AddressOf Consensus_ConfirmClickedHandler
-        'AddHandler form_config_consensus.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_basic.ConfirmClicked, AddressOf Basic_ConfirmClickedHandler
+        AddHandler form_config_basic.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_trim.ConfirmClicked, AddressOf Trim_ConfirmClickedHandler
+        AddHandler form_config_trim.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_tree.ConfirmClicked, AddressOf Tree_ConfirmClickedHandler
+        AddHandler form_config_tree.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_combine.ConfirmClicked, AddressOf Combine_ConfirmClickedHandler
+        AddHandler form_config_combine.CancelClicked, AddressOf SubCancel
+        AddHandler form_config_consensus.ConfirmClicked, AddressOf Consensus_ConfirmClickedHandler
+        AddHandler form_config_consensus.CancelClicked, AddressOf SubCancel
         init_output_folder = True
     End Sub
 
@@ -2775,7 +2775,7 @@ Public Class Main_Form
         form_config_cp.CheckBox1.Visible = False
         form_config_cp.Show()
     End Sub
-    Private Sub 分离序列ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 分离序列ToolStripMenuItem.Click
+    Private Sub 分离序列ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         If TextBox1.Text <> "" Then
             Dim refs_count As Integer = 0
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
@@ -2823,7 +2823,7 @@ Public Class Main_Form
         PB_value = 0
     End Sub
 
-    Private Sub 合并结果ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles 合并结果ToolStripMenuItem1.Click
+    Private Sub 合并结果ToolStripMenuItem1_Click(sender As Object, e As EventArgs)
         If TextBox1.Text <> "" Then
             Dim refs_count As Integer = 0
             out_dir = TextBox1.Text
@@ -2856,7 +2856,7 @@ Public Class Main_Form
         PB_value = 0
     End Sub
 
-    Private Sub 重建序列ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 重建序列ToolStripMenuItem.Click
+    Private Sub 重建序列ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         If TextBox1.Text <> "" Then
             Dim refs_count As Integer = 0
             ref_dir = (currentDirectory + "temp\temp_refs\").Replace("\", "/")
@@ -3038,7 +3038,7 @@ Public Class Main_Form
         End If
     End Sub
 
-    Private Sub 分离重建ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles 分离重建ToolStripMenuItem.Click
+    Private Sub 分离重建ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         form_config_barcode.Show()
     End Sub
 
@@ -3983,8 +3983,8 @@ Public Class Main_Form
             Dim count As Integer = 0
             PB_value = 0
             Dim parallelOptions As New ParallelOptions()
-            If File.Exists(Path.Combine(fasta_folder, "combined.trees")) Then
-                File.Delete(Path.Combine(fasta_folder, "combined.trees"))
+            If File.Exists(Path.Combine(fasta_folder, "combined_genes.trees")) Then
+                File.Delete(Path.Combine(fasta_folder, "combined_genes.trees"))
             End If
             parallelOptions.MaxDegreeOfParallelism = current_thread
             If TargetOS = "macos" Then
@@ -4112,7 +4112,7 @@ Public Class Main_Form
                 Dim my_options(2) As String
                 If form_config_consensus.ComboBox1.SelectedIndex = 0 Then
                     my_options(1) = "results"
-                    my_options(1) = "1"
+                    my_options(2) = "1"
                 Else
                     my_options(1) = "best_refs"
                     my_options(2) = "0"

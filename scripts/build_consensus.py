@@ -41,15 +41,15 @@ def parse_cigar(cigarstring, seq, pos_ref):
 
 def parse_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description='''Constructing Consensus Sequences Based on SAM Files''')
-    parser.add_argument("-i", "--input", action="store", dest="filename", default=r"D:\Develop\GeneMiner Develop\GeneMiner\bin\Debug\net6.0-windows\results\Barcode_adapter_BA1.sam",
+    parser.add_argument("-i", "--input", action="store", dest="filename",
                         help="Name of the SAM file, SAM does not need to be sorted and can be compressed with gzip")
     parser.add_argument("-c", "--consensus-thresholds", action="store", dest="thresholds", type=str, default="0.25",
                         help="List of consensus threshold(s) separated by commas, no spaces, example: -c 0.25,0.75,0.50, default=0.75")
     parser.add_argument("-n", action="store", dest="n", type=int, default=0,
                         help="Split FASTA output sequences every n nucleotides, default=do not split sequence")
-    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder", default=r"D:\Develop\GeneMiner Develop\GeneMiner\bin\Debug\net6.0-windows\results",
+    parser.add_argument("-o", "--outfolder", action="store", dest="outfolder",
                         help="Name of output folder, default=same folder as input")
-    parser.add_argument("-p", "--prefix", action="store", dest="prefix", default="Barcode_adapter_BA1_tmp",
+    parser.add_argument("-p", "--prefix", action="store", dest="prefix",
                         help="Prefix for output file name, default=input filename without .sam extension")
     parser.add_argument("-m", "--min-depth", action="store", dest="min_depth", type=int, default=2,
                         help="Minimum read depth at each site to report the nucleotide in the consensus, default=1")

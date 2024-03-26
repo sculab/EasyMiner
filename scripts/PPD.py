@@ -933,7 +933,7 @@ def main():
     parser.add_argument("-th", "--thread", dest='threads_num', type=int, default=8,
                         help='the number of CPUs you are using. Default is 1.')
     
-    parser.add_argument("-aln", "--alignment", dest='alignment app', type=str, default="muscle",
+    parser.add_argument("-aln", "--alignment", dest='aligment', type=str, default="muscle",
                         help='the app to aligment. Default is 1.')
 
     args = parser.parse_args()

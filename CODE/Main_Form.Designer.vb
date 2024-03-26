@@ -68,12 +68,6 @@ Partial Class Main_Form
         哺乳动物线粒体基因组ToolStripMenuItem1 = New ToolStripMenuItem()
         ToolStripSeparator13 = New ToolStripSeparator()
         获取单拷贝基因ToolStripMenuItem = New ToolStripMenuItem()
-        长读条码ToolStripMenuItem = New ToolStripMenuItem()
-        分离序列ToolStripMenuItem = New ToolStripMenuItem()
-        合并结果ToolStripMenuItem1 = New ToolStripMenuItem()
-        重建序列ToolStripMenuItem = New ToolStripMenuItem()
-        ToolStripSeparator5 = New ToolStripSeparator()
-        分离重建ToolStripMenuItem = New ToolStripMenuItem()
         批量ToolStripMenuItem1 = New ToolStripMenuItem()
         过滤ToolStripMenuItem1 = New ToolStripMenuItem()
         ToolStripMenuItem4 = New ToolStripMenuItem()
@@ -150,7 +144,7 @@ Partial Class Main_Form
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {文件ToolStripMenuItem, 分析ToolStripMenuItem, 长读条码ToolStripMenuItem, 批量ToolStripMenuItem1, 三方工具ToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {文件ToolStripMenuItem, 分析ToolStripMenuItem, 批量ToolStripMenuItem1, 三方工具ToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Size = New Size(794, 25)
@@ -269,7 +263,7 @@ Partial Class Main_Form
         ' 
         过滤ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {从头过滤ToolStripMenuItem, 进一步过滤ToolStripMenuItem})
         过滤ToolStripMenuItem.Name = "过滤ToolStripMenuItem"
-        过滤ToolStripMenuItem.Size = New Size(180, 22)
+        过滤ToolStripMenuItem.Size = New Size(172, 22)
         过滤ToolStripMenuItem.Text = "过滤"
         ' 
         ' 从头过滤ToolStripMenuItem
@@ -287,31 +281,31 @@ Partial Class Main_Form
         ' 拼接ToolStripMenuItem
         ' 
         拼接ToolStripMenuItem.Name = "拼接ToolStripMenuItem"
-        拼接ToolStripMenuItem.Size = New Size(180, 22)
+        拼接ToolStripMenuItem.Size = New Size(172, 22)
         拼接ToolStripMenuItem.Text = "拼接"
         ' 
         ' 全自动ToolStripMenuItem
         ' 
         全自动ToolStripMenuItem.Name = "全自动ToolStripMenuItem"
-        全自动ToolStripMenuItem.Size = New Size(180, 22)
+        全自动ToolStripMenuItem.Size = New Size(172, 22)
         全自动ToolStripMenuItem.Text = "过滤+拼接"
         ' 
         ' 对齐参考ToolStripMenuItem
         ' 
         对齐参考ToolStripMenuItem.Name = "对齐参考ToolStripMenuItem"
-        对齐参考ToolStripMenuItem.Size = New Size(180, 22)
+        对齐参考ToolStripMenuItem.Size = New Size(172, 22)
         对齐参考ToolStripMenuItem.Text = "基于参考切齐"
         ' 
         ' ToolStripSeparator14
         ' 
         ToolStripSeparator14.Name = "ToolStripSeparator14"
-        ToolStripSeparator14.Size = New Size(177, 6)
+        ToolStripSeparator14.Size = New Size(169, 6)
         ' 
         ' 迭代ToolStripMenuItem
         ' 
         迭代ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {迭代ToolStripMenuItem1, 用迭代覆盖ToolStripMenuItem, ToolStripMenuItem5})
         迭代ToolStripMenuItem.Name = "迭代ToolStripMenuItem"
-        迭代ToolStripMenuItem.Size = New Size(180, 22)
+        迭代ToolStripMenuItem.Size = New Size(172, 22)
         迭代ToolStripMenuItem.Text = "迭代"
         ' 
         ' 迭代ToolStripMenuItem1
@@ -335,95 +329,59 @@ Partial Class Main_Form
         ' ToolStripSeparator4
         ' 
         ToolStripSeparator4.Name = "ToolStripSeparator4"
-        ToolStripSeparator4.Size = New Size(177, 6)
+        ToolStripSeparator4.Size = New Size(169, 6)
         ' 
         ' 获取最佳参考序列ToolStripMenuItem
         ' 
         获取最佳参考序列ToolStripMenuItem.Name = "获取最佳参考序列ToolStripMenuItem"
-        获取最佳参考序列ToolStripMenuItem.Size = New Size(180, 22)
+        获取最佳参考序列ToolStripMenuItem.Size = New Size(172, 22)
         获取最佳参考序列ToolStripMenuItem.Text = "获取最佳参考序列"
         ' 
         ' 重构ToolStripMenuItem
         ' 
         重构ToolStripMenuItem.Name = "重构ToolStripMenuItem"
-        重构ToolStripMenuItem.Size = New Size(180, 22)
+        重构ToolStripMenuItem.Size = New Size(172, 22)
         重构ToolStripMenuItem.Text = "一致性重构"
         ' 
         ' 多拷贝检测ToolStripMenuItem
         ' 
         多拷贝检测ToolStripMenuItem.Name = "多拷贝检测ToolStripMenuItem"
-        多拷贝检测ToolStripMenuItem.Size = New Size(180, 22)
+        多拷贝检测ToolStripMenuItem.Size = New Size(172, 22)
         多拷贝检测ToolStripMenuItem.Text = "多拷贝检测"
         ' 
         ' ToolStripSeparator9
         ' 
         ToolStripSeparator9.Name = "ToolStripSeparator9"
-        ToolStripSeparator9.Size = New Size(177, 6)
+        ToolStripSeparator9.Size = New Size(169, 6)
         ' 
         ' 植物叶绿体基因组ToolStripMenuItem
         ' 
         植物叶绿体基因组ToolStripMenuItem.Name = "植物叶绿体基因组ToolStripMenuItem"
-        植物叶绿体基因组ToolStripMenuItem.Size = New Size(180, 22)
+        植物叶绿体基因组ToolStripMenuItem.Size = New Size(172, 22)
         植物叶绿体基因组ToolStripMenuItem.Text = "植物叶绿体基因组"
         ' 
         ' 植物线粒体基因组ToolStripMenuItem
         ' 
         植物线粒体基因组ToolStripMenuItem.Name = "植物线粒体基因组ToolStripMenuItem"
-        植物线粒体基因组ToolStripMenuItem.Size = New Size(180, 22)
+        植物线粒体基因组ToolStripMenuItem.Size = New Size(172, 22)
         植物线粒体基因组ToolStripMenuItem.Text = "植物线粒体基因组"
         ' 
         ' 哺乳动物线粒体基因组ToolStripMenuItem1
         ' 
         哺乳动物线粒体基因组ToolStripMenuItem1.Name = "哺乳动物线粒体基因组ToolStripMenuItem1"
-        哺乳动物线粒体基因组ToolStripMenuItem1.Size = New Size(180, 22)
+        哺乳动物线粒体基因组ToolStripMenuItem1.Size = New Size(172, 22)
         哺乳动物线粒体基因组ToolStripMenuItem1.Text = "动物线粒体基因组"
         ' 
         ' ToolStripSeparator13
         ' 
         ToolStripSeparator13.Name = "ToolStripSeparator13"
-        ToolStripSeparator13.Size = New Size(177, 6)
+        ToolStripSeparator13.Size = New Size(169, 6)
         ' 
         ' 获取单拷贝基因ToolStripMenuItem
         ' 
         获取单拷贝基因ToolStripMenuItem.Name = "获取单拷贝基因ToolStripMenuItem"
-        获取单拷贝基因ToolStripMenuItem.Size = New Size(180, 22)
+        获取单拷贝基因ToolStripMenuItem.Size = New Size(172, 22)
         获取单拷贝基因ToolStripMenuItem.Text = "获取单拷贝基因"
-        ' 
-        ' 长读条码ToolStripMenuItem
-        ' 
-        长读条码ToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {分离序列ToolStripMenuItem, 合并结果ToolStripMenuItem1, 重建序列ToolStripMenuItem, ToolStripSeparator5, 分离重建ToolStripMenuItem})
-        长读条码ToolStripMenuItem.Name = "长读条码ToolStripMenuItem"
-        长读条码ToolStripMenuItem.Size = New Size(68, 21)
-        长读条码ToolStripMenuItem.Text = "长读分析"
-        ' 
-        ' 分离序列ToolStripMenuItem
-        ' 
-        分离序列ToolStripMenuItem.Name = "分离序列ToolStripMenuItem"
-        分离序列ToolStripMenuItem.Size = New Size(133, 22)
-        分离序列ToolStripMenuItem.Text = "分离条码"
-        ' 
-        ' 合并结果ToolStripMenuItem1
-        ' 
-        合并结果ToolStripMenuItem1.Name = "合并结果ToolStripMenuItem1"
-        合并结果ToolStripMenuItem1.Size = New Size(133, 22)
-        合并结果ToolStripMenuItem1.Text = "合并结果"
-        ' 
-        ' 重建序列ToolStripMenuItem
-        ' 
-        重建序列ToolStripMenuItem.Name = "重建序列ToolStripMenuItem"
-        重建序列ToolStripMenuItem.Size = New Size(133, 22)
-        重建序列ToolStripMenuItem.Text = "重建序列"
-        ' 
-        ' ToolStripSeparator5
-        ' 
-        ToolStripSeparator5.Name = "ToolStripSeparator5"
-        ToolStripSeparator5.Size = New Size(130, 6)
-        ' 
-        ' 分离重建ToolStripMenuItem
-        ' 
-        分离重建ToolStripMenuItem.Name = "分离重建ToolStripMenuItem"
-        分离重建ToolStripMenuItem.Size = New Size(133, 22)
-        分离重建ToolStripMenuItem.Text = "分离+重建"
         ' 
         ' 批量ToolStripMenuItem1
         ' 
@@ -974,17 +932,11 @@ Partial Class Main_Form
     Friend WithEvents 下载ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 植物叶绿体基因组ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 植物线粒体基因组ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents 长读条码ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents 分离序列ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents 重建序列ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents 合并结果ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents 哺乳动物线粒体基因组ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents 哺乳动物线粒体基因组ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents 哺乳动物线粒体基因组ToolStripMenuItem2 As ToolStripMenuItem
     Friend WithEvents 多拷贝检测ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
-    Friend WithEvents 分离重建ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 统计结果ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 旁系同源检测ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents 全选ToolStripMenuItem As ToolStripMenuItem
