@@ -59,6 +59,14 @@ Due to GeneMiner2 operating on macOS through Wine technology, its running effici
 For users interested in the command line version, please refer to our [Easy353](https://github.com/plant720/Easy353) or [GeneMiner](https://github.com/sculab/GeneMiner)
 
 
+# Detailed Description
+
+For a detailed explanation of the software and an interpretation of the output directory, click [here](manual/ZH_US/readme_detailed.md).
+
+For a detailed explanation of the software and an interpretation of the output directory, [please see here](manual/ZH_US/output.md).
+
+
+
 # Questions
 [Answer](manual/EN_US/FAQ.md)
 
