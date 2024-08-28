@@ -1,4 +1,4 @@
-# Results Directory Annotation
+# Directory Annotation
 
 ## Output Files
 
@@ -69,9 +69,9 @@
 
  ---
 
-# Software (Graphical Interface) Annotion
+# Software Annotion
 
-### References Column Descriptions:
+## References Column Descriptions:
 
 - **Select**: Whether to use this reference sequence.
 
@@ -104,7 +104,7 @@
 
 
 
-### Sequences Column Descriptions:
+## Sequences Column Descriptions:
 
 - **Select**: Whether to use this set of data files.
 
