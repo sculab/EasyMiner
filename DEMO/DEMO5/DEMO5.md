@@ -1,7 +1,7 @@
-# Tutorial 2 - Obtain Organelle Genes (Genome)
+# Tutorial 5 - Construct Phylogenetic Trees
 
 ---
-## Genes
+## Batch Assembly of 353 Genes
 
 
 ### Data Preparation
@@ -9,28 +9,24 @@
 
 - **[Sequencing Data](DATA/PLANT/GENE/)**: Second-generation sequencing data files, in .gz or .fq format.
 
-- **[Reference Sequence](DATA/ref/OK166971.gb)**: Reference gene sequences from closely related species in fasta or genbank format.
+
 
 ### Loading the data files
 
 Click [File>Load Sequencing Files] select sequencing data file.
 
 
-Click [File>Load Reference] select  genbank format reference sequence file. 
+Click [File>Download Reference] download fasta format reference sequences from closely related species. 
 
-Confirm to report the file as a gene list.
-
-Optionally, expand the left or right intronic regions [Extend Left][Extend Right].
 
 The imported files display details such as reference sequence ID, gene name, number of sequences, and average sequence length.
 
 
 ### Obtaining Genes
-Click [Analysis > Filter & Assemble] to obtain Genes.
+Click [Batch > Filter & Assemble] to obtain 353 Genes.
 
 **NOTE:** Do not manually close the command line window; it will close automatically once the process is complete.
 
-NOTE: For importing multiple pairs of sequencing files, select [Batch > Filter & Assemble] to extract.
 
 
 ![](gif/GENOME_GENE2.gif)

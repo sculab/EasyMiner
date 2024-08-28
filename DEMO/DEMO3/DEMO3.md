@@ -1,5 +1,4 @@
-# Tutorial 3 - Obtain Single Copy Genes
-
+# Tutorial 3 - Tree Construction Process for Single-Copy Genes
 
 ### Data Preparation
 
@@ -45,3 +44,39 @@ Click [Open] to view the SCG (Single-Copy Gene) results located in the 'results'
 
 
 ![](gif/SCG_findresult.gif)
+
+
+### Data Cleaning
+
+Click [Batch > Trim With Reference]to remove two segments of low-quality sequence. 
+
+[Retention Length Threshold] can be adjusted based on the data source to prevent over-filtering.
+
+The trimming results can be previewed in the 'BLAST' folder.
+
+
+![](gif/SCG_datacleaning1.gif)
+
+
+Click [Batch > Combine Results]. 
+
+[Maximum difference] and [Number of sequeces] can be adjusted to filter sequences after alignment and trimming.
+
+The filered results can be previewed in the 'combined_*' files and folders.
+
+'combined_results.fasta','combined_trimed.fasta' stores concatenated sequences.
+
+
+![](gif/SCG_datacleaning2.gif)
+
+
+
+### Building Phylogenetic Tree
+
+
+Click [Batch > Build Phylogenetic Tree]. 
+
+The type of phylogenetic tree to be constructed can be selected, and if a rooted tree is required, an outgroup must be chosen.
+
+
+![](gif/SCG_datacleaning3.gif)
