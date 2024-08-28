@@ -1,5 +1,7 @@
 # Tutorial 3 - Tree Construction Process for Single-Copy Genes
 
+
+
 ### Data Preparation
 
 
@@ -9,15 +11,19 @@
 
 
 
+
+
 ### Obtaining Single Copy Genes Reference Sequences
 
 
-Click [File > Load References] select all **Transcript Data** .
+Click [**File > Load References**] select all **Transcript Data** .
 
-Click [Analysis > Find Single Copy Genes] to get SCG reference.
+Click [**Analysis > Find Single Copy Genes**] to get SCG reference.
 
 
 ![](gif/SCG_ref.gif)
+
+
 
 
 
@@ -25,12 +31,12 @@ Click [Analysis > Find Single Copy Genes] to get SCG reference.
 
 Click [Change] to modify the folder for results.
 
-Click [File > Load References] select the SCG (Single-Copy Gene) reference you have obtained.
+Click [**File > Load References**] select the SCG (Single-Copy Gene) reference you have obtained.
 
-Click [File > Load Sequencing Files] to import **Sequencing Data** in batch
+Click [**File > Load Sequencing Files**] to import **Sequencing Data** in batch
 
 
-Click [Batch > Filter & Assemble] to obtain Single Copy Genes.
+Click [**Batch > Filter & Assemble**] to obtain Single Copy Genes.
 
 **NOTE:** Do not manually close the command line window; it will close automatically once the process is complete.
 
@@ -46,11 +52,15 @@ Click [Open] to view the SCG (Single-Copy Gene) results located in the 'results'
 ![](gif/SCG_findresult.gif)
 
 
+
+
+
+
 ### Data Cleaning
 
-Click [Batch > Trim With Reference]to remove two segments of low-quality sequence. 
+Click [**Batch > Trim With Reference**]to remove two segments of low-quality sequence. 
 
-[Retention Length Threshold] can be adjusted based on the data source to prevent over-filtering.
+[**Retention Length Threshold**] can be adjusted based on the data source to prevent over-filtering.
 
 The trimming results can be previewed in the 'BLAST' folder.
 
@@ -58,23 +68,26 @@ The trimming results can be previewed in the 'BLAST' folder.
 ![](gif/SCG_datacleaning1.gif)
 
 
-Click [Batch > Combine Results]. 
+Click [**Batch > Combine Results**]. 
 
-[Maximum difference] and [Number of sequeces] can be adjusted to filter sequences after alignment and trimming.
+[**Maximum difference**] and [**Number of sequeces**] can be adjusted to filter sequences after alignment and trimming.
 
 The filered results can be previewed in the 'combined_*' files and folders.
 
-'combined_results.fasta','combined_trimed.fasta' stores concatenated sequences.
+'combined_results.fasta','combined_trimed.fasta' stores **concatenated sequences**.
 
 
 ![](gif/SCG_datacleaning2.gif)
 
 
 
+
+
+
 ### Building Phylogenetic Tree
 
 
-Click [Batch > Build Phylogenetic Tree]. 
+Click [**Batch > Build Phylogenetic Tree**]. 
 
 The type of phylogenetic tree to be constructed can be selected, and if a rooted tree is required, an outgroup must be chosen.
 

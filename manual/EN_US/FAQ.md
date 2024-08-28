@@ -83,7 +83,7 @@ For mitochondrial genome assembly, it's recommended to utilize the full read len
 To expedite the extraction process, you can run multiple GeneMiner concurrently, provided your computer has sufficient memory. Create a copy of the GeneMiner folder and run the additional instance from the duplicated directory. (Ensure that the folder path does not contain any Chinese characters).
 
 
-9. Why are the results obtained from [Trim With Reference] incomplete and of varying lengths?
+**9. ****Why are the results obtained from [Trim With Reference] incomplete and of varying lengths?**
 
 Reference-based trimming retains only the sequence results that are longer than a set threshold times the median length of the sequences. If the option [Keep Only the Longest Match] is not selected, the sequence will preserve the maximum length matched with all reference sequences.
 

@@ -53,7 +53,7 @@ GeneMiner2的源代码均保存在github和Gitee上，您可以从下面的地�
 [Tutorial 2 - 获取质体基因组和质体基因](/DEMO/DEMO2/DEMO2.md)
 
   
-[Tutorial 3 - 获取单拷贝基因](DEMO/DEMO3/DEMO3.md)
+[Tutorial 3 - 单拷贝基因建树流程](DEMO/DEMO3/DEMO3.md)
 
 
 [Tutorial 4 - 获取被子植物353基因集](DEMO/DEMO4/DEMO4.md)
