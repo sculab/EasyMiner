@@ -61,9 +61,9 @@ For users interested in the command line version, please refer to our [Easy353](
 
 # Detailed Description
 
-For a detailed explanation of the software and an interpretation of the output directory, click [here](manual/ZH_US/readme_detailed.md).
+For detailed GeneMiner2 documentation,click [please see here](manual/EN_US/readme_detailed.md).
 
-For a detailed explanation of the software and an interpretation of the output directory, [please see here](manual/ZH_US/output.md).
+For a further explanation of the output directory,  [please see here](manual/EN_US/output.md).
 
 
 
