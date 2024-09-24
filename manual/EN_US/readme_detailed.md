@@ -137,7 +137,7 @@ For example, under default parameters, if the filter result file depth exceeds 5
 
 **[Analysis > Iteration > Multiply Iteration]**: Perform multiple iterations to enhance the length and accuracy of the sequences.
 
-**[Analysis > Get Best Reference]**
+**[Analysis > Get Best Reference]**：Split reads into kmers and align them with the kmer hash table of the reference sequence. When multiple reference sequences exist for a target gene, the reference with the highest number of matching kmers is selected as the best reference sequence.
 
 **[Analysis > Generate Consensus]**: Map the result sequences to the filtered fq files. Set the threshold according to the prompts; increasing the threshold will increase the number of ambiguous bases. If you want to differentiate mixed sequences, it is recommended to choose the default (0.75), and if you want results without degenerate bases, it is recommended to choose 0.25.
 
