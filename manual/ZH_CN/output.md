@@ -24,6 +24,9 @@
 
 **result_dict.txt**: 结果文件，格式为：基因名，序列拼接状态，拼接上的reads数量。
 
+**best_refs**: '获得最佳参考序列'的结果文件。
+
+
 #### Organelle：细胞器基因组的拼接结果。
 
 * **Gennome_cp.fasta**：植物叶绿体基因组拼接结果。
@@ -45,9 +48,10 @@
 
 * **supercontigs**：一致性重构的结果文件，使用IPUAC代码生成的退化序列，使用简并碱基标注了SNP位点。
 
+
 #### 多拷贝检测结果：
 
-* **paralogs**：旁系同源基因筛选的结果文件，其中_ref.fasta文件储存旁系同源基因，csv文件记录不同位置碱基map出现的次数，.pec.csv文件记录碱基变异的频率。
+* **multicopy**：旁系同源基因筛选的结果文件，其中_ref.fasta文件储存旁系同源基因，csv文件记录不同位置碱基map出现的次数，.pec.csv文件记录碱基变异的频率。
 
 **summary.csv**：统计汇总结果。
 
@@ -69,9 +73,13 @@
 
 **aligned**: 多序列比对的结果。
 
-#### 旁系同源检测（PPD）结果：
+**summary.csv**: 统计汇总结果，内包含：
+    Reference Median Length：参考序列的长度中值，用于在[基于参考切齐]步骤对序列进行筛选。
+    Reads Counts: 过滤步骤，和参考Kmer匹配的序列数量。
+    Result Availability：是否存在组装结果，1为是。
+    Multicopy Presence：是否存在多拷贝序列。1为是。
 
-**PPD>result>supercontig>s8 _rm_paralogs> Final_kept_genes**：为最终结果文件，其他文件具体含义见[PPD github](https://github.com/Bean061/putative_paralog#part2-trims-alignment-and-detectes-the-putative-paralogs)。
+
 
  ---
 
@@ -89,29 +97,13 @@ Ref. Count: 参考基因的数量。
 
 Ref. Length: 参考基因的平均长度(bp)。
 
-Filter Depth: 使用参考基因过滤后的深度。过滤深度(Filter Depth)=reads测序长度*过滤出的reads数量/参考序列的平均长度。
+Reads: 与参考序列匹配的序列数量。
 
-Assemble State: 序列拼接的状态，包括：
-
-* no reads: 未过滤出reads，请降低过滤K值或者提供更近源的参考序列
-
-* distant references: 参考序列过于远源，请提供更近源的参考序列
-
-* insufficient reads: 过滤出的reads太少，请减小过滤K值或者提供更近源的参考序列
-
-* no seed: 无法找到合适的种子，请减小拼接K值或者提供更近源的参考序列
-
-* no contigs: 没有拼接出结果
-
-* low quality: 结果准确度较低，reads 不足以覆盖拼接出的结果
-
-* success: 拼接成功
+Assemble State/Count：组装结果序列数量。
 
 Ass. Length: 拼接结果的长度
 
-Ass. Depth: 拼接结果的reads覆盖深度=reads测序长度*用于拼接的reads数量/拼接结果的长度
-
-Max.Diff.: 进行[合并&剪切]后不同物种基因两两比对得到的最大差异度。右击鼠标-最大差异度可以筛选最大差异来去除低质量结果序列。默认0.1筛选。勾选后可以对勾选序列重新[合并&切齐]，用筛选并切齐后结果进行系统发育树构建。
+Max.Diff.: 进行[合并序列]后不同物种基因两两比对得到的最大差异度。勾选[自动清理序列]可设置最大差异度阈值进行自动筛选，以用于后续建树。
 
  
 
