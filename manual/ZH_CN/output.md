@@ -111,7 +111,7 @@ Ref. Count: 参考基因的数量。
 
 Ref. Length: 参考基因的平均长度(bp)。
 
-Reads: 与参考序列匹配的序列长度。
+Reads: 过滤匹配的次数。
 
 Assemble State/Count：组装结果序列数量。
 
