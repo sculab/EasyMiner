@@ -19,13 +19,12 @@
 
 **kmer_dict_k31.dict**: kmer字典文件，格式为：kmer片段(十六进制)，kmer计数（十六进制）。
 
-**result_dict.txt**: 结果文件，格式为：基因名，序列拼接状态，拼接上的reads数量。
+**result_dict.txt**: 结果文件，格式为：基因名，序列拼接状态，用于组装的序列数量。
 
 **ref_reads_count_dict.txt**: 每个参考基因序列拆分成kmer的总条数。
 
-**result_dict.txt**: 结果文件，格式为：基因名，序列拼接状态，拼接上的reads数量。
 
-**best_refs**: '获得最佳参考序列'的结果文件。
+**best_refs**: '获得最佳参考序列'的结果文件。即匹配reads kmer最多的参考序列。
 
 ---
 #### Organelle：细胞器基因组的拼接结果。
@@ -60,7 +59,7 @@
 
 * **multicopy**：旁系同源基因筛选的结果文件，其中_ref.fasta文件储存旁系同源基因，csv文件记录不同位置碱基map出现的次数，.pec.csv文件记录碱基变异的频率。
 
-**summary.csv**：统计汇总结果。
+
 
 ---
 
@@ -116,7 +115,7 @@ Reads: 与参考序列匹配的序列长度。
 
 Assemble State/Count：组装结果序列数量。
 
-Ass. Length: 拼接结果的长度
+Ass. Length: 拼接结果的长度。
 
 Max.Diff.: 进行[合并序列]后不同物种基因两两比对得到的最大差异度。勾选[自动清理序列]可设置最大差异度阈值进行自动筛选，以用于后续建树。
 
