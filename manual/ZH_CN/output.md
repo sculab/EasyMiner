@@ -74,9 +74,14 @@
 **aligned**: 多序列比对的结果。
 
 **summary.csv**: 统计汇总结果，内包含：
+
+
     Reference Median Length：参考序列的长度中值，用于在[基于参考切齐]步骤对序列进行筛选。
-    Reads Counts: 过滤步骤，和参考Kmer匹配的序列数量。
+    
+    Reads Counts: 过滤匹配的序列数量。
+
     Result Availability：是否存在组装结果，1为是。
+
     Multicopy Presence：是否存在多拷贝序列。1为是。
 
 
@@ -97,7 +102,7 @@ Ref. Count: 参考基因的数量。
 
 Ref. Length: 参考基因的平均长度(bp)。
 
-Reads: 与参考序列匹配的序列数量。
+Reads: 与参考序列匹配的序列长度。
 
 Assemble State/Count：组装结果序列数量。
 
