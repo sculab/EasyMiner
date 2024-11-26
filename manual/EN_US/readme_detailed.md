@@ -94,7 +94,7 @@ Parameter settings will appear during the above steps, with specific meanings as
 
 **Reads/File (M)**: Set the amount of read length used for each sequencing file during the filtering process, measured in M (2^20). It is generally recommended to select all read lengths to achieve the best and most comprehensive extraction results.
 
-**Filter K-value**: The k-mer value used during the initial filtering process to decompose the reference sequence and reads, default is 31. If there are no results, consider lowering the filter K-value. The K-value must be greater than 17 and odd.
+**Filter K-value**: The k-mer value used during the initial filtering process to decompose the reference sequence and reads, default is 31. If there are no results, consider lowering the filter K-value. The K-value must be greater than 17.
 
 **Filter Step Size**: The step size of the sliding window when cutting k-mers.
 
@@ -114,11 +114,11 @@ For example, under default parameters, if the filter result file depth exceeds 5
 
 ##### **Assemble:**
 
-**Auto Estimate K **: Dynamically estimate suitable k-mer values for each gene during assembly. Recommended to check.
+**Auto Estimate K**: Dynamically estimate suitable k-mer values for each gene during assembly. Recommended to check.
 
-**Fixed K**: Use a specified k-mer value for all genes during assembly.
+**Fixed Assembly K-mer Value**: A specified k-mer value is used for all genes during the assembly process. The minimum value is 19, and it is recommended to use an odd number if manually specified to avoid assembly errors in reverse complementary regions.
 
-**Err. Threshold**: During the assembly process, do not use k-mers that appear less than this value.
+**Error Threshold**: The error threshold is a parameter used to evaluate the occurrence frequency of the current assembled sequence in the filtered reads. As the assembly progresses, the sequence becomes longer and may encounter more variant sites, reducing the number of matching sequences. If the occurrence frequency of the current assembled sequence falls below the specified error threshold, the tool will stop the assembly. Setting a higher error threshold can improve the accuracy of the assembly but may limit the assembled sequence length. The default value is recommended, but for datasets with fewer reads, consider lowering this threshold.
 
 **Boundary**: Default is Auto, which can remove low-quality sequences from short sequences. Setting to unlimit will yield the maximum extended result. Setting to 0 will remove all low-quality sequences.
 
