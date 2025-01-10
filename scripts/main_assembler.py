@@ -442,7 +442,7 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
             ref_list = Get_Ref_List([ref_path_dict[key]])
             # 获取reads和参考序列的最大重叠长度
             keys_with_slice_len = {key for key in reads_dict.keys() if len(key) == slice_len}
-            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = args.s, max_overlap_limit = min((args.k_max + 2),slice_len-1))
+            current_ka = find_max_overlap(ref_list, keys_with_slice_len, min_overlap = args.k_min, step = args.s, max_overlap_limit = min((args.k_max + 3),slice_len-1))
             if not current_ka:
                 failed_count += 1
                 if os.path.isfile(contig_best_path): os.remove(contig_best_path)
@@ -451,7 +451,7 @@ def process_key_value(args, key, failed_count, result_dict, ref_path_dict, itera
                 result_dict[key] = {"status":"Low k Lower Limit", "value": 0}
                 return failed_count, key, result_dict[key]
             # 略微降低一个级别的k提供更好的兼容性
-            current_ka -= 2
+            current_ka = (current_ka | 1) - 4
             Write_Print(os.path.join(args.o,  "log.txt"), "Use k=", current_ka, " for assembling the ", key ,".", sep='')
         else:
             ref_list = Get_Ref_List([ref_path_dict[key]])

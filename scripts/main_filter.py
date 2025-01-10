@@ -282,7 +282,7 @@ def Filter_Reads_v1(_kmer_dict, kmer_size, step_size, read_seq, mask, get_revers
     if get_reverse:
         read_int.append(Seq_To_Int(read_seq, True))
     for s in read_int:
-        for j in range(0, ref_len - kmer_size - step_size, step_size):
+        for j in range(0, ref_len - kmer_size + 1, step_size):
             kmer = s >> (j << 1) & mask  # 构建kmer的整数形式
             if kmer in _kmer_dict:
                 result_int |= _kmer_dict[kmer] >> 35  # 获取所有可能的文件位置
@@ -519,6 +519,3 @@ if __name__ == '__main__':
     t2 = time.time()
     Write_Print(os.path.join(args.o,  "log.txt"), 'Setp2 cost:', t2 - t1, " "*32)  # 过滤所用的时间
     Write_Print(os.path.join(args.o,  "log.txt"), 'Total cost:', t2 - t0, " "*32)  # 全部过程所用的时间
-
-
-

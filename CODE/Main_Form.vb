@@ -3206,15 +3206,8 @@ Public Class Main_Form
                                 '统计序列长度（中值）
                                 If File.Exists(Path.Combine(my_out_dir, "blast", refsView.Item(i - 1).Item(1).ToString + ".fasta")) Then
                                     Dim tmp_len As Integer = CalculateMedianSequenceLength(Path.Combine(my_out_dir, "blast", refsView.Item(i - 1).Item(1).ToString + ".fasta"))
-                                    If tmp_len = 0 Then
-                                        result_list.Add("0")
-                                        File.Delete(Path.Combine(my_out_dir, "blast", refsView.Item(i - 1).Item(1).ToString + ".fasta"))
-                                    Else
-                                        result_list.Add("1")
-                                    End If
                                     result_list.Add(tmp_len.ToString)
                                 Else
-                                    result_list.Add("0")
                                     result_list.Add("0")
                                 End If
                                 If Directory.Exists(Path.Combine(my_out_dir, "muticopy")) Then
@@ -3983,8 +3976,8 @@ Public Class Main_Form
             Dim count As Integer = 0
             PB_value = 0
             Dim parallelOptions As New ParallelOptions()
-            If File.Exists(Path.Combine(fasta_folder, "combined_genes.trees")) Then
-                File.Delete(Path.Combine(fasta_folder, "combined_genes.trees"))
+            If File.Exists(Path.Combine(TextBox1.Text, "combined_genes.trees")) Then
+                File.Delete(Path.Combine(TextBox1.Text, "combined_genes.trees"))
             End If
             parallelOptions.MaxDegreeOfParallelism = current_thread
             If TargetOS = "macos" Then
